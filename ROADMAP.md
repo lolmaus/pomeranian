@@ -1,0 +1,152 @@
+# Pomeranian feature roadmap
+
+Decision map: [Plan Pomeranian’s feature implementation roadmap](https://github.com/lolmaus/pomeranian/issues/1). Order decision: [Agree Pomeranian’s feature implementation order](https://github.com/lolmaus/pomeranian/issues/6#issuecomment-5763267908).
+
+Status: the project author has approved the full order below as the current
+baseline, with the explicit right to revise it later. This replaces minimal-release
+planning; the complete project vision is the planning horizon. Approving the order
+does not settle the documentation engine or the detailed feature APIs.
+
+The project author controls the sequence and will insert release milestones
+between roadmap items later. No releases are planned until Pomeranian is almost
+complete. What counts as almost complete, version numbers, release contents,
+and milestone placement are deliberately undecided at this stage.
+
+## How to read the roadmap
+
+- Numbers express the approved preferred order, not a chain of blocking dependencies.
+- Prerequisites identify the capabilities an item actually needs. Precise
+  dependencies will be confirmed when that item is specified.
+- These are feature-level checkpoints, not implementation tickets. Each item
+  will become verifiable slices through `/to-spec` and `/to-tickets` before
+  `/implement` builds them. The author approves the order and ticket breakdown.
+- Release publication is scheduled only through milestones the author adds later.
+  Completing a feature or validating a package locally does not schedule a release.
+- Every implemented behavior includes its documentation and meaningful tests.
+  Every offered page object is covered in the React demo app and Playwright E2E
+  suite. TDD and colocated unit tests apply throughout.
+
+## Finding and recording the next item
+
+1. Follow the author's current task or explicit priority. For an open-ended request
+   to continue the project, use the agreed order below: resume the earliest active
+   item, otherwise take the first unfinished item. Coordinate with any session
+   already working on that item. If it is blocked, record the blocker and resolve
+   the dependency or seek the author's direction before changing feature order.
+2. Read that item's linked decisions, specification, implementation tickets, and
+   PRs, and check the checkout. Reconcile stale progress with that evidence. Issue
+   lists alone do not determine feature priority: a closed planning decision means
+   its question is settled, and an open decision for a later item can wait.
+3. Follow the skills workflow below for the item's current stage. A planned item
+   needs its scope and decisions settled, then a specification and an approved
+   ticket breakdown. An implementation ticket is actionable within the author's
+   requested scope once its real prerequisites are satisfied.
+4. Keep the **Progress and work links** column current as the item advances:
+   `Planned`, `Planning`, `Ready`, `Implementing`, or `Done`. Add links to its
+   specification and ticket index as they exist, then completion evidence. Record
+   partial completion and blockers there so the next session can resume the work.
+   Mark an item `Done` when its agreed scope is implemented, checked, documented,
+   and integrated into the shared project branch. Closing a decision or completing
+   only one of several slices does not complete the whole item.
+
+This file owns feature order and the progress summary. GitHub issues and PRs hold
+detailed decisions, acceptance criteria, and verification evidence. Keep this file
+with the repository's shared work so subsequent checkouts receive the handoff.
+
+## Confirmed opening sequence
+
+1. Set up the monorepo: `.nvmrc`, pnpm, Turbo, Oxfmt, shared Oxlint and TypeScript
+   configuration, the requested scripts, and package/export conventions. Include
+   preconfigured core and lib-essential packages, empty of product behavior,
+   as agreed when specifying this item.
+2. Choose the documentation engine, then create the minimum working `apps/docs/`
+   package. Its content folder and document format must be known before feature
+   documentation begins; local preview/build must work. Styling, deployment,
+   complete TypeDoc integration, and LLM outputs can be later work.
+3. Build features as vertical slices. Each slice delivers a useful behavior with
+   its implementation, relevant unit/type/E2E tests, a demo example where needed,
+   and documentation in the established site content folder. The first slice
+   creates the necessary React demo and test harness instead of waiting for a
+   separate fully completed test-infrastructure phase.
+
+The [engine research](https://github.com/lolmaus/pomeranian/issues/7) supports the
+[engine and content-convention decision](https://github.com/lolmaus/pomeranian/issues/8).
+That decision is a prerequisite to scaffolding the documentation package; choosing
+an engine with a viable path to later integrations does not require building them
+at bootstrap.
+
+## Agreed order
+
+| Order | Capability | Progress and work links | What the slice or checkpoint delivers | Necessary prerequisites |
+| --- | --- | --- | --- | --- |
+| 1 | Monorepo setup | Planning; [specification](https://github.com/lolmaus/pomeranian/issues/9) published; next: `/to-tickets` | Node/pnpm/Turbo, version locks, Oxfmt, shared Oxlint/TypeScript, preconfigured core and lib-essential packages without product behavior, checking/fixing scripts, package/export conventions, and development instructions. | None. |
+| 2 | Minimal documentation workspace | Planned; [engine decision](https://github.com/lolmaus/pomeranian/issues/8) | A chosen engine and a working docs package with known content folder/format and local preview/build. A starter page proves the authoring workflow. | Workspace; engine/content decision. |
+| 3 | First ad-hoc Element_PO behavior | Planned | One useful direct-use example has working actions/assertions, lazy DOM matching, tests, and documentation. Establish the React demo and relevant test harness within this slice. | Workspace and basic docs package; validated core contract sufficient for the example. |
+| 4 | Reusable classes and flexible targets | Planned | A developer-defined page object works with the agreed selector/locator/factory inputs, class defaults, instance overrides, and missing-target behavior, demonstrated and documented. | Basic object behavior and validated construction/typing contracts. |
+| 5 | Nested page objects | Planned | A component example with children demonstrates parent context, default locator scoping, and explicit escape from that scope. Ad-hoc trees work without Root. | Construction and target contracts. |
+| 6 | Page object groups | Planned | An example organizes components through targetless groups and group actions/assertions, with clear descendant locator context. | Shared tree/context contracts. |
+| 7 | Root and the application tree | Planned | A full-tree example exposes a developer-defined Root through a Playwright Test fixture, with typed access throughout the tree. | Groups and tree/context contracts. |
+| 8 | Custom fixture context | Planned | An example passes custom fixture values at Root creation and accesses their types and values from descendants. | Root/fixture integration and context typing. |
+| 9 | Collections and derivation | Planned | Narrowing/filtering examples preserve concrete subclass behavior, parent/context, and correctly scoped children. Include first/last/nth and the agreed custom helpers incrementally. | Construction, target, and nested-object contracts. Root is not required for ad-hoc derivation. |
+| 10 | Names and report diagnostics | Planned | Explicit names, the agreed inference strategy, meaningful derived names, and useful action/assertion diagnostics work in representative tests. Property inference remains subject to validation. | Relevant construction/tree/derivation behavior; simple names can arrive earlier. |
+| 11 | Broader delegated Playwright behavior | Planned | Add actions, reads, assertions, and object-returning operations as separate useful examples with their tests/docs. Document deliberate extensions. | Relevant base contracts; derivation for operations returning narrowed objects. |
+| 12 | Specialized essential HTML objects | Planned | Deliver an agreed inventory, such as image and native-select behavior, one useful object or behavior slice at a time. | Relevant base operations; each slice adds its demo fixture and tests/docs. |
+| 13 | Ant Design page-object library | Planned | Deliver an agreed component inventory incrementally, each with Ant Design demo coverage and documentation. | Relevant core/component capabilities; the whole essential HTML library is not a prerequisite. |
+| 14 | Integrated API reference | Planned | Add generated TypeDoc reference as a section of the existing site and verify the resulting API pages and navigation. | Basic docs engine and documented public APIs. This can move earlier independently. |
+| 15 | LLM-readable documentation | Planned | Add and verify the agreed llms.txt, llms-full.txt, and related outputs from the existing documentation. | Content conventions and the engine's chosen generation route. This can move earlier independently. |
+| 16 | Complete developer workflows and consumption checks | Planned | Verify isolated package consumption and full application/reusable-object workflows, expanding guides and reference examples alongside those checks. | The relevant implemented features; documentation already exists throughout. |
+| 17 | Website refinement and deployment readiness | Planned | Refine navigation/presentation as needed and prepare GitHub Pages/custom-domain configuration and DNS instructions. | The basic site and known content structure; does not schedule a package release. |
+
+## Revising the sequence
+
+- The author can move, split, or combine items later. Record the revised order and
+  rationale here and link any follow-up decisions from the affected planning tickets.
+  Check real prerequisites and update affected implementation tickets when needed.
+- Ad-hoc-first development is the current preferred path, not a release constraint.
+  The author can choose a tree-first sequence later.
+- Groups/Root and derivation can change places after their shared construction
+  and context contracts have been validated.
+- Basic naming and reporting can begin with the first useful objects, then grow
+  as nesting and derivation arrive. The dedicated item represents complete coverage.
+- Broader API coverage, specialized HTML objects, and Ant Design can be interleaved
+  around the component examples the author most wants to support.
+- The minimal documentation package is required before the first feature slice.
+  TypeDoc, LLM outputs, visual refinement, and deployment readiness are later,
+  independently placeable website features. Their agreed positions can change.
+- The listed feature areas can contain several vertical slices; `/to-tickets`
+  splits only the next author-selected area into independently verifiable behavior.
+  There are no separate implement-everything, test-everything, or document-everything
+  phases.
+
+## Design evidence before committing to core interfaces
+
+Construction, subclass initialization, nested declarations, automatic names,
+derivation, typed Root/fixture access, and Root-free ad-hoc use interact. Research
+and small TypeScript/browser prototypes should validate those interactions before
+locking the shared interface, even if the features are implemented incrementally.
+
+Specific questions include targetless-group locator inheritance, rebuilding
+derived children and developer-defined fields, property discovery after subclass
+initialization, target escape semantics, and the feasibility of subset guarantees.
+These are design investigations, not feature implementations or releases.
+
+When a fact affects ordering or the next item's specification, create a narrow
+research/prototype decision ticket. Verify requested toolchain behavior where
+needed, including pnpm version locking and the documentation integrations.
+
+## Workflow using the installed skills
+
+1. The roadmap's coverage, granularity, and preferred order are agreed through
+   `/wayfinder` with `/grilling` and `/domain-modeling`. Keep the decision map
+   separate from this living feature artifact. Closing a planning decision records
+   agreement; it does not mean the features are implemented or the order is frozen.
+2. Before building the next author-selected item, settle its API and testable
+   behavior through `/grill-with-docs`, targeted `/research`, or `/prototype`.
+   A larger unresolved area can have its own `/wayfinder` map.
+3. Use `/to-spec` to synthesize sufficiently settled work, then `/to-tickets` to
+   propose complete, verifiable slices and their real blocking dependencies.
+4. After the author approves that breakdown, use `/implement` per ticket, with
+   its TDD and code-review workflow. Select the roadmap portion using the
+   next-item rules above.
+5. Update the roadmap as features and findings develop. The author adds release
+   milestones later; feature completion alone does not authorize release publication.
