@@ -5,10 +5,12 @@ can express interactions in the application's own vocabulary. Its intended
 direction is Playwright Test; product behavior is being developed in the order
 approved by the project author.
 
-The workspace currently contains installation and formatting tooling, GitHub
-Actions formatting checks, and the empty `@pomeranian/core` and
-`@pomeranian/lib-essential` package identities. The libraries have no source
-files or public product entry points yet.
+The workspace provides reproducible installation, repository formatting, and
+shared linting and TypeScript checks for `@pomeranian/core` and its tooling.
+GitHub Actions requires formatting, linting, and typechecking before merging.
+Core contains only an empty source module; `@pomeranian/lib-essential` remains
+source-free until its check workflow is added. Neither library has product
+behavior or public product entry points yet.
 
 - [Contributing](CONTRIBUTING.md): prerequisites, installation, and available commands.
 - [Feature roadmap](ROADMAP.md): approved order, current progress, and work links.
@@ -21,6 +23,8 @@ files or public product entry points yet.
   procedure and executed checks for the initial workspace.
 - [Formatting verification](docs/verification/formatting.md): repository scope,
   failure/fix checks, and preservation of excluded inputs.
+- [Core-check verification](docs/verification/core-checks.md): shared configuration,
+  package/root checks, safe fixes, cache invalidation, and hosted failure checks.
 - [Continuous integration](CONTRIBUTING.md#continuous-integration): workflow
   triggers, dependency caching, required merge checks, and action updates.
 - [CI verification](docs/verification/ci.md): repeatable hosted acceptance

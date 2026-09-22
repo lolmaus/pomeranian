@@ -12,8 +12,9 @@ is used only to bootstrap pnpm in the instructions below.
 
 pnpm must be available before installing workspace dependencies. Its exact version
 is declared in root `package.json` under `devEngines.packageManager`, currently
-`11.27.1`; that field is the package-manager version authority. Turbo and Oxfmt are local
-workspace dependencies and need no global installation.
+`11.27.1`; that field is the package-manager version authority. Turbo, Oxfmt,
+Oxlint, and TypeScript are local workspace dependencies and need no global
+installation.
 
 ## Set up a checkout
 
@@ -68,16 +69,19 @@ together.
 
 Run these commands from the repository root:
 
-| Command                            | Purpose                                                      |
-| ---------------------------------- | ------------------------------------------------------------ |
-| `node --version`                   | Confirm the selected runtime.                                |
-| `pnpm --version`                   | Confirm the package manager selected by the bootstrap route. |
-| `pnpm install --frozen-lockfile`   | Install the committed dependency graph.                      |
-| `pnpm list --recursive --depth -1` | Discover workspace package identities.                       |
-| `pnpm exec turbo --version`        | Run the repository-local task runner.                        |
-| `pnpm exec turbo ls`               | Confirm Turbo discovers both library packages.               |
-| `pnpm run format`                  | Check repository formatting without editing files.           |
-| `pnpm run format:fix`              | Apply repository formatting fixes.                           |
+| Command                            | Purpose                                                         |
+| ---------------------------------- | --------------------------------------------------------------- |
+| `node --version`                   | Confirm the selected runtime.                                   |
+| `pnpm --version`                   | Confirm the package manager selected by the bootstrap route.    |
+| `pnpm install --frozen-lockfile`   | Install the committed dependency graph.                         |
+| `pnpm list --recursive --depth -1` | Discover workspace package identities.                          |
+| `pnpm exec turbo --version`        | Run the repository-local task runner.                           |
+| `pnpm exec turbo ls`               | Confirm Turbo discovers the library and configuration packages. |
+| `pnpm run format`                  | Check repository formatting without editing files.              |
+| `pnpm run format:fix`              | Apply repository formatting fixes.                              |
+| `pnpm run lint`                    | Lint every applicable package through Turbo.                    |
+| `pnpm run lint:fix`                | Apply supported safe lint fixes in every applicable package.    |
+| `pnpm run typecheck`               | Typecheck every applicable package without emitting files.      |
 
 `pnpm run format` checks repository formatting without changing files.
 `pnpm run format:fix` applies the same Oxfmt configuration, then a second check
@@ -108,10 +112,71 @@ too; package manifest sorting is disabled to preserve existing ordering.
 See [formatting verification](docs/verification/formatting.md) for the repeatable
 acceptance procedure and executed evidence, including excluded-file preservation.
 
-Turbo's initial configuration still declares no tasks. Both libraries remain
-source-free and acquire genuine lint/typecheck commands in
-[core checks #13](https://github.com/lolmaus/pomeranian/issues/13) and
+### Package linting and typechecking
+
+`@pomeranian/core` and `@pomeranian/oxlint-config` each provide real `lint`,
+`lint:fix`, and `typecheck` scripts. Root commands run those scripts through
+Turbo and propagate failures. To check or fix core alone, run:
+
+```bash
+pnpm --filter @pomeranian/core run lint
+pnpm --filter @pomeranian/core run lint:fix
+pnpm --filter @pomeranian/core run typecheck
+```
+
+Use `@pomeranian/oxlint-config` instead to select the shared lint configuration
+package, or run the same scripts from either package directory. Linting checks
+source and local configuration without changing files; warnings also fail the
+command. Fixing applies supported safe fixes, and violations it cannot fix still
+fail. Rerun lint after making any remaining corrections.
+
+The shared configurations expose explicit package entry points:
+
+- `@pomeranian/oxlint-config/base` supplies correctness checks, `prefer-const`,
+  and strict equality. Each consumer's `oxlint.config.mts` imports this entry
+  point and extends it through Oxlint's `defineConfig`.
+- `@pomeranian/typescript-config/base` supplies strict, non-emitting TypeScript
+  checks with ES2023 and NodeNext settings. Each consumer's `tsconfig.json`
+  extends this entry point and declares its own input globs.
+
+Declare these internal dependencies with `workspace:*`; use their exported
+identities instead of relative paths into another package. The TypeScript
+configuration package contains only JSON and needs no source-check or build
+placeholder. The Oxlint configuration package contains typed `.mts` source, so
+both linting and typechecking include it. The `.mts` extension identifies these
+tooling modules as ESM without deciding either library's distribution format.
+
+Core's `src/scaffold.ts` contains only `export {};`: it supplies an initial
+source module with no product declarations. Core automatically checks new source
+under `src/` and includes its root `.mts` configuration in typechecking. Both
+libraries retain empty public exports. `@pomeranian/lib-essential` remains
+source-free and gains its check workflow in
 [lib-essential checks #14](https://github.com/lolmaus/pomeranian/issues/14).
+
+Typecheck scripts explicitly run `tsc --noEmit --project tsconfig.json`, retaining
+the no-output guarantee even if shared configuration resolution fails. These
+checks neither build product JavaScript nor select a product publishing format.
+
+### Check caching
+
+Turbo caches successful lint and typecheck results and their logs; neither task
+has generated outputs. Its default package inputs account for maintained source,
+local configuration, and manifests. Root [turbo.json](turbo.json) additionally
+hashes the shared configuration packages' top-level `.json` and applicable
+`.mts` files, plus `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
+`pnpm-lock.yaml`. Changes to those global inputs invalidate cached checks across
+the workspace, including dependency changes recorded in the lockfile.
+
+When adding shared configuration helpers, directories, or file extensions,
+extend those cache-input globs to cover them. Keep generated artifacts and cache
+directories out of the globs. `lint:fix` disables caching and executes on every
+invocation against current files; repository formatting also continues to run
+directly outside Turbo. Turbo's task cache is separate from CI's pnpm dependency
+store cache, and no remote task cache is configured.
+
+See [core-check verification](docs/verification/core-checks.md) for the repeatable
+CLI acceptance procedure and local and hosted evidence, including shared-setting
+diagnostics, export boundaries, fixes, and cache invalidation.
 
 ## Continuous integration
 
@@ -131,10 +196,12 @@ downloads, with keys sensitive to dependency metadata and the runner platform.
 Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
 the cache does not replace installation or relax lockfile checks.
 
-The job currently runs `pnpm run format` over the same repository-wide scope as
-the local command, without applying fixes. Installation or formatting failure
-fails the job. Core and lib-essential lint/type checks will extend this same
-required job through #13 and #14 as those commands become available.
+The job runs `pnpm run format`, `pnpm run lint`, and `pnpm run typecheck`, using
+the same commands and scope as local verification without applying fixes. Core
+and the typed Oxlint configuration package participate in linting and
+typechecking. Installation, formatting, lint, or typecheck failure fails the
+same required job. #14 adds lib-essential to these aggregates when its checks
+become available.
 
 Merging into `main` requires a successful **Workspace checks** result from
 GitHub Actions, and the branch must be up to date with `main`. This applies to
