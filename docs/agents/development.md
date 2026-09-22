@@ -49,8 +49,13 @@ an isolated working copy, including intentional version mismatches and frozen
 installation checks. Record evidence and remove probes. Any custom executable
 logic requires focused automated tests.
 
-[Formatting #12](https://github.com/lolmaus/pomeranian/issues/12),
-[core checks #13](https://github.com/lolmaus/pomeranian/issues/13), and
+Run `pnpm run format` before completing a change; use `pnpm run format:fix`
+to correct formatting and review the resulting diff. Follow the
+[documented scope](../../CONTRIBUTING.md#formatting-scope) and
+[formatting acceptance procedure](../verification/formatting.md) when changing
+the formatter or its exclusions.
+
+[Core checks #13](https://github.com/lolmaus/pomeranian/issues/13) and
 [lib-essential checks #14](https://github.com/lolmaus/pomeranian/issues/14) add
 their respective tooling and source inputs. Run the commands actually available
 at the implemented stage; add source inputs together with genuine lint/typecheck

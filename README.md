@@ -5,7 +5,7 @@ can express interactions in the application's own vocabulary. Its intended
 direction is Playwright Test; product behavior is being developed in the order
 approved by the project author.
 
-The workspace currently contains installation tooling and the empty
+The workspace currently contains installation and formatting tooling and the empty
 `@pomeranian/core` and `@pomeranian/lib-essential` package identities. The libraries
 have no source files or public product entry points yet.
 
@@ -18,5 +18,7 @@ have no source files or public product entry points yet.
 - [Issue tracker conventions](docs/agents/issue-tracker.md): GitHub issues and specs.
 - [Bootstrap verification](docs/verification/bootstrap.md): repeatable acceptance
   procedure and executed checks for the initial workspace.
+- [Formatting verification](docs/verification/formatting.md): repository scope,
+  failure/fix checks, and preservation of excluded inputs.
 
 Package publication and release timing remain under the author's control.

@@ -1,6 +1,10 @@
 {
   "name": "pomeranian",
   "private": true,
+  "scripts": {
+    "format": "oxfmt --check --disable-nested-config .",
+    "format:fix": "oxfmt --write --disable-nested-config ."
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -9,6 +13,7 @@
     }
   },
   "devDependencies": {
+    "oxfmt": "0.70.0",
     "turbo": "2.11.2"
   }
 }

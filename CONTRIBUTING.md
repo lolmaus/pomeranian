@@ -13,8 +13,8 @@ is used only to bootstrap pnpm in the instructions below.
 
 pnpm must be available before installing workspace dependencies. Its exact version
 is declared in root `package.json` under `devEngines.packageManager`, currently
-`11.27.1`; that field is the package-manager version authority. Turbo is a local
-workspace dependency, currently `2.11.2`, and needs no global installation.
+`11.27.1`; that field is the package-manager version authority. Turbo and Oxfmt are local
+workspace dependencies and need no global installation.
 
 ## Set up a checkout
 
@@ -77,12 +77,42 @@ Run these commands from the repository root:
 | `pnpm list --recursive --depth -1` | Discover workspace package identities.                       |
 | `pnpm exec turbo --version`        | Run the repository-local task runner.                        |
 | `pnpm exec turbo ls`               | Confirm Turbo discovers both library packages.               |
+| `pnpm run format`                  | Check repository formatting without editing files.           |
+| `pnpm run format:fix`              | Apply repository formatting fixes.                           |
 
-Turbo's initial configuration declares no tasks. The bootstrap has no source
-checks or test suite. The source-free library packages acquire source inputs and
-genuine checks in their approved follow-up tickets:
-[formatting #12](https://github.com/lolmaus/pomeranian/issues/12),
-[core checks #13](https://github.com/lolmaus/pomeranian/issues/13), and
+`pnpm run format` checks repository formatting without changing files.
+`pnpm run format:fix` applies the same Oxfmt configuration, then a second check
+should pass. Both commands run directly from the root, outside Turbo; every fix
+invocation reads the current files. Oxfmt is pinned exactly in `package.json`.
+
+### Formatting scope
+
+The root [.oxfmtrc.json](.oxfmtrc.json) applies to supported files throughout the
+repository, including new source under `packages/` and `apps/`, hidden maintained
+configuration, and repository-owned Markdown: planning and research in `docs/`,
+`ROADMAP.md`, domain documentation, `AGENTS.md`, and contributor guidance.
+The commands disable nested formatter configurations so one root policy applies.
+
+Configured exclusions preserve installed `.agents/skills/` bundles and their
+`skills-lock.json`, root `.scratch/` planning and disposable verification material,
+and `pnpm-lock.yaml`. Dependency directories (`node_modules/`, `.pnpm-store/`),
+caches (`.turbo/`, `.cache/`), output (`dist/`, `build/`, `coverage/`), test artifacts
+(`test-results/`, `playwright-report/`), and `*.tsbuildinfo` are excluded at any
+depth. Oxfmt also respects Git ignore files and its built-in exclusions, including
+VCS directories and lockfiles. Unsupported file types are left alone.
+
+Keep disposable probes in `.scratch/` or an external temporary directory. When a
+new tool adds generated paths, update its Git and formatter exclusions together.
+Keep maintained documentation outside excluded directories. Oxfmt formats
+supported fenced code in Markdown, so review documentation diffs too; package
+manifest sorting is disabled to preserve existing ordering.
+
+See [formatting verification](docs/verification/formatting.md) for the repeatable
+acceptance procedure and executed evidence, including excluded-file preservation.
+
+Turbo's initial configuration still declares no tasks. Both libraries remain
+source-free and acquire genuine lint/typecheck commands in
+[core checks #13](https://github.com/lolmaus/pomeranian/issues/13) and
 [lib-essential checks #14](https://github.com/lolmaus/pomeranian/issues/14).
 
 ## Workspace layout and adding packages
