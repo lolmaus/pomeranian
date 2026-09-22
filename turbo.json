@@ -1,4 +1,23 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
-  "tasks": {}
+  "globalDependencies": [
+    ".nvmrc",
+    ".gitignore",
+    "pnpm-workspace.yaml",
+    "pnpm-lock.yaml",
+    "packages/oxlint-config/*.json",
+    "packages/oxlint-config/*.mts",
+    "packages/typescript-config/*.json"
+  ],
+  "tasks": {
+    "lint": {
+      "outputs": []
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "typecheck": {
+      "outputs": []
+    }
+  }
 }

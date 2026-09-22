@@ -1,0 +1,4 @@
+{
+  "extends": "@pomeranian/typescript-config/base",
+  "include": ["src/**/*", "*.mts"]
+}

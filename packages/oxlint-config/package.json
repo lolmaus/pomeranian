@@ -1,15 +1,18 @@
 {
-  "name": "@pomeranian/core",
+  "name": "@pomeranian/oxlint-config",
   "private": true,
-  "exports": {},
+  "exports": {
+    "./base": "./base.mts"
+  },
   "scripts": {
     "lint": "oxlint --config oxlint.config.mts . --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts . --max-warnings 0 --fix",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
-  "devDependencies": {
-    "@pomeranian/oxlint-config": "workspace:*",
-    "@pomeranian/typescript-config": "workspace:*",
+  "dependencies": {
     "oxlint": "1.85.0"
+  },
+  "devDependencies": {
+    "@pomeranian/typescript-config": "workspace:*"
   }
 }

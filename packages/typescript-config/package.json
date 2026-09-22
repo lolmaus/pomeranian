@@ -1,0 +1,7 @@
+{
+  "name": "@pomeranian/typescript-config",
+  "private": true,
+  "exports": {
+    "./base": "./base.json"
+  }
+}

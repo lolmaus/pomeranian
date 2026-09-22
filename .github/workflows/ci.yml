@@ -46,6 +46,12 @@ jobs:
       - name: Check formatting
         run: pnpm run format
 
+      - name: Lint workspace packages
+        run: pnpm run lint
+
+      - name: Typecheck workspace packages
+        run: pnpm run typecheck
+
       - name: Verify maintained files are unchanged
         if: ${{ !cancelled() }}
         run: git diff --exit-code HEAD
