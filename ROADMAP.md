@@ -25,6 +25,9 @@ and milestone placement are deliberately undecided at this stage.
 - Every implemented behavior includes its documentation and meaningful tests.
   Every offered page object is covered in the React demo app and Playwright E2E
   suite. TDD and colocated unit tests apply throughout.
+  The React demo is an E2E test fixture, with no public deployment or documentation
+  links to it. Its app code contains no Playwright logic; `data-test` HTML
+  attributes provide hooks for the separate test suite.
 
 ## Finding and recording the next item
 
@@ -61,8 +64,10 @@ with the repository's shared work so subsequent checkouts receive the handoff.
    as agreed when specifying this item.
 2. Choose the documentation engine, then create the minimum working `apps/docs/`
    package. Its content folder and document format must be known before feature
-   documentation begins; local preview/build must work. Styling, deployment,
-   complete TypeDoc integration, and LLM outputs can be later work.
+   documentation begins; local preview/build must work. The initial slice only
+   needs to let the next feature add documentation. Search, TypeDoc generation,
+   LLM outputs, styling, and deployment are later work. Per-branch documentation
+   versioning is out of scope.
 3. Build features as vertical slices. Each slice delivers a useful behavior with
    its implementation, relevant unit/type/E2E tests, a demo example where needed,
    and documentation in the established site content folder. The first slice
@@ -71,16 +76,19 @@ with the repository's shared work so subsequent checkouts receive the handoff.
 
 The [engine research](https://github.com/lolmaus/pomeranian/issues/7) supports the
 [engine and content-convention decision](https://github.com/lolmaus/pomeranian/issues/8).
-That decision is a prerequisite to scaffolding the documentation package; choosing
-an engine with a viable path to later integrations does not require building them
-at bootstrap.
+The author has finalized VitePress with authored content in root `docs/site/`
+and configuration in `apps/docs/`; see the [decision record](docs/research/docs-engine-requirements.md).
+The site has one current English documentation set. Multi-version publishing,
+a version switcher, and branch-build orchestration are out of scope rather than
+deferred work. A viable path to the remaining later integrations does not require
+building them at bootstrap.
 
 ## Agreed order
 
 | Order | Capability | Progress and work links | What the slice or checkpoint delivers | Necessary prerequisites |
 | --- | --- | --- | --- | --- |
 | 1 | Monorepo setup | Planning; [specification](https://github.com/lolmaus/pomeranian/issues/9) published; next: `/to-tickets` | Node/pnpm/Turbo, version locks, Oxfmt, shared Oxlint/TypeScript, preconfigured core and lib-essential packages without product behavior, checking/fixing scripts, package/export conventions, and development instructions. | None. |
-| 2 | Minimal documentation workspace | Planned; [engine decision](https://github.com/lolmaus/pomeranian/issues/8) | A chosen engine and a working docs package with known content folder/format and local preview/build. A starter page proves the authoring workflow. | Workspace; engine/content decision. |
+| 2 | Minimal documentation workspace | Planning; engine choice finalized: **VitePress**, root `docs/site/` content, and `apps/docs/` configuration. [Final decision and scope](docs/research/docs-engine-requirements.md); [decision ticket](https://github.com/lolmaus/pomeranian/issues/8). Initial slice: basic Markdown, default theme, starter page, local development/build/preview; specification and ticket breakdown remain to be prepared. One current documentation set; per-branch versioning and its switcher are out of scope. Search, API/LLM generation, refinement, and deployment remain later work. [Prototype evidence](docs/research/docs-engine-prototype-comparison.md) includes tested resolver adjustments; browser behavior remains unverified. [Future integration feasibility](docs/research/docs-engine-future-feasibility.md) retains historical versioning research, not an active commitment. | A working VitePress docs package with the agreed content folder/format and local preview/build. A starter page proves the authoring workflow. | Workspace; engine/content decision (settled). |
 | 3 | First ad-hoc Element_PO behavior | Planned | One useful direct-use example has working actions/assertions, lazy DOM matching, tests, and documentation. Establish the React demo and relevant test harness within this slice. | Workspace and basic docs package; validated core contract sufficient for the example. |
 | 4 | Reusable classes and flexible targets | Planned | A developer-defined page object works with the agreed selector/locator/factory inputs, class defaults, instance overrides, and missing-target behavior, demonstrated and documented. | Basic object behavior and validated construction/typing contracts. |
 | 5 | Nested page objects | Planned | A component example with children demonstrates parent context, default locator scoping, and explicit escape from that scope. Ad-hoc trees work without Root. | Construction and target contracts. |
