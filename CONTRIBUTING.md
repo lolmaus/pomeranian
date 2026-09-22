@@ -113,6 +113,44 @@ source-free and acquire genuine lint/typecheck commands in
 [core checks #13](https://github.com/lolmaus/pomeranian/issues/13) and
 [lib-essential checks #14](https://github.com/lolmaus/pomeranian/issues/14).
 
+## Continuous integration
+
+The GitHub Actions workflow **CI** runs on every branch push and every pull
+request, including drafts and documentation-only changes. Push runs check the
+branch tip; pull-request runs check GitHub's proposed merge result. Superseded
+runs are canceled separately for each event and branch or pull request, so a
+push run and its corresponding pull-request run do not cancel one another.
+Tag pushes do not trigger this workflow.
+
+One required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
+read-only repository permissions. It selects Node from `.nvmrc` and pnpm from
+root `package.json`'s `devEngines.packageManager`, preserving the same version
+requirements used locally. Each job bootstraps the pinned pnpm executable and
+sets up dependencies once. An action-managed pnpm store cache reuses package
+downloads, with keys sensitive to dependency metadata and the runner platform.
+Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
+the cache does not replace installation or relax lockfile checks.
+
+The job currently runs `pnpm run format` over the same repository-wide scope as
+the local command, without applying fixes. Installation or formatting failure
+fails the job. Core and lib-essential lint/type checks will extend this same
+required job through #13 and #14 as those commands become available.
+
+Merging into `main` requires a successful **Workspace checks** result from
+GitHub Actions, and the branch must be up to date with `main`. This applies to
+all authors, including the owner and administrators, with no bypass actors.
+If `main` changes after a successful run, update the branch and obtain a new
+passing result before merging.
+
+Actions are pinned to full commit SHAs with release-version annotations.
+Dependabot proposes GitHub Actions updates weekly, grouping minor and patch
+updates while keeping major upgrades in separate PRs. Review these PRs before
+merging; automatic merging and package dependency updates are not enabled by
+this setup.
+
+See [CI verification](docs/verification/ci.md) for the repeatable hosted
+acceptance procedure and verification record.
+
 ## Workspace layout and adding packages
 
 pnpm discovers `packages/*` and `apps/*`. The current library identities live at
