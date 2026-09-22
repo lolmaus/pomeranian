@@ -28,4 +28,4 @@ files or public product entry points yet.
 
 Package publication and release timing remain under the author's control.
 
--    CI acceptance probe.
+- CI acceptance probe.
