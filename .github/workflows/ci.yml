@@ -40,9 +40,6 @@ jobs:
           node --version
           pnpm --version
 
-      - name: Acceptance delay (temporary)
-        run: sleep 120
-
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
 
