@@ -15,12 +15,12 @@ Evidence here is maintainer documentation and inspection of published package ar
 
 ## Versions and output models
 
-| Question | VitePress | Astro + Starlight |
-| --- | --- | --- |
-| Candidate plugin | `vitepress-plugin-llms` 1.14.0. | `starlight-llms-txt` 0.12.0. |
+| Question               | VitePress                                                                                                                                         | Astro + Starlight                                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Candidate plugin       | `vitepress-plugin-llms` 1.14.0.                                                                                                                   | `starlight-llms-txt` 0.12.0.                                                                                                                           |
 | Declared compatibility | Node `>=18`; no framework peer constraint. Its development dependency is VitePress 1.4.1. This is encouraging for the fixture's 1.6.4, not proof. | Astro `^7.0.0`, Starlight `>=0.41.0`; fixture versions 7.3.3/0.42.2 satisfy both. Development dependencies are Astro `^7.3.2` and Starlight `^0.42.0`. |
-| Principal outputs | `llms.txt`, `llms-full.txt`, and per-page `.md` files; each can be enabled independently. | `llms.txt`, `llms-full.txt`, `llms-small.txt`, and configured custom sets. No automatic per-page endpoint is registered. |
-| Source of content | Markdown source captured from Vite transforms, then separately processed into Markdown. | Entries from Astro's `docs` collection; by default their content is rendered to HTML and converted back to Markdown. |
+| Principal outputs      | `llms.txt`, `llms-full.txt`, and per-page `.md` files; each can be enabled independently.                                                         | `llms.txt`, `llms-full.txt`, `llms-small.txt`, and configured custom sets. No automatic per-page endpoint is registered.                               |
+| Source of content      | Markdown source captured from Vite transforms, then separately processed into Markdown.                                                           | Entries from Astro's `docs` collection; by default their content is rendered to HTML and converted back to Markdown.                                   |
 
 Compatibility evidence: [VitePress plugin package](https://github.com/okineadev/vitepress-plugin-llms/blob/0f3bbfa1f08ca28c8244b7e147368e5e8a8c34d9/package.json), [Starlight plugin package](https://github.com/delucis/starlight-llms-txt/blob/776a90165beecf779542d52b67c8290af728a150/packages/starlight-llms-txt/package.json). Output evidence: [VitePress options](https://github.com/okineadev/vitepress-plugin-llms/blob/0f3bbfa1f08ca28c8244b7e147368e5e8a8c34d9/src/types.d.ts), [Starlight route registration](https://github.com/delucis/starlight-llms-txt/blob/776a90165beecf779542d52b67c8290af728a150/packages/starlight-llms-txt/index.ts).
 

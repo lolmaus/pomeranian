@@ -14,14 +14,14 @@ release supports `devEngines.packageManager` and an npm bootstrap. Turbo 2.11
 introduced native support for that field. Node 24.21.0 satisfies the published
 Node requirements of the remaining required tools.
 
-| Tool | Exact version assessed | Status in this slice |
-| --- | --- | --- |
-| Node | 24.21.0 | Selected in `.nvmrc`; installed and exercised. |
-| pnpm | 11.27.1 | Selected in `devEngines.packageManager`; bootstrapped and exercised. |
-| Turbo | 2.11.2 | Installed from the lockfile; workspace discovery exercised. |
-| Oxfmt | 0.70.0 | Compatibility candidate for #12; its current pre-1.0 release line is allowed. |
-| Oxlint | 1.85.0 | Compatibility candidate for #13. |
-| TypeScript | 7.0.2 | Compatibility candidate for #13. |
+| Tool       | Exact version assessed | Status in this slice                                                          |
+| ---------- | ---------------------- | ----------------------------------------------------------------------------- |
+| Node       | 24.21.0                | Selected in `.nvmrc`; installed and exercised.                                |
+| pnpm       | 11.27.1                | Selected in `devEngines.packageManager`; bootstrapped and exercised.          |
+| Turbo      | 2.11.2                 | Installed from the lockfile; workspace discovery exercised.                   |
+| Oxfmt      | 0.70.0                 | Compatibility candidate for #12; its current pre-1.0 release line is allowed. |
+| Oxlint     | 1.85.0                 | Compatibility candidate for #13.                                              |
+| TypeScript | 7.0.2                  | Compatibility candidate for #13.                                              |
 
 The later tickets must pin and acceptance-test their actual tool versions. This
 assessment does not claim that formatting, linting, or compilation already works
@@ -154,19 +154,19 @@ npm 11.19.0. The npm bootstrap installed pnpm 11.27.1 into that Node prefix. fnm
 `--fnm-dir`/`--using` options and temporary store/cache paths isolated verification
 from the author's existing Node and pnpm installations.
 
-| Check executed | Observed outcome |
-| --- | --- |
-| Before implementation: `pnpm install --frozen-lockfile` | Failed with `ERR_PNPM_NO_LOCKFILE`; no executable workspace existed. |
-| `fnm install --fnm-dir /tmp/pomeranian-bootstrap-fnm --progress never`, then initialized fnm and ran `fnm use` in the copied workspace | Selected `.nvmrc` and reported `Using Node v24.21.0`. |
-| `npm install --global "pnpm@$(node --print "require('./package.json').devEngines.packageManager.version")"` under the selected Node | Installed pnpm 11.27.1 successfully; no repository dependency install was needed to bootstrap it. |
-| `node --version`, `npm --version`, `pnpm --version`, `pnpm config get pmOnFail` | `v24.21.0`, `11.19.0`, `11.27.1`, `error`. |
-| Frozen install in an isolated workspace with an empty store, followed by `sha256sum --check` | Exit 0; all five dependency metadata files unchanged. |
-| `pnpm list --recursive --depth -1`; `pnpm exec turbo --version`; `pnpm exec turbo ls` | Root plus both private libraries; Turbo 2.11.2; both libraries discovered. No legacy package-manager field or disabled Turbo check was required. |
-| Temporary pnpm pin `11.27.0`, with both environment overrides unset: version query and frozen install | Both exited 1: `[ERROR] This project is configured to use 11.27.0 of pnpm. Your current pnpm is v11.27.1`. |
-| Each lowercase/uppercase environment override and the CLI override set to `ignore`, used only for a version query | Each exited 0 and reported 11.27.1, confirming the overrides bypass the default check. |
-| Temporary Turbo manifest version `2.11.1`, with lockfile still at `2.11.2` | Frozen install exited 1 with `ERR_PNPM_OUTDATED_LOCKFILE`; lockfile checksum stayed unchanged. |
-| Restored manifest, then repeated version queries, offline frozen install, pnpm/Turbo discovery, and metadata checksums | All exited 0; both source-free library identities remained present and all metadata matched the original copy. |
-| `git check-ignore` for dependency, cache, output, TypeScript build-info, and scratch paths; inspection of `packages/`; `git diff --check` | All intended paths ignored, both libraries contain only manifests, and no whitespace errors found. |
+| Check executed                                                                                                                            | Observed outcome                                                                                                                                 |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Before implementation: `pnpm install --frozen-lockfile`                                                                                   | Failed with `ERR_PNPM_NO_LOCKFILE`; no executable workspace existed.                                                                             |
+| `fnm install --fnm-dir /tmp/pomeranian-bootstrap-fnm --progress never`, then initialized fnm and ran `fnm use` in the copied workspace    | Selected `.nvmrc` and reported `Using Node v24.21.0`.                                                                                            |
+| `npm install --global "pnpm@$(node --print "require('./package.json').devEngines.packageManager.version")"` under the selected Node       | Installed pnpm 11.27.1 successfully; no repository dependency install was needed to bootstrap it.                                                |
+| `node --version`, `npm --version`, `pnpm --version`, `pnpm config get pmOnFail`                                                           | `v24.21.0`, `11.19.0`, `11.27.1`, `error`.                                                                                                       |
+| Frozen install in an isolated workspace with an empty store, followed by `sha256sum --check`                                              | Exit 0; all five dependency metadata files unchanged.                                                                                            |
+| `pnpm list --recursive --depth -1`; `pnpm exec turbo --version`; `pnpm exec turbo ls`                                                     | Root plus both private libraries; Turbo 2.11.2; both libraries discovered. No legacy package-manager field or disabled Turbo check was required. |
+| Temporary pnpm pin `11.27.0`, with both environment overrides unset: version query and frozen install                                     | Both exited 1: `[ERROR] This project is configured to use 11.27.0 of pnpm. Your current pnpm is v11.27.1`.                                       |
+| Each lowercase/uppercase environment override and the CLI override set to `ignore`, used only for a version query                         | Each exited 0 and reported 11.27.1, confirming the overrides bypass the default check.                                                           |
+| Temporary Turbo manifest version `2.11.1`, with lockfile still at `2.11.2`                                                                | Frozen install exited 1 with `ERR_PNPM_OUTDATED_LOCKFILE`; lockfile checksum stayed unchanged.                                                   |
+| Restored manifest, then repeated version queries, offline frozen install, pnpm/Turbo discovery, and metadata checksums                    | All exited 0; both source-free library identities remained present and all metadata matched the original copy.                                   |
+| `git check-ignore` for dependency, cache, output, TypeScript build-info, and scratch paths; inspection of `packages/`; `git diff --check` | All intended paths ignored, both libraries contain only manifests, and no whitespace errors found.                                               |
 
 No project executable logic, typed source, unit suite, formatting, or lint commands
 exist at this stage. The CLI acceptance procedure is the applicable verification;

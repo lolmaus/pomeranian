@@ -1,8 +1,7 @@
 # Contributing to Pomeranian
 
-An **author** maintains Pomeranian; a **developer** consumes it. Read the
-[domain context](CONTEXT.md), [roadmap](ROADMAP.md), and
-[development guidance](docs/agents/development.md) before changing the repository.
+See the [roadmap](ROADMAP.md) for planned work and the
+[domain context](CONTEXT.md) for project terminology.
 
 ## Prerequisites
 
@@ -13,8 +12,8 @@ is used only to bootstrap pnpm in the instructions below.
 
 pnpm must be available before installing workspace dependencies. Its exact version
 is declared in root `package.json` under `devEngines.packageManager`, currently
-`11.27.1`; that field is the package-manager version authority. Turbo is a local
-workspace dependency, currently `2.11.2`, and needs no global installation.
+`11.27.1`; that field is the package-manager version authority. Turbo and Oxfmt are local
+workspace dependencies and need no global installation.
 
 ## Set up a checkout
 
@@ -69,20 +68,49 @@ together.
 
 Run these commands from the repository root:
 
-| Command | Purpose |
-| --- | --- |
-| `node --version` | Confirm the selected runtime. |
-| `pnpm --version` | Confirm the package manager selected by the bootstrap route. |
-| `pnpm install --frozen-lockfile` | Install the committed dependency graph. |
-| `pnpm list --recursive --depth -1` | Discover workspace package identities. |
-| `pnpm exec turbo --version` | Run the repository-local task runner. |
-| `pnpm exec turbo ls` | Confirm Turbo discovers both library packages. |
+| Command                            | Purpose                                                      |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `node --version`                   | Confirm the selected runtime.                                |
+| `pnpm --version`                   | Confirm the package manager selected by the bootstrap route. |
+| `pnpm install --frozen-lockfile`   | Install the committed dependency graph.                      |
+| `pnpm list --recursive --depth -1` | Discover workspace package identities.                       |
+| `pnpm exec turbo --version`        | Run the repository-local task runner.                        |
+| `pnpm exec turbo ls`               | Confirm Turbo discovers both library packages.               |
+| `pnpm run format`                  | Check repository formatting without editing files.           |
+| `pnpm run format:fix`              | Apply repository formatting fixes.                           |
 
-Turbo's initial configuration declares no tasks. The bootstrap has no source
-checks or test suite. The source-free library packages acquire source inputs and
-genuine checks in their approved follow-up tickets:
-[formatting #12](https://github.com/lolmaus/pomeranian/issues/12),
-[core checks #13](https://github.com/lolmaus/pomeranian/issues/13), and
+`pnpm run format` checks repository formatting without changing files.
+`pnpm run format:fix` applies the same Oxfmt configuration, then a second check
+should pass. Both commands run directly from the root, outside Turbo; every fix
+invocation reads the current files. Oxfmt is pinned exactly in `package.json`.
+
+### Formatting scope
+
+The root [.oxfmtrc.json](.oxfmtrc.json) applies to supported files throughout the
+repository, including new source under `packages/` and `apps/`, hidden maintained
+configuration, and repository-owned Markdown: planning and research in `docs/`,
+`ROADMAP.md`, domain documentation, `AGENTS.md`, and contributor guidance.
+The commands disable nested formatter configurations so one root policy applies.
+
+Configured exclusions preserve installed `.agents/skills/` bundles and their
+`skills-lock.json`, root `.scratch/` planning and disposable verification material,
+and `pnpm-lock.yaml`. Dependency directories (`node_modules/`, `.pnpm-store/`),
+caches (`.turbo/`, `.cache/`), output (`dist/`, `build/`, `coverage/`), test artifacts
+(`test-results/`, `playwright-report/`), and `*.tsbuildinfo` are excluded at any
+depth. Oxfmt also respects Git ignore files and its built-in exclusions, including
+VCS directories and lockfiles. Unsupported file types are left alone.
+
+Store disposable verification files in `.scratch/` or an external temporary
+directory. Add Git and formatter exclusions when introducing generated output.
+Oxfmt formats supported fenced code in Markdown, so review documentation diffs
+too; package manifest sorting is disabled to preserve existing ordering.
+
+See [formatting verification](docs/verification/formatting.md) for the repeatable
+acceptance procedure and executed evidence, including excluded-file preservation.
+
+Turbo's initial configuration still declares no tasks. Both libraries remain
+source-free and acquire genuine lint/typecheck commands in
+[core checks #13](https://github.com/lolmaus/pomeranian/issues/13) and
 [lib-essential checks #14](https://github.com/lolmaus/pomeranian/issues/14).
 
 ## Workspace layout and adding packages
@@ -91,20 +119,21 @@ pnpm discovers `packages/*` and `apps/*`. The current library identities live at
 `packages/core` and `packages/lib-essential`; applications arrive with their
 roadmap items.
 
-Add a workspace package only within an approved slice. Create a manifest under
-the appropriate directory with a unique package name and `private: true` for
-internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;
+Create a manifest with a unique package name in the appropriate directory. Use
+`private: true` for internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;
 an empty scaffold uses `{}`, while each advertised entry point must resolve to a
 real supported module. Declare internal dependencies with `workspace:*` and
 refresh the lockfile using `pnpm install`. Confirm discovery with
 `pnpm list --recursive --depth -1`, then rerun the frozen install.
 
-Follow [development guidance](docs/agents/development.md) for source conventions,
-shared configuration consumption, tests, and documentation. Source-bearing
-packages require their applicable checks; the approved follow-up tickets
-establish those shared configurations and commands before product development.
+Use explicit source modules without `index.ts` barrel files, and export every
+type defined by project code. Consume shared configurations by package identity
+and exported entry point. Packages with source need applicable lint and typecheck
+commands.
 
-Keep dependencies, generated output, caches, and disposable verification files
-outside maintained inputs. Preserve installed skills and existing planning
-material. Updating a workspace package does not authorize publication or choose
-its eventual distribution format.
+## Tests and documentation
+
+Include meaningful tests and documentation with behavior changes in the same PR.
+Use TDD; prefer colocated `node:test` and `node:assert` unit tests where suitable.
+Each offered page object needs a React demo example and Playwright E2E coverage.
+The first behavior slice will establish the demo and E2E infrastructure.

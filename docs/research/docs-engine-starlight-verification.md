@@ -24,16 +24,16 @@ The edit-source URL worked after configuring its base for the application direct
 
 The registry was checked before selecting versions. Starlight 0.42.2 declares Astro `^7.2.10` and optional Markdown Remark `^7.3.0` peers; Astro 7.3.3 declares Node `>=22.12.0`. The selected versions are compatible stable releases under the repository's exact Node/pnpm environment, rather than an assumption based on older Astro 5 research. Sources: [published Starlight metadata](https://registry.npmjs.org/@astrojs/starlight/0.42.2), [published Astro metadata](https://registry.npmjs.org/astro/7.3.3).
 
-| Component | Tested version |
-| --- | --- |
-| Node | 24.21.0 |
-| pnpm | 11.27.1 |
-| Astro | 7.3.3 |
-| Starlight | 0.42.2 |
-| Markdown Remark | 7.3.1 |
-| Sharp | 0.35.4 |
-| Vite, resolved transitively | 8.3.0 |
-| esbuild, resolved transitively | 0.28.2 |
+| Component                      | Tested version |
+| ------------------------------ | -------------- |
+| Node                           | 24.21.0        |
+| pnpm                           | 11.27.1        |
+| Astro                          | 7.3.3          |
+| Starlight                      | 0.42.2         |
+| Markdown Remark                | 7.3.1          |
+| Sharp                          | 0.35.4         |
+| Vite, resolved transitively    | 8.3.0          |
+| esbuild, resolved transitively | 0.28.2         |
 
 Everything ran under `/tmp/pomeranian-starlight-verify-tcrdtfsx`. No real application package or repository dependency/configuration was created or changed. The temporary workspace explicitly allows esbuild and Sharp build scripts; installation visibly ran esbuild's postinstall, while the installed Sharp native package loaded successfully. Network/native execution used approved escalation. The install completed in 9.6 seconds; this is an environment observation, not a performance comparison with VitePress.
 
@@ -44,28 +44,28 @@ The workspace contains `apps/*`. `apps/docs/package.json` has exact dependencies
 `apps/docs/astro.config.mjs`:
 
 ```js
-import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
+import { defineConfig } from "astro/config";
+import starlight from "@astrojs/starlight";
 
 export default defineConfig({
   integrations: [
     starlight({
-      title: 'Location verification',
+      title: "Location verification",
       sidebar: [
         {
-          label: 'Guide',
+          label: "Guide",
           items: [
-            { label: 'Guide start', link: '/guide/start/' },
-            { label: 'Nested next', link: '/guide/nested/next/' }
-          ]
-        }
+            { label: "Guide start", link: "/guide/start/" },
+            { label: "Nested next", link: "/guide/nested/next/" },
+          ],
+        },
       ],
       editLink: {
-        baseUrl: 'https://github.com/example/fixture/edit/main/apps/docs/'
+        baseUrl: "https://github.com/example/fixture/edit/main/apps/docs/",
       },
-      lastUpdated: true
-    })
-  ]
+      lastUpdated: true,
+    }),
+  ],
 });
 ```
 
@@ -74,17 +74,17 @@ This final explicit sidebar was built and its emitted links were followed throug
 `apps/docs/src/content.config.ts`:
 
 ```ts
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { i18nLoader } from '@astrojs/starlight/loaders';
-import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { i18nLoader } from "@astrojs/starlight/loaders";
+import { docsSchema, i18nSchema } from "@astrojs/starlight/schema";
 
 export const collections = {
   docs: defineCollection({
-    loader: glob({ base: '../../docs/site', pattern: '**/*.md' }),
-    schema: docsSchema()
+    loader: glob({ base: "../../docs/site", pattern: "**/*.md" }),
+    schema: docsSchema(),
   }),
-  i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() })
+  i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
 };
 ```
 
@@ -114,30 +114,30 @@ The first attempt used an obsolete sidebar shape with `label` alongside `autogen
 
 The next production build rendered all pages, then failed while optimizing the SVG with `MissingSharp`. Adding direct `sharp: '0.35.4'` to the app fixed this; no content relocation or custom image service was used. The first successful build completed in 3.71 seconds and the final explicit-sidebar build in 3.70 seconds. These timings are not controlled benchmarks.
 
-| Check | Observed outcome |
-| --- | --- |
-| Production output | Home, `/guide/start/`, and `/guide/nested/next/` generated and returned HTTP 200 with the expected content. |
-| Selected publication | The research sentinel was absent from all generated files. |
-| Relative SVG | Production emitted an optimized `/_astro/icon…svg`; following its rendered `src` returned HTTP 200 SVG. Dev used its image endpoint and also returned HTTP 200 SVG. |
-| Authored `.md` links | All four links failed in both preview and dev; exact failures below. |
-| Explicit guide sidebar, final configuration | Both guide hrefs were present and followed from all three preview pages; every request returned HTTP 200 with expected content. |
-| Autogenerated guide sidebar, baseline configuration | No `/guide/start` or `/guide/nested/next` hrefs were present in the built guide HTML despite both routes existing. |
-| Edit-source URL | After correcting the application-root base, both preview and dev emitted `https://github.com/example/fixture/edit/main/docs/site/guide/start.md`. The external service was not contacted. |
-| Last-updated date | No `<time>` element appeared; no Git history exists in this fixture. This is not proof of correct Git-date behavior. |
-| Cold dev | Generated `.astro`, `node_modules/.astro`, and `node_modules/.vite` caches were removed before the final foreground dev startup. Content loaded without dependency-resolution errors. |
-| Edit external page | Same process served the changed marker through the canonical page URL. |
-| Add external page | Same process eventually served the added page; the probe allowed the watcher/content collection to refresh. |
-| Delete external page | Same process eventually returned HTTP 404 with the removed marker absent. |
-| Cleanup | Original content restored; foreground preview and dev processes terminated. |
+| Check                                               | Observed outcome                                                                                                                                                                          |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Production output                                   | Home, `/guide/start/`, and `/guide/nested/next/` generated and returned HTTP 200 with the expected content.                                                                               |
+| Selected publication                                | The research sentinel was absent from all generated files.                                                                                                                                |
+| Relative SVG                                        | Production emitted an optimized `/_astro/icon…svg`; following its rendered `src` returned HTTP 200 SVG. Dev used its image endpoint and also returned HTTP 200 SVG.                       |
+| Authored `.md` links                                | All four links failed in both preview and dev; exact failures below.                                                                                                                      |
+| Explicit guide sidebar, final configuration         | Both guide hrefs were present and followed from all three preview pages; every request returned HTTP 200 with expected content.                                                           |
+| Autogenerated guide sidebar, baseline configuration | No `/guide/start` or `/guide/nested/next` hrefs were present in the built guide HTML despite both routes existing.                                                                        |
+| Edit-source URL                                     | After correcting the application-root base, both preview and dev emitted `https://github.com/example/fixture/edit/main/docs/site/guide/start.md`. The external service was not contacted. |
+| Last-updated date                                   | No `<time>` element appeared; no Git history exists in this fixture. This is not proof of correct Git-date behavior.                                                                      |
+| Cold dev                                            | Generated `.astro`, `node_modules/.astro`, and `node_modules/.vite` caches were removed before the final foreground dev startup. Content loaded without dependency-resolution errors.     |
+| Edit external page                                  | Same process served the changed marker through the canonical page URL.                                                                                                                    |
+| Add external page                                   | Same process eventually served the added page; the probe allowed the watcher/content collection to refresh.                                                                               |
+| Delete external page                                | Same process eventually returned HTTP 404 with the removed marker absent.                                                                                                                 |
+| Cleanup                                             | Original content restored; foreground preview and dev processes terminated.                                                                                                               |
 
 Actual authored-link destinations, resolved from the served page URLs:
 
-| Authored href | Browser-resolved destination | Result |
-| --- | --- | --- |
-| `./guide/start.md` from `/` | `/guide/start.md` | 404 |
-| `../index.md` from `/guide/start/` | `/guide/index.md` | 404 |
-| `./nested/next.md` from `/guide/start/` | `/guide/start/nested/next.md` | 404 |
-| `../start.md#guide-start` from `/guide/nested/next/` | `/guide/nested/start.md#guide-start` | 404 |
+| Authored href                                        | Browser-resolved destination         | Result |
+| ---------------------------------------------------- | ------------------------------------ | ------ |
+| `./guide/start.md` from `/`                          | `/guide/start.md`                    | 404    |
+| `../index.md` from `/guide/start/`                   | `/guide/index.md`                    | 404    |
+| `./nested/next.md` from `/guide/start/`              | `/guide/start/nested/next.md`        | 404    |
+| `../start.md#guide-start` from `/guide/nested/next/` | `/guide/nested/start.md#guide-start` | 404    |
 
 Starlight's documented site URLs avoid this `.md`/directory-route mismatch. Adopting those links in Markdown would weaken the desired GitHub file-link behavior; a maintained rewrite rule would be additional work. No rewrite plugin or canonical-link authoring variant was implemented during this check.
 
