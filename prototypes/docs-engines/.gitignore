@@ -1,0 +1,7 @@
+.state/
+.pnpm-store/
+.pnpm-cache/
+.astro/
+**/.vitepress/cache/
+*.log
+__pycache__/

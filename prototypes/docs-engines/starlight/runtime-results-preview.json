@@ -1,0 +1,154 @@
+[
+  {
+    "name": "production explicit guide sidebar",
+    "passed": true,
+    "details": ""
+  },
+  {
+    "name": "research exclusion",
+    "passed": true,
+    "details": ""
+  },
+  {
+    "name": "preview page /",
+    "passed": true,
+    "details": ""
+  },
+  {
+    "name": "preview generated navigation /guide/start/",
+    "passed": true,
+    "details": {
+      "href": "/guide/start/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview generated navigation /guide/nested/next/",
+    "passed": true,
+    "details": {
+      "href": "/guide/nested/next/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview authored link Start",
+    "passed": false,
+    "details": {
+      "href": "./guide/start.md",
+      "url": "http://127.0.0.1:43279/guide/start.md",
+      "status": 404,
+      "fragment": ""
+    }
+  },
+  {
+    "name": "preview page /guide/start/",
+    "passed": true,
+    "details": ""
+  },
+  {
+    "name": "preview generated navigation /guide/start/",
+    "passed": true,
+    "details": {
+      "href": "/guide/start/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview generated navigation /guide/nested/next/",
+    "passed": true,
+    "details": {
+      "href": "/guide/nested/next/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview authored link Home",
+    "passed": false,
+    "details": {
+      "href": "../index.md",
+      "url": "http://127.0.0.1:43279/guide/index.md",
+      "status": 404,
+      "fragment": ""
+    }
+  },
+  {
+    "name": "preview authored link Next",
+    "passed": false,
+    "details": {
+      "href": "./nested/next.md",
+      "url": "http://127.0.0.1:43279/guide/start/nested/next.md",
+      "status": 404,
+      "fragment": ""
+    }
+  },
+  {
+    "name": "preview generated navigation /guide/nested/next/",
+    "passed": true,
+    "details": {
+      "href": "/guide/nested/next/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview image",
+    "passed": true,
+    "details": {
+      "src": "/_astro/icon.BuL2Zjzk_1c9WMk.svg",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview edit link",
+    "passed": true,
+    "details": [
+      "https://github.com/example/fixture/edit/main/docs/site/guide/start.md"
+    ]
+  },
+  {
+    "name": "preview lastUpdated observation (not a proof)",
+    "passed": null,
+    "details": {
+      "timeElement": false,
+      "gitHistoryPresent": false
+    }
+  },
+  {
+    "name": "preview page /guide/nested/next/",
+    "passed": true,
+    "details": ""
+  },
+  {
+    "name": "preview generated navigation /guide/start/",
+    "passed": true,
+    "details": {
+      "href": "/guide/start/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview generated navigation /guide/nested/next/",
+    "passed": true,
+    "details": {
+      "href": "/guide/nested/next/",
+      "status": 200
+    }
+  },
+  {
+    "name": "preview authored link Back",
+    "passed": false,
+    "details": {
+      "href": "../start.md#guide-start",
+      "url": "http://127.0.0.1:43279/guide/nested/start.md#guide-start",
+      "status": 404,
+      "fragment": "guide-start"
+    }
+  },
+  {
+    "name": "preview generated navigation /guide/start/",
+    "passed": true,
+    "details": {
+      "href": "/guide/start/",
+      "status": 200
+    }
+  }
+]

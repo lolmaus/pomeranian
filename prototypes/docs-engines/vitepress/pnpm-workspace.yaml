@@ -1,0 +1,7 @@
+packages:
+  - apps/*
+allowBuilds:
+  esbuild: true
+pmOnFail: error
+storeDir: ./.pnpm-store
+cacheDir: ./.pnpm-cache

@@ -1,0 +1,11 @@
+{
+  "name": "starlight-location-verification",
+  "private": true,
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.27.1",
+      "onFail": "error"
+    }
+  }
+}

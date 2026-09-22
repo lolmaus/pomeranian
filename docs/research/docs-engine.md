@@ -4,6 +4,31 @@ Research date: 2026-09-21. Related decision: [Investigate a minimal documentatio
 
 This report supplies facts and a recommendation for a later author decision. It does not choose Pomeranian's engine, approve an implementation, or change the roadmap. Sources are engine documentation, integration-maintainer documentation/repositories, and the relevant hosting/specification owners. No candidate was installed or built; integration compatibility remains a bootstrap check.
 
+Review update, 2026-09-22: the author confirmed VitePress with root `docs/site/`
+content and `apps/docs/` configuration as the direction to validate. The paths
+below preserve the original research proposal, which preceded that agreement.
+Read the [requirements and evidence review](docs-engine-review.md) and
+[root content location investigation](docs-engine-content-location.md) alongside
+this historical comparison. The preference interview is complete; verification
+and the subsequent minimal implementation remain distinct work. The later
+[isolated prototype comparison](docs-engine-prototype-comparison.md) supplies
+runtime evidence for VitePress and Astro + Starlight, including necessary
+configuration and observed limitations; the original report below remains
+historical documentation research.
+
+The author's [interview answers](docs-engine-requirements.md) now require future
+versions sourced from Git branches, English-only content, and local guide/API
+search. The [versioning follow-up](docs-engine-branch-versions.md) examines that
+additional selection criterion; the initial workspace still has one version and
+no switcher.
+
+On confirming the interview, the author clarified that the React demo is only
+an E2E fixture and will not be publicly deployed or linked from docs. The
+requirements describe the final shape; the first docs implementation is limited
+to basic Markdown authoring and local development/build/preview needed by the
+next vertical coding slice. See the requirements record for the approved scope
+and the separation between initial checks and deferred integrations.
+
 ## Recommendation
 
 **Recommend VitePress with its default theme and Markdown content for the smallest initial workspace.** This is an inference from the documented setup: a VitePress dependency, one configuration file, and content files give Pomeranian an authoring environment without application components or content-collection configuration. Its TypeDoc and LLM-output routes exist as separate integrations that can be added later. The engine choice remains the project author's. [VitePress setup](https://vuejs.github.io/vitepress/v1/guide/getting-started), [TypeDoc integration](https://typedoc-plugin-markdown.org/plugins/vitepress/quick-start), [LLM integration](https://github.com/okineadev/vitepress-plugin-llms).

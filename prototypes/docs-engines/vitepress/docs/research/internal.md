@@ -1,0 +1,3 @@
+# Author-only research
+
+EXCLUDED_RESEARCH_SENTINEL_20260922

@@ -1,0 +1,117 @@
+[
+  {
+    "variant": "baseline",
+    "cold_optimizer_warnings": [
+      "Failed to resolve dependency: vitepress > @vue/devtools-api, present in 'optimizeDeps.include'",
+      "Failed to resolve dependency: vitepress > @vueuse/core, present in 'optimizeDeps.include'"
+    ],
+    "external_markdown_modules": "passed"
+  },
+  {
+    "variant": "optimizer-alias",
+    "cold_optimizer_warnings": [],
+    "external_markdown_modules": "passed"
+  },
+  {
+    "production_build": "passed",
+    "preview_links": [
+      {
+        "from": "/",
+        "href": "#VPContent",
+        "target": "http://127.0.0.1:43183/#VPContent",
+        "status": 200
+      },
+      {
+        "from": "/",
+        "href": "#fixture-home",
+        "target": "http://127.0.0.1:43183/#fixture-home",
+        "status": 200
+      },
+      {
+        "from": "/",
+        "href": "./guide/start.html",
+        "target": "http://127.0.0.1:43183/guide/start.html",
+        "status": 200
+      },
+      {
+        "from": "/",
+        "href": "/",
+        "target": "http://127.0.0.1:43183/",
+        "status": 200
+      },
+      {
+        "from": "/",
+        "href": "/guide/start.html",
+        "target": "http://127.0.0.1:43183/guide/start.html",
+        "status": 200
+      },
+      {
+        "from": "/guide/start.html",
+        "href": "#VPContent",
+        "target": "http://127.0.0.1:43183/guide/start.html#VPContent",
+        "status": 200
+      },
+      {
+        "from": "/guide/start.html",
+        "href": "#guide-start",
+        "target": "http://127.0.0.1:43183/guide/start.html#guide-start",
+        "status": 200
+      },
+      {
+        "from": "/guide/start.html",
+        "href": "./../",
+        "target": "http://127.0.0.1:43183/",
+        "status": 200
+      },
+      {
+        "from": "/guide/start.html",
+        "href": "./nested/next.html",
+        "target": "http://127.0.0.1:43183/guide/nested/next.html",
+        "status": 200
+      },
+      {
+        "from": "/guide/start.html",
+        "href": "/",
+        "target": "http://127.0.0.1:43183/",
+        "status": 200
+      },
+      {
+        "from": "/guide/start.html",
+        "href": "/guide/start.html",
+        "target": "http://127.0.0.1:43183/guide/start.html",
+        "status": 200
+      },
+      {
+        "from": "/guide/nested/next.html",
+        "href": "#VPContent",
+        "target": "http://127.0.0.1:43183/guide/nested/next.html#VPContent",
+        "status": 200
+      },
+      {
+        "from": "/guide/nested/next.html",
+        "href": "#nested-next",
+        "target": "http://127.0.0.1:43183/guide/nested/next.html#nested-next",
+        "status": 200
+      },
+      {
+        "from": "/guide/nested/next.html",
+        "href": "./../start.html#guide-start",
+        "target": "http://127.0.0.1:43183/guide/start.html#guide-start",
+        "status": 200
+      },
+      {
+        "from": "/guide/nested/next.html",
+        "href": "/",
+        "target": "http://127.0.0.1:43183/",
+        "status": 200
+      },
+      {
+        "from": "/guide/nested/next.html",
+        "href": "/guide/start.html",
+        "target": "http://127.0.0.1:43183/guide/start.html",
+        "status": 200
+      }
+    ],
+    "browser_hydration": "not tested; browser unavailable"
+  }
+]
