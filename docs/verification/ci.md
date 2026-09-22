@@ -92,9 +92,96 @@ gh api repos/lolmaus/pomeranian/rulesets
 
 ## Executed evidence
 
-Verification is in progress. Before implementation, the workflow API returned
-zero workflows and the effective main-branch rules and repository rulesets were
-empty. The required hosted result and merge gate were therefore absent.
+Executed on 2026-09-22 against workflow revision
+[`5a2c4cb`](https://github.com/lolmaus/pomeranian/commit/5a2c4cb74118b00c595bc2a68f39f7e6f2a24893),
+with disposable probe commits described below. Before implementation, the workflow
+API returned zero workflows and both effective main-branch rules and repository
+rulesets were empty.
+
+### Hosted installation and formatting
+
+| Case                                | Hosted evidence                                                                                                                                                                                                                                              | Observed result                                                                                                                                                                                                                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cold dependency cache               | [Initial branch push](https://github.com/lolmaus/pomeranian/actions/runs/35770437628), [implementation PR](https://github.com/lolmaus/pomeranian/actions/runs/35770468428)                                                                                   | Cache miss; frozen installation, formatting, and unchanged-file verification all passed.                                                                                                                                                                                      |
+| Formatting defect                   | [Branch push](https://github.com/lolmaus/pomeranian/actions/runs/35770578423), [main-targeting PR](https://github.com/lolmaus/pomeranian/actions/runs/35770629651), [draft documentation PR](https://github.com/lolmaus/pomeranian/actions/runs/35770631568) | At `137a225`, an over-indented README list item made formatting fail. Installation passed and the final diff check passed, proving the defect was not rewritten and the earlier failure remained visible.                                                                     |
+| Corrected formatting and warm cache | [Branch push](https://github.com/lolmaus/pomeranian/actions/runs/35770757008), [main-targeting PR](https://github.com/lolmaus/pomeranian/actions/runs/35770761705), [draft documentation PR](https://github.com/lolmaus/pomeranian/actions/runs/35770761648) | At `ea92623`, all three runs restored the exact store cache, still executed frozen installation, then passed formatting and unchanged-file verification. The push reused five packages and downloaded zero.                                                                   |
+| Frozen install after a cache hit    | [Branch push](https://github.com/lolmaus/pomeranian/actions/runs/35770861170), [main-targeting PR](https://github.com/lolmaus/pomeranian/actions/runs/35770867321), [draft documentation PR](https://github.com/lolmaus/pomeranian/actions/runs/35770866994) | At `9bff7a8`, all three restored the exact cache, then failed installation with `ERR_PNPM_OUTDATED_LOCKFILE`: the manifest declared Oxfmt `0.69.0`, while the unchanged lockfile declared `0.70.0`. Formatting was skipped, the tracked-file diff passed, and the job failed. |
+
+The successful hosted setup reported Node `v24.21.0` and pnpm `11.27.1`, matching
+`.nvmrc` and `devEngines.packageManager`. The pnpm dependency-cache key was
+`pnpm-cache-Linux-x64-d0873d007ddb635f8b42fca55dc3abf2d88250546c4a88b06923b7e0c4230fb1`.
+The dependency versions, lockfile, and pnpm version contract were unchanged by the
+implementation.
+
+[Probe PR #21](https://github.com/lolmaus/pomeranian/pull/21) was ready and targeted
+`main`; [probe PR #22](https://github.com/lolmaus/pomeranian/pull/22) remained a draft
+and targeted the implementation branch. At the formatting-failure revision,
+#22's complete diff was two README lines. Its workflow ran on both the failing
+and corrected documentation-only revisions. Checkout logs identify the proposed
+merge commits and their bases: #21 used base `33d6938`, while #22 used `5a2c4cb`.
+The separate push runs checked the corresponding branch tips.
+
+### Required merge rule
+
+After the job first reported successfully, active branch ruleset
+[`23838726`](https://github.com/lolmaus/pomeranian/settings/rules/23838726),
+**Required workspace checks**, was configured for `refs/heads/main` with no
+exclusions and an empty `bypass_actors` array. Its only rule requires
+`Workspace checks` from GitHub Actions application `15368`, with
+`strict_required_status_checks_policy: true` and
+`do_not_enforce_on_create: false`. The effective branch-rules endpoint returned
+the same required check and strict policy. Inspection used the authenticated
+repository owner's account, so the empty bypass list was visible directly.
+
+For ready PR #21, GitHub reported `mergeable: MERGEABLE` but
+`mergeStateStatus: BLOCKED` on the formatting-defect revision. After correction,
+`gh pr checks 21 --required` passed and `mergeStateStatus` became `CLEAN`.
+Neither deliberate defect was merged. The active rule applies to owners and
+administrators as well as other authors; it has no configured bypass actors.
+
+### Local commands
+
+With the pinned Node and pnpm selected, the following commands passed against the
+implementation. The offline frozen install used the already populated local store;
+the hosted cold-cache run above separately exercised package downloads.
+
+```bash
+node --version
+pnpm --version
+pnpm config get pmOnFail
+pnpm install --frozen-lockfile --offline
+pnpm list --recursive --depth -1
+pnpm exec turbo --version
+pnpm exec turbo ls
+pnpm run format
+git diff --exit-code HEAD
+git diff --check
+```
+
+Results: Node `v24.21.0`, pnpm `11.27.1`, `pmOnFail` set to `error`, Turbo `2.11.2`,
+and both source-free library packages discovered. Formatting checked 33 maintained
+files successfully. No custom executable logic or configuration-testing framework
+was added. Lint/typecheck commands remain owned by #13 and #14.
+
+### Cancellation and cleanup
+
+At disposable revision `e2c1eb5`, a temporary 120-second delay held the
+[push run](https://github.com/lolmaus/pomeranian/actions/runs/35771224066) and
+[both](https://github.com/lolmaus/pomeranian/actions/runs/35771229222)
+[PR runs](https://github.com/lolmaus/pomeranian/actions/runs/35771230907) in progress.
+Publishing restoration revision `70695df` canceled all three obsolete runs.
+Its replacement [push](https://github.com/lolmaus/pomeranian/actions/runs/35771302746)
+and [both](https://github.com/lolmaus/pomeranian/actions/runs/35771307592)
+[PR runs](https://github.com/lolmaus/pomeranian/actions/runs/35771308006) all passed;
+the independent event/ref streams did not cancel one another.
+
+`git diff --exit-code feat/18-github-actions HEAD` in the verification worktree
+confirmed its final tree exactly matched implementation revision `5a2c4cb`.
+The README defect, manifest mismatch, and delay were all removed. PRs #21 and #22
+were closed without merging, the remote verification branch was deleted, and its
+clean local worktree and branch were removed. Probe logs stayed outside the
+repository. The deliverable contains no probe files, generated output, dependency
+directories, or caches.
 
 ## Parent acceptance coverage
 
