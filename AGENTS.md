@@ -23,6 +23,21 @@ Single-context layout: root `CONTEXT.md` and `docs/adr/`. Before exploring the c
 Before implementing or reviewing changes, read [docs/agents/development.md](docs/agents/development.md)
 for testing, documentation, package conventions, and the installed skills workflow.
 
+### Documentation audiences
+
+Keep these documents human-facing:
+
+- `README.md` and `CONTRIBUTING.md`.
+- `CONTEXT.md` and `docs/adr/`.
+- `docs/research/` and `docs/verification/`.
+- Package and application README files.
+- `docs/site/`, when added.
+
+Use these locations for setup, usage, shared contribution standards, decisions,
+and evidence. When editing them, put instructions addressed to agents in
+`AGENTS.md` or `docs/agents/` instead. Agent guidance should link to shared
+contributor documentation instead of duplicating its rules.
+
 ### Git workflow
 
 Before starting work, preserve pending changes, switch to local `main`, and run

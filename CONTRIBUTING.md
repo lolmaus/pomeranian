@@ -1,8 +1,7 @@
 # Contributing to Pomeranian
 
-An **author** maintains Pomeranian; a **developer** consumes it. Read the
-[domain context](CONTEXT.md), [roadmap](ROADMAP.md), and
-[development guidance](docs/agents/development.md) before changing the repository.
+See the [roadmap](ROADMAP.md) for planned work and the
+[domain context](CONTEXT.md) for project terminology.
 
 ## Prerequisites
 
@@ -101,11 +100,10 @@ caches (`.turbo/`, `.cache/`), output (`dist/`, `build/`, `coverage/`), test art
 depth. Oxfmt also respects Git ignore files and its built-in exclusions, including
 VCS directories and lockfiles. Unsupported file types are left alone.
 
-Keep disposable probes in `.scratch/` or an external temporary directory. When a
-new tool adds generated paths, update its Git and formatter exclusions together.
-Keep maintained documentation outside excluded directories. Oxfmt formats
-supported fenced code in Markdown, so review documentation diffs too; package
-manifest sorting is disabled to preserve existing ordering.
+Store disposable verification files in `.scratch/` or an external temporary
+directory. Add Git and formatter exclusions when introducing generated output.
+Oxfmt formats supported fenced code in Markdown, so review documentation diffs
+too; package manifest sorting is disabled to preserve existing ordering.
 
 See [formatting verification](docs/verification/formatting.md) for the repeatable
 acceptance procedure and executed evidence, including excluded-file preservation.
@@ -121,20 +119,21 @@ pnpm discovers `packages/*` and `apps/*`. The current library identities live at
 `packages/core` and `packages/lib-essential`; applications arrive with their
 roadmap items.
 
-Add a workspace package only within an approved slice. Create a manifest under
-the appropriate directory with a unique package name and `private: true` for
-internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;
+Create a manifest with a unique package name in the appropriate directory. Use
+`private: true` for internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;
 an empty scaffold uses `{}`, while each advertised entry point must resolve to a
 real supported module. Declare internal dependencies with `workspace:*` and
 refresh the lockfile using `pnpm install`. Confirm discovery with
 `pnpm list --recursive --depth -1`, then rerun the frozen install.
 
-Follow [development guidance](docs/agents/development.md) for source conventions,
-shared configuration consumption, tests, and documentation. Source-bearing
-packages require their applicable checks; the approved follow-up tickets
-establish those shared configurations and commands before product development.
+Use explicit source modules without `index.ts` barrel files, and export every
+type defined by project code. Consume shared configurations by package identity
+and exported entry point. Packages with source need applicable lint and typecheck
+commands.
 
-Keep dependencies, generated output, caches, and disposable verification files
-outside maintained inputs. Preserve installed skills and existing planning
-material. Updating a workspace package does not authorize publication or choose
-its eventual distribution format.
+## Tests and documentation
+
+Include meaningful tests and documentation with behavior changes in the same PR.
+Use TDD; prefer colocated `node:test` and `node:assert` unit tests where suitable.
+Each offered page object needs a React demo example and Playwright E2E coverage.
+The first behavior slice will establish the demo and E2E infrastructure.
