@@ -44,17 +44,17 @@ fence, and an excluded research document. Starlight pages add its required title
 frontmatter. Both final configurations use explicit sidebar links; Starlight's
 automatic-sidebar experiment is recorded separately.
 
-| Check | VitePress 1.6.4 / Vue 3.5.43 | Astro 7.3.3 / Starlight 0.42.2 |
-| --- | --- | --- |
-| External source configuration | Native `srcDir`; direct Vue dependency plus three resolver aliases in this pnpm layout. | Astro external `glob()` collection with Starlight schema, replacing Starlight's fixed-location loader; no resolver aliases. |
-| Production build and canonical page routes | Pass. | Pass after adding Sharp 0.35.4 for image processing. |
-| Explicit sidebar navigation | Rendered destinations return HTTP 200 with expected content. | Rendered destinations return HTTP 200 with expected content. |
-| Authored relative `.md` links | Rewritten into working site URLs; all 16 local href observations across the fixture return HTTP 200. | Four authored links return HTTP 404 in preview and dev. Canonical site routes work; a rewriting integration was not tested. |
-| Colocated SVG and research exclusion | Pass. SVG is inlined in production; dev image request succeeds. | Pass. Optimized SVG asset is served in production; dev image request succeeds. |
-| Edit/add/delete without restarting dev | Transformed Markdown modules update; deleted content disappears into the dev HTML fallback. | Canonical pages update; deleting a page eventually returns HTTP 404. |
-| Cold development dependency resolution | Original warnings reproduced with cache deleted; amended aliases remove them. | No dependency-resolution errors observed. Empty optional i18n and absent custom 404 warnings remain. |
-| Automatic sidebar experiment | Not tested or required; fixture uses explicit navigation. | Ordinary `directory: 'guide'` group is empty with external content. Explicit links solve the minimal navigation requirement. |
-| Browser hydration, client navigation, visible HMR | Unverified. | Unverified. |
+| Check                                             | VitePress 1.6.4 / Vue 3.5.43                                                                         | Astro 7.3.3 / Starlight 0.42.2                                                                                               |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| External source configuration                     | Native `srcDir`; direct Vue dependency plus three resolver aliases in this pnpm layout.              | Astro external `glob()` collection with Starlight schema, replacing Starlight's fixed-location loader; no resolver aliases.  |
+| Production build and canonical page routes        | Pass.                                                                                                | Pass after adding Sharp 0.35.4 for image processing.                                                                         |
+| Explicit sidebar navigation                       | Rendered destinations return HTTP 200 with expected content.                                         | Rendered destinations return HTTP 200 with expected content.                                                                 |
+| Authored relative `.md` links                     | Rewritten into working site URLs; all 16 local href observations across the fixture return HTTP 200. | Four authored links return HTTP 404 in preview and dev. Canonical site routes work; a rewriting integration was not tested.  |
+| Colocated SVG and research exclusion              | Pass. SVG is inlined in production; dev image request succeeds.                                      | Pass. Optimized SVG asset is served in production; dev image request succeeds.                                               |
+| Edit/add/delete without restarting dev            | Transformed Markdown modules update; deleted content disappears into the dev HTML fallback.          | Canonical pages update; deleting a page eventually returns HTTP 404.                                                         |
+| Cold development dependency resolution            | Original warnings reproduced with cache deleted; amended aliases remove them.                        | No dependency-resolution errors observed. Empty optional i18n and absent custom 404 warnings remain.                         |
+| Automatic sidebar experiment                      | Not tested or required; fixture uses explicit navigation.                                            | Ordinary `directory: 'guide'` group is empty with external content. Explicit links solve the minimal navigation requirement. |
+| Browser hydration, client navigation, visible HMR | Unverified.                                                                                          | Unverified.                                                                                                                  |
 
 HTTP success and server-side update evidence do not prove browser interaction.
 The two engines use different Vite versions and image pipelines; Starlight also

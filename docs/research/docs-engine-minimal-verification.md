@@ -26,14 +26,14 @@ Production output, preview HTTP, relative Markdown links, a relative image, and 
 
 All fixture configuration, dependencies, generated output, logs, and runtime probes were under `/tmp/pomeranian-docs-verify-ppiwix9w`. No real `apps/docs` package was created and no repository package manifest, workspace configuration, or lockfile was changed.
 
-| Component | Verified version |
-| --- | --- |
-| Node | 24.21.0 |
-| pnpm | 11.27.1 |
-| VitePress | 1.6.4 |
-| Vue | 3.5.43 |
-| Vite, resolved through VitePress | 5.4.21 |
-| esbuild, resolved transitively | 0.21.5 |
+| Component                        | Verified version |
+| -------------------------------- | ---------------- |
+| Node                             | 24.21.0          |
+| pnpm                             | 11.27.1          |
+| VitePress                        | 1.6.4            |
+| Vue                              | 3.5.43           |
+| Vite, resolved through VitePress | 5.4.21           |
+| esbuild, resolved transitively   | 0.21.5           |
 
 The local bootstrap checkout used for verification specifies Node 24.21.0 in `.nvmrc` and pnpm 11.27.1 with strict package-manager enforcement. That bootstrap is preserved in the [prototype branch's ancestry](https://github.com/lolmaus/pomeranian/blob/d861db5/CONTRIBUTING.md); its implementation is separate from the documentation-decision PR. Ambient commands instead resolved Node 26.9.0 and pnpm 12.4.2, so this check used the already available exact-version binaries under `/tmp/pomeranian-bootstrap-fnm/node-versions/v24.21.0/installation/` explicitly. Dependency versions above were inspected in the installed fixture; the generated temporary pnpm lockfile records the complete resolution. They are the versions tested, not an instruction to upgrade repository dependencies.
 
@@ -77,23 +77,23 @@ The fixture workspace includes `apps/*`. Its package-manager settings include `p
 `apps/docs/.vitepress/config.mts`:
 
 ```ts
-import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitepress'
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vitepress";
 
 export default defineConfig({
-  title: 'Location verification',
-  srcDir: '../../docs/site',
+  title: "Location verification",
+  srcDir: "../../docs/site",
   vite: {
     resolve: {
       alias: {
-        vue: fileURLToPath(new URL('../node_modules/vue', import.meta.url))
-      }
-    }
+        vue: fileURLToPath(new URL("../node_modules/vue", import.meta.url)),
+      },
+    },
   },
   themeConfig: {
-    sidebar: [{ text: 'Guide', link: '/guide/start' }]
-  }
-})
+    sidebar: [{ text: "Guide", link: "/guide/start" }],
+  },
+});
 ```
 
 The URL in the alias resolves from the configuration file to `apps/docs/node_modules/vue`. Authored Markdown remains outside the app package. The combination of a direct Vue dependency and this alias was tested; a direct dependency without the alias was not tested separately.
@@ -141,6 +141,7 @@ Material failures and corrections:
    ```
 
    There were no authored Vue components or imports in that page: the framework generated the runtime import. Adding the direct Vue dependency and alias shown above produced a successful build in 6.34 seconds.
+
 3. A cold dev startup then warned:
 
    ```text
@@ -154,19 +155,19 @@ The execution environment also blocked registry access and native esbuild execut
 
 ## Observations
 
-| Check | Observed result |
-| --- | --- |
-| Production build | Passed with the exact package/configuration above; generated `index.html`, `guide/start.html`, and `guide/nested/next.html`. |
-| Preview HTTP | Home and nested built pages returned HTTP 200 with expected authored content. |
-| Nested Markdown links | `./nested/next.md` became `./nested/next.html`; `../start.md#guide-start` became `./../start.html#guide-start` in generated HTML. |
-| Markdown code fence | Nested page retained expected TypeScript example content. |
-| Relative image | Authored `./icon.svg` became an inline SVG data URL in production HTML; the development image URL returned SVG over HTTP. |
-| Publication boundary | `docs/research/internal.md` contained a unique sentinel; it was absent from every generated output file and there was no generated research directory. Only `docs/site` was selected as the source tree. |
-| Edit existing root Markdown | Requesting `/guide/start.md?import` returned the initial marker, then the edited marker with the same dev process running. |
-| Add root Markdown | A newly created `docs/site/guide/added.md` became available as a transformed module without restarting the dev server. |
-| Delete root Markdown | After deletion, the same request returned an HTML fallback instead of the removed Markdown module; the removed marker was absent. This verifies disappearance of the module, not browser 404 presentation. |
-| Watcher evidence | Dev logs recorded HMR update events for the changed guide and added/deleted page. |
-| Cleanup | Original guide contents were restored and successfully requested; both servers were stopped. |
+| Check                       | Observed result                                                                                                                                                                                            |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Production build            | Passed with the exact package/configuration above; generated `index.html`, `guide/start.html`, and `guide/nested/next.html`.                                                                               |
+| Preview HTTP                | Home and nested built pages returned HTTP 200 with expected authored content.                                                                                                                              |
+| Nested Markdown links       | `./nested/next.md` became `./nested/next.html`; `../start.md#guide-start` became `./../start.html#guide-start` in generated HTML.                                                                          |
+| Markdown code fence         | Nested page retained expected TypeScript example content.                                                                                                                                                  |
+| Relative image              | Authored `./icon.svg` became an inline SVG data URL in production HTML; the development image URL returned SVG over HTTP.                                                                                  |
+| Publication boundary        | `docs/research/internal.md` contained a unique sentinel; it was absent from every generated output file and there was no generated research directory. Only `docs/site` was selected as the source tree.   |
+| Edit existing root Markdown | Requesting `/guide/start.md?import` returned the initial marker, then the edited marker with the same dev process running.                                                                                 |
+| Add root Markdown           | A newly created `docs/site/guide/added.md` became available as a transformed module without restarting the dev server.                                                                                     |
+| Delete root Markdown        | After deletion, the same request returned an HTML fallback instead of the removed Markdown module; the removed marker was absent. This verifies disappearance of the module, not browser 404 presentation. |
+| Watcher evidence            | Dev logs recorded HMR update events for the changed guide and added/deleted page.                                                                                                                          |
+| Cleanup                     | Original guide contents were restored and successfully requested; both servers were stopped.                                                                                                               |
 
 The initial deletion assertion incorrectly assumed Vite would return HTTP 404. It was corrected to check that the removed module/content was no longer served: the observed response was HTTP 200 with the development HTML fallback. Relative Markdown routing and asset treatment are consistent with the documented features, but the concrete outcomes above come from the fixture. Sources: [VitePress v1 routing](https://vuejs.github.io/vitepress/v1/guide/routing), [VitePress v1 asset handling](https://vuejs.github.io/vitepress/v1/guide/asset-handling).
 

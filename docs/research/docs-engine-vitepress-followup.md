@@ -20,27 +20,27 @@ Browser hydration, browser console errors, client navigation, and visible HMR re
 The winning variant keeps the original app-local Vue dependency and alias, and resolves the two optimizer dependencies from VitePress's own installed dependency directory:
 
 ```ts
-import { createRequire } from 'node:module'
-import { fileURLToPath, pathToFileURL } from 'node:url'
-import { defineConfig } from 'vitepress'
+import { createRequire } from "node:module";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { defineConfig } from "vitepress";
 
-const fromApp = createRequire(import.meta.url)
-const vitePressPackage = pathToFileURL(fromApp.resolve('vitepress/package.json'))
+const fromApp = createRequire(import.meta.url);
+const vitePressPackage = pathToFileURL(fromApp.resolve("vitepress/package.json"));
 
 export default defineConfig({
-  title: 'Location verification',
-  srcDir: '../../docs/site',
+  title: "Location verification",
+  srcDir: "../../docs/site",
   vite: {
     resolve: {
       alias: {
-        vue: fileURLToPath(new URL('../node_modules/vue', import.meta.url)),
-        '@vue/devtools-api': fileURLToPath(new URL('../@vue/devtools-api', vitePressPackage)),
-        '@vueuse/core': fileURLToPath(new URL('../@vueuse/core', vitePressPackage))
-      }
-    }
+        vue: fileURLToPath(new URL("../node_modules/vue", import.meta.url)),
+        "@vue/devtools-api": fileURLToPath(new URL("../@vue/devtools-api", vitePressPackage)),
+        "@vueuse/core": fileURLToPath(new URL("../@vueuse/core", vitePressPackage)),
+      },
+    },
   },
-  themeConfig: { sidebar: [{ text: 'Guide', link: '/guide/start' }] }
-})
+  themeConfig: { sidebar: [{ text: "Guide", link: "/guide/start" }] },
+});
 ```
 
 This uses the dependency layout observed in the pinned pnpm fixture and leaves Vite to select package entrypoints. It couples the configuration to two VitePress dependencies; upgrades require revalidation. It adds no packages, optimizer exclusions, warning filters, or unrelated plugins.
@@ -49,13 +49,13 @@ Source inspection explains the original warnings: VitePress requests nested opti
 
 ## Variants and observations
 
-| Variant/check | Outcome |
-| --- | --- |
-| Original Vue-only alias, genuinely empty cache | Reproduced both unresolved optimizer warnings. Both external Markdown modules still returned their expected content. |
-| Aliases to `createRequire().resolve()` entrypoints | Removed optimizer warnings, but selected CommonJS entrypoints and introduced a production circular-chunk warning. Retained as an unsuccessful comparison variant. |
-| Aliases to installed dependency directories | Removed optimizer warnings; both external Markdown modules loaded; production build completed with no warnings. |
-| Actual production links | All 16 local href observations across home, guide, and nested page returned HTTP 200; expected content was checked for guide destinations. Hash fragments were retained in URLs but browser scrolling was not tested. |
-| Initial `--force` probe without cache deletion | Did not reproduce baseline warnings, so it was not used as cold-start evidence. Final probe explicitly deletes only the fixture's generated cache before each variant. |
+| Variant/check                                      | Outcome                                                                                                                                                                                                               |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Original Vue-only alias, genuinely empty cache     | Reproduced both unresolved optimizer warnings. Both external Markdown modules still returned their expected content.                                                                                                  |
+| Aliases to `createRequire().resolve()` entrypoints | Removed optimizer warnings, but selected CommonJS entrypoints and introduced a production circular-chunk warning. Retained as an unsuccessful comparison variant.                                                     |
+| Aliases to installed dependency directories        | Removed optimizer warnings; both external Markdown modules loaded; production build completed with no warnings.                                                                                                       |
+| Actual production links                            | All 16 local href observations across home, guide, and nested page returned HTTP 200; expected content was checked for guide destinations. Hash fragments were retained in URLs but browser scrolling was not tested. |
+| Initial `--force` probe without cache deletion     | Did not reproduce baseline warnings, so it was not used as cold-start evidence. Final probe explicitly deletes only the fixture's generated cache before each variant.                                                |
 
 The final directory-alias configuration is installed in the temporary fixture. Servers were terminated and the probe restores the configuration present when it starts. Production output and logs are disposable; runnable inputs and probes should be preserved with the prototype artifact.
 

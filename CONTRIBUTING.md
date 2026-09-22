@@ -69,14 +69,14 @@ together.
 
 Run these commands from the repository root:
 
-| Command | Purpose |
-| --- | --- |
-| `node --version` | Confirm the selected runtime. |
-| `pnpm --version` | Confirm the package manager selected by the bootstrap route. |
-| `pnpm install --frozen-lockfile` | Install the committed dependency graph. |
-| `pnpm list --recursive --depth -1` | Discover workspace package identities. |
-| `pnpm exec turbo --version` | Run the repository-local task runner. |
-| `pnpm exec turbo ls` | Confirm Turbo discovers both library packages. |
+| Command                            | Purpose                                                      |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `node --version`                   | Confirm the selected runtime.                                |
+| `pnpm --version`                   | Confirm the package manager selected by the bootstrap route. |
+| `pnpm install --frozen-lockfile`   | Install the committed dependency graph.                      |
+| `pnpm list --recursive --depth -1` | Discover workspace package identities.                       |
+| `pnpm exec turbo --version`        | Run the repository-local task runner.                        |
+| `pnpm exec turbo ls`               | Confirm Turbo discovers both library packages.               |
 
 Turbo's initial configuration declares no tasks. The bootstrap has no source
 checks or test suite. The source-free library packages acquire source inputs and

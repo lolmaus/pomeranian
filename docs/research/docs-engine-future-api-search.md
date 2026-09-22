@@ -34,12 +34,12 @@ published or pinned source, **inferred** composition of those mechanisms, or
 
 Published metadata observed on the research date:
 
-| Package | Version | Relevant declared compatibility |
-| --- | --- | --- |
-| TypeDoc | 0.28.20 | Node >=18; TypeScript 5.0–5.9 or 6.0 release lines. |
-| typedoc-plugin-markdown | 4.13.1 | TypeDoc 0.28.x; Node >=18. |
-| typedoc-vitepress-theme | 1.1.4 | TypeDoc 0.28.x; Markdown plugin >=4.11.0; no VitePress peer range. |
-| starlight-typedoc | 0.23.1 | Astro >=6.0.0; Starlight >=0.39.0; TypeDoc >=0.28.0; Markdown plugin >=4.6.0; Node >=22.12.0. |
+| Package                 | Version | Relevant declared compatibility                                                               |
+| ----------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| TypeDoc                 | 0.28.20 | Node >=18; TypeScript 5.0–5.9 or 6.0 release lines.                                           |
+| typedoc-plugin-markdown | 4.13.1  | TypeDoc 0.28.x; Node >=18.                                                                    |
+| typedoc-vitepress-theme | 1.1.4   | TypeDoc 0.28.x; Markdown plugin >=4.11.0; no VitePress peer range.                            |
+| starlight-typedoc       | 0.23.1  | Astro >=6.0.0; Starlight >=0.39.0; TypeDoc >=0.28.0; Markdown plugin >=4.6.0; Node >=22.12.0. |
 
 Sources: published manifests for [TypeDoc](https://unpkg.com/typedoc@0.28.20/package.json),
 [Markdown plugin](https://unpkg.com/typedoc-plugin-markdown@4.13.1/package.json),
