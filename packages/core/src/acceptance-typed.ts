@@ -1,5 +1,5 @@
 import { loadValue } from "./acceptance-async.js";
 
-export function probe(): void {
-  loadValue();
+export function probe(): Promise<number> {
+  return loadValue();
 }
