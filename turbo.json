@@ -5,6 +5,7 @@
     ".gitignore",
     "pnpm-workspace.yaml",
     "pnpm-lock.yaml",
+    "tsconfig.json",
     "packages/oxlint-config/*.json",
     "packages/oxlint-config/*.mts",
     "packages/typescript-config/*.json"

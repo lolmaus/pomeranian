@@ -2,17 +2,24 @@
   "name": "@pomeranian/oxlint-config",
   "private": true,
   "exports": {
-    "./base": "./base.mts"
+    "./base": "./base.mts",
+    "./playwright-library": "./playwright-library.mts",
+    "./playwright-test": "./playwright-test.mts",
+    "./react": "./react.mts"
   },
   "scripts": {
     "lint": "oxlint --config oxlint.config.mts . --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts . --max-warnings 0 --fix",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "typecheck": "tsc --noEmit --project tsconfig.node.json"
   },
   "dependencies": {
-    "oxlint": "1.85.0"
+    "oxlint": "1.85.0",
+    "eslint-plugin-playwright": "2.12.0",
+    "eslint": "10.11.0"
   },
   "devDependencies": {
-    "@pomeranian/typescript-config": "workspace:*"
+    "@pomeranian/typescript-config": "workspace:*",
+    "oxlint-tsgolint": "7.0.2002",
+    "@types/node": "24.13.6"
   }
 }

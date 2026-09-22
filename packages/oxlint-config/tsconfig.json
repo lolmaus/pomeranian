@@ -1,4 +1,8 @@
 {
-  "extends": "@pomeranian/typescript-config/base",
-  "include": ["*.mts"]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

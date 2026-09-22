@@ -1,0 +1,7 @@
+{
+  "extends": "@pomeranian/typescript-config/node",
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types-node24"]
+  },
+  "include": ["*.mts"]
+}
