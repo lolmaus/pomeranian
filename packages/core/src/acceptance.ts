@@ -1,2 +1,1 @@
-const value = 1;
-export const probe = value;
+export const probe: string = undefined;
