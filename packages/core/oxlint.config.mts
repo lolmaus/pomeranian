@@ -6,7 +6,7 @@ export default defineConfig({
   extends: [base],
   overrides: [
     {
-      files: ["src/**/*.ts"],
+      files: ["src/**/*.{ts,tsx,mts,cts}"],
       ...playwright,
     },
   ],
