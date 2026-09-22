@@ -52,9 +52,10 @@ Sources: [Oxlint shared configurations](https://oxc.rs/docs/guide/usage/linter/c
 
 Use an isolated worktree of the proposed revision, select the pinned toolchain
 as documented in [CONTRIBUTING.md](../../CONTRIBUTING.md), and run
-`pnpm install --frozen-lockfile`. Keep logs outside the repository. All temporary
-inputs below belong in the existing `packages/core/src/acceptance.ts`; no extra
-consumer package is needed. Restore each probe before moving to the next case.
+`pnpm install --frozen-lockfile`. Keep logs outside the repository. For core
+probes, create `packages/core/src/acceptance.ts` in the existing core package.
+Configuration-package probes use a temporary `.mts` file in that package.
+No extra consumer package is needed. Restore each probe before the next case.
 
 Start with the clean scaffold and run:
 
@@ -215,7 +216,7 @@ Successful commands exited 0 and the intended failing check commands exited 1.
 | Shared compiler setting       | The stated string/undefined probe passed lint and failed package/root `typecheck` with TS2322. Changing only shared `strict` to `false` made that identical source pass; restoring it restored failure. Correcting the initializer to `"valid"` passed.                                                         |
 | Source invalidation           | Root `lint` and `typecheck` each first reached two cache hits. Their respective source defects then made core miss and fail, while the unchanged configuration package remained cached.                                                                                                                         |
 | Shared lint invalidation      | Root lint reached two cache hits with an exported console call. Adding only shared `eslint/no-console: "error"` caused both tasks to miss and execute, failing on the expected core diagnostic. Restoring the setting passed.                                                                                   |
-| Shared compiler invalidation  | Root typecheck reached two cache hits with the array-index probe. Adding only shared `noUncheckedIndexedAccess: true` caused both tasks to miss and execute; core failed TS2322 for `string                                                                                                                     | undefined`. Restoring the setting passed. |
+| Shared compiler invalidation  | Root typecheck reached two cache hits with the array-index probe. Adding only shared `noUncheckedIndexedAccess: true` caused both tasks to miss and execute; core failed TS2322 because indexed access could yield `undefined`. Restoring the setting passed.                                                   |
 | Export boundaries             | Public entries resolved through package lint/typecheck. The existing unexported `base.mts` and `base.json` subpaths failed with `ERR_PACKAGE_PATH_NOT_EXPORTED` and TS6053 respectively. Temporarily exporting the same unchanged files restored success. All exports and consumer configuration were restored. |
 | Configuration source coverage | An added `.mts` source in the Oxlint configuration package failed its package/root lint checks on `prefer-const`; its package fixer repaired it. A separate type error passed lint and failed package/root typecheck with TS2322; correction passed. The source was removed.                                    |
 | Version authority             | Temporarily changing only `devEngines.packageManager.version` to `11.27.0` made root `lint`, `lint:fix`, and `typecheck` reject the mismatch before tasks ran. Restoring `11.27.1` restored success; `pmOnFail` remained `error`.                                                                               |
