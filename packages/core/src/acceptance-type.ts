@@ -1,1 +1,1 @@
-export const probe: string = undefined;
+export const probe: string = "valid";
