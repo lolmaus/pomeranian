@@ -7,9 +7,9 @@ Discussion started on 2026-09-22 after the author's review of
 
 **Status: approved and published on 2026-09-22.** The author confirmed all nine
 interview decisions and the consolidated amendment, then authorized publication.
-The updated GitHub issues below are the specification authority. PR #24 requires
-implementation revision and new acceptance evidence for this scope; its merge
-still requires the author's explicit approval.
+The updated GitHub issues below are the specification authority. The revised
+implementation and [extended acceptance record](../verification/core-checks-extension.md)
+are in PR #24; its merge still requires the author's explicit approval.
 
 ## Author constraints and objections
 

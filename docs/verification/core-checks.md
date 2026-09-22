@@ -1,4 +1,9 @@
-# Core checking verification
+# Core checking verification (original scope)
+
+This is the historical verification record before the approved review extension.
+Use [extended core-check verification](core-checks-extension.md) for the current
+configuration contract, repeatable procedures, and acceptance evidence. The
+original procedures below describe the earlier single-project layout.
 
 This records [core checks #13](https://github.com/lolmaus/pomeranian/issues/13),
 part of [monorepo setup #9](https://github.com/lolmaus/pomeranian/issues/9), in

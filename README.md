@@ -23,8 +23,9 @@ behavior or public product entry points yet.
   procedure and executed checks for the initial workspace.
 - [Formatting verification](docs/verification/formatting.md): repository scope,
   failure/fix checks, and preservation of excluded inputs.
-- [Core-check verification](docs/verification/core-checks.md): shared configuration,
-  package/root checks, safe fixes, cache invalidation, and hosted failure checks.
+- [Core-check verification](docs/verification/core-checks-extension.md): typed and
+  framework linting, five TypeScript environments, editor discovery, safe fixes,
+  cache invalidation, and hosted failure checks.
 - [Continuous integration](CONTRIBUTING.md#continuous-integration): workflow
   triggers, dependency caching, required merge checks, and action updates.
 - [CI verification](docs/verification/ci.md): repeatable hosted acceptance
