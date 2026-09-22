@@ -1,2 +1,2 @@
-let value = 1;
+const value = 1;
 export const probe = value;
