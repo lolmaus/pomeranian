@@ -1,0 +1,14 @@
+{
+  "name": "pomeranian",
+  "private": true,
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.27.1",
+      "onFail": "error"
+    }
+  },
+  "devDependencies": {
+    "turbo": "2.11.2"
+  }
+}

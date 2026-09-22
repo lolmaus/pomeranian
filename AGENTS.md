@@ -17,3 +17,8 @@ Use the five default triage labels. Before triaging or publishing tickets, read 
 ### Domain docs
 
 Single-context layout: root `CONTEXT.md` and `docs/adr/`. Before exploring the codebase, read `docs/agents/domain.md`.
+
+### Development
+
+Before implementing or reviewing changes, read [docs/agents/development.md](docs/agents/development.md)
+for testing, documentation, package conventions, and the installed skills workflow.
