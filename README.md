@@ -27,3 +27,5 @@ files or public product entry points yet.
   procedure and verification record.
 
 Package publication and release timing remain under the author's control.
+
+-    CI acceptance probe.
