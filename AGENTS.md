@@ -52,6 +52,12 @@ Before creating or amending a commit, check the current branch. If it is `main`,
 create or switch to a task branch while preserving pending changes. A generic
 request to commit or push does not authorize committing directly to `main`.
 
+Merge a PR, or enable auto-merge, only after the author explicitly approves
+merging that specific PR. Permission to implement, commit, push, open a PR, or
+continue work does not grant merge approval. If approval is missing, finish the
+work and checks, present the PR, and wait for the author's decision. Honor approval
+already given for that PR and scope without asking again.
+
 If the author explicitly requests a direct commit to `main`, first warn that it
 bypasses the normal PR review workflow, suggest a task branch and PR, and wait
 for the author's decision. Proceed on `main` only after the author explicitly
