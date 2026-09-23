@@ -99,7 +99,8 @@ pnpm run docs:preview
 
 Development watches source files; preview serves the last production build, so
 run the build first and rebuild after changes. Stop either server with Ctrl-C.
-The terminal prints the local URL. To choose a loopback address and port, append
+The terminal prints the local URL, including the `/pomeranian/` project-site
+base used by GitHub Pages. To choose a loopback address and port, append
 `--host 127.0.0.1 --port 43190 --strictPort` to either server command.
 These root commands delegate directly to the private `@pomeranian/docs` package;
 its equivalent scripts are `dev`, `build`, and `preview`.
@@ -120,8 +121,9 @@ public deployment.
 Build output is `apps/docs/dist/`; optimizer cache is `apps/docs/.cache/`.
 Both are ignored. Documentation commands run outside Turbo and do not cache build
 results. Every build reads current Markdown and assets, including additions and
-deletions; dev and preview are ordinary long-running processes. No deployment is
-configured, and this workflow does not publish a release.
+deletions; dev and preview are ordinary long-running processes. Successful CI on
+`main` deploys this build to GitHub Pages as described below. This does not
+publish a package release.
 
 Maintained docs configuration extends the shared Node TypeScript environment and
 base lint profile. Its local type environment additionally loads DOM and Web
@@ -337,11 +339,13 @@ for the current CLI acceptance procedure and local and hosted evidence. The
 The GitHub Actions workflow **CI** runs on every branch push and every pull
 request, including drafts and documentation-only changes. Push runs check the
 branch tip; pull-request runs check GitHub's proposed merge result. Superseded
-runs are canceled separately for each event and branch or pull request, so a
-push run and its corresponding pull-request run do not cancel one another.
+branch and pull-request runs are canceled separately for each event and ref, so
+a push run and its corresponding pull-request run do not cancel one another.
+Main push runs are serialized without canceling an in-progress run, allowing
+its Pages deployment to finish.
 Tag pushes do not trigger this workflow.
 
-One required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
+The required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
 read-only repository permissions. It selects Node from `.nvmrc` and pnpm from
 root `package.json`'s `devEngines.packageManager`, preserving the same version
 requirements used locally. Each job bootstraps the pinned pnpm executable and
@@ -371,6 +375,37 @@ this setup.
 
 See [CI verification](docs/verification/ci.md) for the repeatable hosted
 acceptance procedure and verification record.
+
+### GitHub Pages deployment
+
+The site is `https://lolmaus.github.io/pomeranian/`. CI builds and uploads only
+`apps/docs/dist/` as the `github-pages` artifact on branch pushes and pull
+requests. The artifact is retained for one day. Uploading the archive validates
+packaging; it does not publish branch previews.
+
+A separate **Deploy documentation** job runs only on a push to `main`, after
+**Workspace checks** succeeds. It deploys that run's artifact with the official
+GitHub Pages action and reports the resulting URL on the `github-pages`
+environment. Only this job has `pages: write` and `id-token: write` permissions;
+the checks job retains read-only repository access. Both Pages actions are
+pinned to full commit SHAs and covered by the existing Dependabot action updates.
+No deployment credentials or personal access tokens belong in the workflow.
+
+Repository setup is **Settings → Pages → Build and deployment → Source: GitHub
+Actions**. The `github-pages` environment permits deployments from the `main`
+branch only. On another repository, configure those same settings and adjust the
+VitePress base for its project-site URL before the first deployment. A custom
+domain and DNS are separate future work.
+
+The first public deployment occurs after this workflow is merged to `main`.
+Inspect its **Deploy documentation** job and environment URL, then open the site
+and check its assets and navigation. Subsequent successful main pushes update
+the same site. For a failed deployment, fix the reported cause and rerun the
+failed job from its main-branch Actions run while its artifact is retained;
+otherwise rerun all jobs to create a fresh artifact. Main workflows queue so a
+new push does not interrupt an active deployment. See the
+[Pages verification record](docs/verification/pages-deployment.md) for tested
+behavior and the first-publication checklist.
 
 ## Workspace layout and adding packages
 

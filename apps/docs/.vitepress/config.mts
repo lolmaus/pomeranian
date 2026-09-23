@@ -9,6 +9,7 @@ export default defineConfig({
   title: "Pomeranian",
   description: "Application vocabulary for Playwright tests.",
   lang: "en-US",
+  base: "/pomeranian/",
   srcDir: "../../docs/site",
   outDir: "./dist",
   cacheDir: "./.cache",

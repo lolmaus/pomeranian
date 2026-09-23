@@ -11,6 +11,7 @@ shared linting and TypeScript checks for `@pomeranian/core`,
 GitHub Actions requires formatting, linting, typechecking, and a documentation
 build before merging. The private VitePress application provides local
 development, build, and preview commands for the authored documentation.
+Successful main-branch CI deploys the site to GitHub Pages.
 Each library contains only an empty source module. Neither library has product
 behavior or public product entry points yet.
 

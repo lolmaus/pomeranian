@@ -132,7 +132,7 @@ cache (`apps/docs/.cache/`), then start:
 pnpm run docs:dev --host 127.0.0.1 --port 43190 --strictPort
 ```
 
-Visit `/acceptance-probe/start.html` in a browser. Check that the heading, marker,
+Visit `/pomeranian/acceptance-probe/start.html` in a browser. Check that the heading, marker,
 code fence, and image render. Toggle the default theme's appearance switch and
 confirm that the page appearance changes: server-rendered HTML alone is
 insufficient evidence of hydration.
@@ -164,10 +164,10 @@ against preview. Search every generated output file for the unique sentinel;
 there must be no match. Request the following paths and confirm they do not
 publish project records:
 
-- `/research/docs-acceptance-sentinel`
-- `/docs/research/docs-acceptance-sentinel.md`
-- `/CONTEXT.md`
-- `/AGENTS.md`
+- `/pomeranian/research/docs-acceptance-sentinel`
+- `/pomeranian/docs/research/docs-acceptance-sentinel.md`
+- `/pomeranian/CONTEXT.md`
+- `/pomeranian/AGENTS.md`
 
 These preview requests returned 404. Navigation visibility was not used as the
 publication-boundary test.
@@ -224,5 +224,8 @@ and were reproduced here. The declaration patch uses
 aliases when upgrading the pinned engine.
 
 This evidence covers one Chromium browser and the pinned author toolchain.
-It does not establish cross-browser product behavior, hosting, a deployment
-subpath, or future API/search/LLM integrations. Those are outside this slice.
+It does not establish cross-browser product behavior or future API/search/LLM
+integrations. The author subsequently added GitHub Pages deployment to this
+slice; the browser checks were repeated under `/pomeranian/` and passed. See the
+[deployment verification](pages-deployment.md) for workflow, hosting setup, and
+first-publication status.
