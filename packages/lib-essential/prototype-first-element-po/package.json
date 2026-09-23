@@ -1,0 +1,21 @@
+{
+  "name": "first-element-po-api-prototype",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway construction and Playwright behavior experiment; never production source",
+  "scripts": {
+    "prototype": "tsc --noEmit && playwright test"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.5.1",
+      "onFail": "download"
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.4",
+    "typescript": "7.0.2"
+  }
+}
