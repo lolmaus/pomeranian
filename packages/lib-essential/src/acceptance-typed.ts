@@ -1,5 +1,5 @@
 import { acceptanceAsync } from "./acceptance-async.js";
 
-export function probe(): void {
-  acceptanceAsync();
+export async function probe(): Promise<void> {
+  await acceptanceAsync();
 }
