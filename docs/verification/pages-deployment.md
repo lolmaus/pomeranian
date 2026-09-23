@@ -74,10 +74,18 @@ gh api repos/lolmaus/pomeranian/environments/github-pages/deployment-branch-poli
 
 ## Hosted acceptance and first publication
 
-The implementation remains in PR #35. Its branch and pull-request CI runs must
-complete **Workspace checks**, including the Pages artifact upload, with
-**Deploy documentation** skipped. Inspect the uploaded artifact to confirm the
-published directory boundary and project-base URLs.
+The extension at `9144cdb` passed both [branch CI](https://github.com/lolmaus/pomeranian/actions/runs/35918751977)
+and [PR CI](https://github.com/lolmaus/pomeranian/actions/runs/35918755487).
+**Workspace checks** succeeded, including the Pages artifact upload and unchanged
+maintained-file check. **Deploy documentation** was skipped in both runs, as
+required for the unmerged branch.
+
+The actual PR artifact was downloaded with `gh run download --name github-pages`.
+Its tar archive contained 27 entries, root `index.html` with the starter content,
+no symbolic/hard links, and no research or temporary probe content. Parsing that
+HTML confirmed that all root-relative asset and link URLs used `/pomeranian/`.
+The artifact expires after one day; the workflow logs and this result record
+remain the evidence of that inspection.
 
 The first public deployment is intentionally pending merge approval. Enabling
 Pages does not publish the unmerged branch. After merging PR #35:
