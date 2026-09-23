@@ -13,6 +13,18 @@ a version switcher, a version registry, and branch-build orchestration are out o
 scope, not deferred commitments. An implementation specification and ticket
 breakdown remain separate work; this decision does not schedule a release.
 
+## Scope extension (2026-09-23)
+
+The author extended the current implementation to include a CI job deploying the
+single documentation site to GitHub Pages. This supersedes the deployment-only
+exclusions in the original minimal-scope decision below. Main-branch pushes deploy
+after successful checks; pull requests validate the artifact without publishing.
+The project-site URL is `https://lolmaus.github.io/pomeranian/`. Custom domains,
+DNS, package releases, versioning, and the React demo remain outside this slice.
+See the amended [specification #31](https://github.com/lolmaus/pomeranian/issues/31),
+[implementation #33](https://github.com/lolmaus/pomeranian/issues/33), and
+[deployment verification](../verification/pages-deployment.md).
+
 ## Agreed requirements
 
 | Question                                | Author's answer                                                                                                                                                                                                                               | Selection consequence                                                                                                                                                        |

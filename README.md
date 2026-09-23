@@ -8,11 +8,16 @@ approved by the project author.
 The workspace provides reproducible installation, repository formatting, and
 shared linting and TypeScript checks for `@pomeranian/core`,
 `@pomeranian/lib-essential`, and their tooling.
-GitHub Actions requires formatting, linting, and typechecking before merging.
+GitHub Actions requires formatting, linting, typechecking, and a documentation
+build before merging. The private VitePress application provides local
+development, build, and preview commands for the authored documentation.
+Successful main-branch CI deploys the site to GitHub Pages.
 Each library contains only an empty source module. Neither library has product
 behavior or public product entry points yet.
 
 - [Contributing](CONTRIBUTING.md): prerequisites, installation, and available commands.
+- [Documentation](docs/site/index.md): current starter content; see the
+  [authoring workflow](CONTRIBUTING.md#documentation-workspace) for local preview.
 - [Feature roadmap](ROADMAP.md): approved order, current progress, and work links.
 - [Domain context](CONTEXT.md): project language and glossary.
 - [Agent guidance](AGENTS.md): required context and contribution workflow.

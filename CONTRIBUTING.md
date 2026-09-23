@@ -87,6 +87,63 @@ Run these commands from the repository root:
 | `pnpm run lint:fix`                | Apply supported safe lint fixes in every applicable package.    |
 | `pnpm run typecheck`               | Typecheck every applicable package without emitting files.      |
 
+### Documentation workspace
+
+After the normal frozen installation, run these commands from the repository root:
+
+```sh
+pnpm run docs:dev
+pnpm run docs:build
+pnpm run docs:preview
+```
+
+Development watches source files; preview serves the last production build, so
+run the build first and rebuild after changes. Stop either server with Ctrl-C.
+The terminal prints the local URL, including the `/pomeranian/` project-site
+base used by GitHub Pages. To choose a loopback address and port, append
+`--host 127.0.0.1 --port 43190 --strictPort` to either server command.
+These root commands delegate directly to the private `@pomeranian/docs` package;
+its equivalent scripts are `dev`, `build`, and `preview`.
+
+Write reader-facing Markdown under `docs/site/`. The starter is
+[the home page](docs/site/index.md); add behavior guides under `docs/site/guide/`
+as those behaviors are implemented. Use ordinary relative Markdown file links,
+heading anchors, fenced code, and colocated images so sources remain readable on
+GitHub. Link a new guide from an existing page; add navigation to the default
+VitePress theme when the content warrants it. No custom components are required.
+
+The VitePress configuration lives in `apps/docs/.vitepress/`. Only `docs/site/`
+is website content: research, verification evidence, ADRs, and agent guidance
+outside it are not published. Do not copy these project records into the content
+tree. The React demo is a separate E2E fixture, with no documentation links or
+public deployment.
+
+Build output is `apps/docs/dist/`; optimizer cache is `apps/docs/.cache/`.
+Both are ignored. Documentation commands run outside Turbo and do not cache build
+results. Every build reads current Markdown and assets, including additions and
+deletions; dev and preview are ordinary long-running processes. Successful CI on
+`main` deploys this build to GitHub Pages as described below. This does not
+publish a package release.
+
+Maintained docs configuration extends the shared Node TypeScript environment and
+base lint profile. Its local type environment additionally loads DOM and Web
+Bluetooth declarations required by the VitePress/Vue dependency types. This does
+not change the library or shared Node environments. Full declaration checking
+remains enabled. The pinned VitePress release has a circular `anchor.Token` type
+alias; the pnpm patch under `patches/` binds it to the enclosing Markdown token
+type without changing runtime code. Frozen installs apply that patch. Dependency
+upgrades must recheck whether it is still necessary, as well as the three
+external-content resolver aliases. The workspace explicitly permits esbuild's
+installation script, which the documentation build requires.
+
+Run `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
+`pnpm run docs:build` before submitting changes. Follow the
+[documentation verification procedure](docs/verification/minimal-docs.md) for
+browser navigation, live updates, links/assets, publication boundaries, and clean
+installation checks.
+
+### Formatting commands
+
 `pnpm run format` checks repository formatting without changing files.
 `pnpm run format:fix` applies the same Oxfmt configuration, then a second check
 should pass. Both commands run directly from the root, outside Turbo; every fix
@@ -262,7 +319,7 @@ Turbo caches successful lint and typecheck results and their logs; neither task
 has generated outputs. Its default package inputs account for maintained source,
 local configuration, and manifests. Root [turbo.json](turbo.json) additionally
 hashes the shared configuration packages' top-level `.json` and applicable
-`.mts` files, plus `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
+`.mts` files, plus dependency patches, `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
 `pnpm-lock.yaml`. Changes to those global inputs invalidate cached checks across
 the workspace, including dependency changes recorded in the lockfile.
 
@@ -282,11 +339,13 @@ for the current CLI acceptance procedure and local and hosted evidence. The
 The GitHub Actions workflow **CI** runs on every branch push and every pull
 request, including drafts and documentation-only changes. Push runs check the
 branch tip; pull-request runs check GitHub's proposed merge result. Superseded
-runs are canceled separately for each event and branch or pull request, so a
-push run and its corresponding pull-request run do not cancel one another.
+branch and pull-request runs are canceled separately for each event and ref, so
+a push run and its corresponding pull-request run do not cancel one another.
+Main push runs are serialized without canceling an in-progress run, allowing
+its Pages deployment to finish.
 Tag pushes do not trigger this workflow.
 
-One required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
+The required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
 read-only repository permissions. It selects Node from `.nvmrc` and pnpm from
 root `package.json`'s `devEngines.packageManager`, preserving the same version
 requirements used locally. Each job bootstraps the pinned pnpm executable and
@@ -295,10 +354,11 @@ downloads, with keys sensitive to dependency metadata and the runner platform.
 Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
 the cache does not replace installation or relax lockfile checks.
 
-The job runs `pnpm run format`, `pnpm run lint`, and `pnpm run typecheck`, using
-the same commands and scope as local verification without applying fixes. Both libraries
+The job runs `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
+`pnpm run docs:build`, using
+the same commands and scope as local verification without applying fixes. Both libraries, the docs application,
 and the typed Oxlint configuration package participate in linting and
-typechecking. Installation, formatting, lint, or typecheck failure fails the
+typechecking. Installation, formatting, lint, typecheck, or docs-build failure fails the
 same required job.
 
 Merging into `main` requires a successful **Workspace checks** result from
@@ -316,11 +376,42 @@ this setup.
 See [CI verification](docs/verification/ci.md) for the repeatable hosted
 acceptance procedure and verification record.
 
+### GitHub Pages deployment
+
+The site is `https://lolmaus.github.io/pomeranian/`. CI builds and uploads only
+`apps/docs/dist/` as the `github-pages` artifact on branch pushes and pull
+requests. The artifact is retained for one day. Uploading the archive validates
+packaging; it does not publish branch previews.
+
+A separate **Deploy documentation** job runs only on a push to `main`, after
+**Workspace checks** succeeds. It deploys that run's artifact with the official
+GitHub Pages action and reports the resulting URL on the `github-pages`
+environment. Only this job has `pages: write` and `id-token: write` permissions;
+the checks job retains read-only repository access. Both Pages actions are
+pinned to full commit SHAs and covered by the existing Dependabot action updates.
+No deployment credentials or personal access tokens belong in the workflow.
+
+Repository setup is **Settings → Pages → Build and deployment → Source: GitHub
+Actions**. The `github-pages` environment permits deployments from the `main`
+branch only. On another repository, configure those same settings and adjust the
+VitePress base for its project-site URL before the first deployment. A custom
+domain and DNS are separate future work.
+
+The first public deployment occurs after this workflow is merged to `main`.
+Inspect its **Deploy documentation** job and environment URL, then open the site
+and check its assets and navigation. Subsequent successful main pushes update
+the same site. For a failed deployment, fix the reported cause and rerun the
+failed job from its main-branch Actions run while its artifact is retained;
+otherwise rerun all jobs to create a fresh artifact. Main workflows queue so a
+new push does not interrupt an active deployment. See the
+[Pages verification record](docs/verification/pages-deployment.md) for tested
+behavior and the first-publication checklist.
+
 ## Workspace layout and adding packages
 
 pnpm discovers `packages/*` and `apps/*`. The current library identities live at
-`packages/core` and `packages/lib-essential`; applications arrive with their
-roadmap items.
+`packages/core` and `packages/lib-essential`; the private documentation application lives at `apps/docs`. Other applications
+arrive with their roadmap items.
 
 Create a manifest with a unique package name in the appropriate directory. Use
 `private: true` for internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;

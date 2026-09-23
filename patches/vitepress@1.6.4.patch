@@ -1,0 +1,8 @@
+diff --git a/dist/node/index.d.ts b/dist/node/index.d.ts
+--- a/dist/node/index.d.ts
++++ b/dist/node/index.d.ts
+@@ -1952,2 +1952,3 @@
++type MarkdownItToken = Token;
+ declare namespace anchor {
+-  export type Token = Token
++  export type Token = MarkdownItToken

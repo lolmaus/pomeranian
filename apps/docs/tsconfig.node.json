@@ -1,0 +1,8 @@
+{
+  "extends": "@pomeranian/typescript-config/node",
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "types": ["node", "web-bluetooth"]
+  },
+  "include": ["*.mts", ".vitepress/*.mts"]
+}
