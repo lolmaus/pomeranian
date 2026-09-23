@@ -5,7 +5,10 @@ and its [parent specification #9](https://github.com/lolmaus/pomeranian/issues/9
 The fixed comparison is `git diff 7088e917...0f34c472`, containing commit
 `0f34c47` (merged as `3de8a69` in [PR #27](https://github.com/lolmaus/pomeranian/pull/27)).
 Independent standards and specification reviews used the installed code-review
-skill. These findings describe the merged PR before the follow-up.
+skill. These findings describe the merged PR against the then-current contract,
+before the follow-up. The author subsequently explicitly approved pnpm 12.5.1
+with automatic download; that amendment resolves the policy disagreement below
+through documentation and new selection evidence, rather than reverting #27.
 
 ## Standards
 
@@ -54,7 +57,8 @@ not complete #14.**
 
 [Lib-essential verification](lib-essential-checks.md) supplies the independent
 local, native-editor, and hosted observations. The follow-up retains pnpm 12.5.1,
-restores strict mismatch rejection, documents package-local discovery after testing
+preserves automatic download under the author-approved amendment, documents
+package-local discovery after testing
 all five maintained leaves, and removes the obsolete root discovery cache entry.
 Contributor guidance and the roadmap are reconciled with the merged work.
 The [foundation index](foundation-index.md) separates completed evidence from the

@@ -43,21 +43,25 @@ pnpm --version
 pnpm install --frozen-lockfile
 ```
 
-`pnpm --version` must report `12.5.1`. Keep the two environment overrides above
-unset and omit `--pm-on-fail` overrides from pnpm invocations. The repository sets
-`pmOnFail: error` and `devEngines.packageManager.onFail: error`; changing these
-settings or supplying overrides changes the version-selection contract.
+`pnpm --version` must report `12.5.1` inside the checkout. Keep the two
+package-manager environment overrides above unset and omit `--pm-on-fail`
+overrides. The manifest's `devEngines.packageManager.onFail: download` selects
+the exact required version automatically when the launching pnpm differs.
+There is no workspace `pmOnFail: error` override. The author approved this
+behavior after PR #27; it replaces the earlier strict mismatch-rejection policy.
 
-With these settings, a pnpm version mismatch makes both `pnpm --version` and
-`pnpm install --frozen-lockfile` exit with status 1 and report the required and
-current versions. Resolve it by rerunning the bootstrap command; retain strict
-checking even if the diagnostic suggests `warn` or `ignore`. Check which
-executable your shell resolves with `command -v pnpm`, and reopen the shell or
-refresh its command cache if it still finds a previous installation.
+A compatible pnpm launcher can download and run 12.5.1 on the first invocation,
+then reuse its managed copy. Verification exercised pnpm 11.27.1 launching
+`pnpm --version`, frozen installation, lint, and typecheck under 12.5.1. An initial
+download requires registry access. The npm bootstrap above remains the direct
+setup route; inspect `command -v pnpm` when diagnosing launcher selection.
+An arbitrary older pnpm is not guaranteed to understand the manifest authority.
 
-This bootstrap route uses npm directly; Corepack is not part of the supported
-route. See [bootstrap verification](docs/verification/bootstrap.md) for the tested
-version and mismatch behavior, including controlled override settings.
+Corepack is not part of the supported bootstrap route. See the
+[current automatic-download evidence](docs/verification/lib-essential-checks.md#automatic-download-contract)
+for cold/warm selection, unchanged metadata, and frozen-lockfile rejection.
+The [bootstrap record](docs/verification/bootstrap.md) retains historical evidence
+of the superseded strict policy.
 
 The frozen install consumes the committed lockfile and must leave dependency
 metadata unchanged. Use it for a fresh checkout and routine setup. When

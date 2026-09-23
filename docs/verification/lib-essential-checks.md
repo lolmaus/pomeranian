@@ -16,12 +16,41 @@ permanent test framework, browser infrastructure, or new preset was introduced.
 Node **24.21.0**, pnpm **12.5.1**, Turbo **2.11.2**, Oxfmt **0.70.0**,
 Oxlint **1.85.0**, oxlint-tsgolint **7.0.2002**, TypeScript **7.0.2**,
 eslint-plugin-playwright **2.12.0**, ESLint **10.11.0**.
-The follow-up keeps #27's pnpm upgrade and restores `onFail: error` plus
-`pmOnFail: error`, preserving the specified strict mismatch contract.
-With both environment overrides unset, pnpm **11.27.1** exits **1** for
-`pnpm --version` and `pnpm install --frozen-lockfile`, reporting required
-12.5.1 versus current 11.27.1. The supported bootstrap selects 12.5.1 successfully.
+The author explicitly approved keeping #27's pnpm 12.5.1 and automatic download
+when answering the follow-up's contract question. This amends the earlier
+strict mismatch-rejection expectation in #9/#14. The final settings are
+`devEngines.packageManager.onFail: download` with no workspace `pmOnFail` override.
 No legacy package-manager field or Turbo authority override is used.
+
+### Automatic-download contract
+
+Verified in an isolated worktree with Node 24.21.0 and an explicitly selected
+pnpm 11.27.1 launcher. Unset `pnpm_config_pm_on_fail` and
+`PNPM_CONFIG_PM_ON_FAIL`. Point `XDG_DATA_HOME` and `XDG_CACHE_HOME` at fresh
+external temporary directories to isolate the managed download without changing
+the project pin or clearing any existing cache.
+
+| Invocation                                                                         | Observed result                                                          |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Same launcher: `pnpm --version` outside any project                                | Exit 0, 11.27.1; no managed pnpm present                                 |
+| First `pnpm --version` inside the real isolated checkout                           | Exit 0, 12.5.1; managed pnpm 12.5.1 appears in the fresh data directory  |
+| Repeat `pnpm --version` inside the checkout                                        | Exit 0, 12.5.1; managed package manifest and its timestamp unchanged     |
+| `pnpm install --frozen-lockfile` through the mismatched launcher                   | Exit 0, installs with pnpm 12.5.1; tracked dependency metadata unchanged |
+| `pnpm run lint` and `pnpm run typecheck` through that launcher                     | Exit 0; all three package tasks succeed using eligible cached results    |
+| Temporarily change lib-essential's Oxlint specifier to 1.84.0 without its lockfile | Frozen installation exits 1, `ERR_PNPM_OUTDATED_LOCKFILE`                |
+
+The launcher stayed 11.27.1 outside the checkout; project commands selected the
+exact required 12.5.1. Metadata hashes matched before and after installation and
+checks, and again after restoring the deliberate manifest mismatch. The selected
+compiler/linter versions and actual task commands are unchanged, so earlier
+independent defect and hosted failure/recovery evidence remains applicable.
+The full clean command rerun below additionally executes every package's scripts
+directly under the final automatic-download configuration.
+
+Earlier strict-rejection probes (pnpm 11.27.1 exited 1 under `onFail: error`)
+remain historical observations, not the current acceptance contract. The
+amendment changes mismatch handling, not the exact pnpm authority or frozen
+installation requirement.
 
 | Consumer      | Maintained input | Owning leaf             | Public preset / declaration line   |
 | ------------- | ---------------- | ----------------------- | ---------------------------------- |
@@ -156,8 +185,9 @@ lib-essential afresh and exited 1 with `no-console`. Restore the rule: exit 0.
 For typecheck, use `export const probe: string = ["value"][0];`, then set shared
 `noUncheckedIndexedAccess: true`. Root typecheck executed afresh and exited 1
 with TS2322. Restoring the setting restored success. Both cases were repeated
-with the follow-up's strict pnpm policy and removal of the obsolete root cache
-entry; no cache bypass was used.
+before the author's automatic-download amendment, with pnpm 12.5.1 and removal
+of the obsolete root cache entry; no cache bypass was used. The amendment changes
+launcher selection, not the compiler/linter versions, package tasks, or cache rules.
 
 `pnpm exec turbo run lint typecheck --dry=json` additionally confirmed both
 lib-essential task hashes change for each independently changed package discovery
@@ -235,18 +265,22 @@ cache setup, and the single install remain unchanged.
 ## Restoration and integration
 
 All temporary source, alias, DOM, dependency, and shared-setting changes were
-restored. The probe worktree retained only the follow-up's intentional strict
+restored. The original probe worktree retained only the then-proposed strict
 pnpm settings and obsolete-cache-entry removal; no temporary input remained.
+The author subsequently chose automatic download; its separate acceptance above
+supersedes the strict mismatch results.
 The lockfile is unchanged from merged #27. The following complete command rerun
-passed in the task checkout on 2026-09-23 with the same implementation settings:
+passed in the task checkout on 2026-09-23 with the then-proposed strict selection settings. The complete command set is
+rerun after the automatic-download amendment; results below describe that final
+configuration:
 
-| Command group                   | Executed commands                                                                                                     | Outcome                                                          |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Authority and install           | `node --version`; `pnpm --version`; `pnpm config get pmOnFail`; `pnpm install --frozen-lockfile`                      | All exit 0; v24.21.0 / 12.5.1 / error; frozen metadata unchanged |
-| Workspace inventory             | `pnpm list --recursive --depth -1`; `pnpm exec turbo --version`; `pnpm exec turbo ls`                                 | All exit 0; all five workspace identities, Turbo 2.11.2          |
-| All applicable package commands | `pnpm --filter @pomeranian/<package> run <task>` for core, lib-essential, oxlint-config and lint, lint:fix, typecheck | All nine commands exit 0                                         |
-| Root checks/fixes               | `pnpm run lint`; `pnpm run lint:fix`; `pnpm run typecheck`                                                            | All exit 0; three real tasks per aggregate                       |
-| Formatting and patch integrity  | `pnpm run format`; `pnpm run format:fix`; `pnpm run format`; `git diff --check`                                       | All exit 0                                                       |
+| Command group                   | Executed commands                                                                                                     | Outcome                                                  |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Authority and install           | `node --version`; `pnpm --version`; `pnpm config get pmOnFail`; `pnpm install --frozen-lockfile`                      | All exit 0; v24.21.0 / 12.5.1; frozen metadata unchanged |
+| Workspace inventory             | `pnpm list --recursive --depth -1`; `pnpm exec turbo --version`; `pnpm exec turbo ls`                                 | All exit 0; all five workspace identities, Turbo 2.11.2  |
+| All applicable package commands | `pnpm --filter @pomeranian/<package> run <task>` for core, lib-essential, oxlint-config and lint, lint:fix, typecheck | All nine commands exit 0                                 |
+| Root checks/fixes               | `pnpm run lint`; `pnpm run lint:fix`; `pnpm run typecheck`                                                            | All exit 0; three real tasks per aggregate               |
+| Formatting and patch integrity  | `pnpm run format`; `pnpm run format:fix`; `pnpm run format`; `git diff --check`                                       | All exit 0                                               |
 
 SHA-256 comparison of maintained tracked files before/after the command rerun
 was unchanged. Package-source inspection found no emitted JavaScript, maps, or
@@ -260,13 +294,15 @@ proposed merge result. At implementation commit
 [`31b2aa4`](https://github.com/lolmaus/pomeranian/commit/31b2aa4),
 [push run 35907571380](https://github.com/lolmaus/pomeranian/actions/runs/35907571380)
 and [PR run 35907577984](https://github.com/lolmaus/pomeranian/actions/runs/35907577984)
-both passed. Later evidence-link edits retain the same implementation. These
+both passed. Those runs preceded the author-approved automatic-download amendment. The amended
+revision must pass the same required workflow; its result is available in
+[PR #29 checks](https://github.com/lolmaus/pomeranian/pull/29/checks). These
 checks provide current review evidence; the
 post-merge main checkpoint below is deliberately separate.
 
 Historical #11/#12/#18 and #13 evidence is retained where its behavior and pins
-are unchanged. The pnpm mismatch and frozen-install checks are repeated for
-12.5.1; package-local native discovery and both libraries' current clean commands
+are unchanged. Automatic pnpm selection and frozen-install checks are repeated
+for 12.5.1; package-local native discovery and both libraries' current clean commands
 are revalidated here. Runtime behavior under supported Node LTS versions belongs
 to the first Element_PO behavior slice. Packed JavaScript and public declarations
 belong to packaging before publication. This scaffold proves neither obligation.
