@@ -52,6 +52,9 @@ jobs:
       - name: Typecheck workspace packages
         run: pnpm run typecheck
 
+      - name: Build documentation
+        run: pnpm run docs:build
+
       - name: Verify maintained files are unchanged
         if: ${{ !cancelled() }}
         run: git diff --exit-code HEAD

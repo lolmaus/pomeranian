@@ -6,7 +6,10 @@
     "format:fix": "oxfmt --write --disable-nested-config .",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "docs:dev": "pnpm --filter @pomeranian/docs run dev",
+    "docs:build": "pnpm --filter @pomeranian/docs run build",
+    "docs:preview": "pnpm --filter @pomeranian/docs run preview"
   },
   "devEngines": {
     "packageManager": {

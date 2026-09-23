@@ -87,6 +87,61 @@ Run these commands from the repository root:
 | `pnpm run lint:fix`                | Apply supported safe lint fixes in every applicable package.    |
 | `pnpm run typecheck`               | Typecheck every applicable package without emitting files.      |
 
+### Documentation workspace
+
+After the normal frozen installation, run these commands from the repository root:
+
+```sh
+pnpm run docs:dev
+pnpm run docs:build
+pnpm run docs:preview
+```
+
+Development watches source files; preview serves the last production build, so
+run the build first and rebuild after changes. Stop either server with Ctrl-C.
+The terminal prints the local URL. To choose a loopback address and port, append
+`--host 127.0.0.1 --port 43190 --strictPort` to either server command.
+These root commands delegate directly to the private `@pomeranian/docs` package;
+its equivalent scripts are `dev`, `build`, and `preview`.
+
+Write reader-facing Markdown under `docs/site/`. The starter is
+[the home page](docs/site/index.md); add behavior guides under `docs/site/guide/`
+as those behaviors are implemented. Use ordinary relative Markdown file links,
+heading anchors, fenced code, and colocated images so sources remain readable on
+GitHub. Link a new guide from an existing page; add navigation to the default
+VitePress theme when the content warrants it. No custom components are required.
+
+The VitePress configuration lives in `apps/docs/.vitepress/`. Only `docs/site/`
+is website content: research, verification evidence, ADRs, and agent guidance
+outside it are not published. Do not copy these project records into the content
+tree. The React demo is a separate E2E fixture, with no documentation links or
+public deployment.
+
+Build output is `apps/docs/dist/`; optimizer cache is `apps/docs/.cache/`.
+Both are ignored. Documentation commands run outside Turbo and do not cache build
+results. Every build reads current Markdown and assets, including additions and
+deletions; dev and preview are ordinary long-running processes. No deployment is
+configured, and this workflow does not publish a release.
+
+Maintained docs configuration extends the shared Node TypeScript environment and
+base lint profile. Its local type environment additionally loads DOM and Web
+Bluetooth declarations required by the VitePress/Vue dependency types. This does
+not change the library or shared Node environments. Full declaration checking
+remains enabled. The pinned VitePress release has a circular `anchor.Token` type
+alias; the pnpm patch under `patches/` binds it to the enclosing Markdown token
+type without changing runtime code. Frozen installs apply that patch. Dependency
+upgrades must recheck whether it is still necessary, as well as the three
+external-content resolver aliases. The workspace explicitly permits esbuild's
+installation script, which the documentation build requires.
+
+Run `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
+`pnpm run docs:build` before submitting changes. Follow the
+[documentation verification procedure](docs/verification/minimal-docs.md) for
+browser navigation, live updates, links/assets, publication boundaries, and clean
+installation checks.
+
+### Formatting commands
+
 `pnpm run format` checks repository formatting without changing files.
 `pnpm run format:fix` applies the same Oxfmt configuration, then a second check
 should pass. Both commands run directly from the root, outside Turbo; every fix
@@ -262,7 +317,7 @@ Turbo caches successful lint and typecheck results and their logs; neither task
 has generated outputs. Its default package inputs account for maintained source,
 local configuration, and manifests. Root [turbo.json](turbo.json) additionally
 hashes the shared configuration packages' top-level `.json` and applicable
-`.mts` files, plus `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
+`.mts` files, plus dependency patches, `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
 `pnpm-lock.yaml`. Changes to those global inputs invalidate cached checks across
 the workspace, including dependency changes recorded in the lockfile.
 
@@ -295,10 +350,11 @@ downloads, with keys sensitive to dependency metadata and the runner platform.
 Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
 the cache does not replace installation or relax lockfile checks.
 
-The job runs `pnpm run format`, `pnpm run lint`, and `pnpm run typecheck`, using
-the same commands and scope as local verification without applying fixes. Both libraries
+The job runs `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
+`pnpm run docs:build`, using
+the same commands and scope as local verification without applying fixes. Both libraries, the docs application,
 and the typed Oxlint configuration package participate in linting and
-typechecking. Installation, formatting, lint, or typecheck failure fails the
+typechecking. Installation, formatting, lint, typecheck, or docs-build failure fails the
 same required job.
 
 Merging into `main` requires a successful **Workspace checks** result from
@@ -319,8 +375,8 @@ acceptance procedure and verification record.
 ## Workspace layout and adding packages
 
 pnpm discovers `packages/*` and `apps/*`. The current library identities live at
-`packages/core` and `packages/lib-essential`; applications arrive with their
-roadmap items.
+`packages/core` and `packages/lib-essential`; the private documentation application lives at `apps/docs`. Other applications
+arrive with their roadmap items.
 
 Create a manifest with a unique package name in the appropriate directory. Use
 `private: true` for internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;

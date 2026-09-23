@@ -1,3 +1,9 @@
 packages:
   - packages/*
   - apps/*
+
+allowBuilds:
+  esbuild: true
+
+patchedDependencies:
+  vitepress@1.6.4: patches/vitepress@1.6.4.patch
