@@ -7,7 +7,8 @@ original bootstrap record rather than treating that narrower run as sufficient.
 
 As of 2026-09-23, bootstrap #11, formatting #12, CI #18, and core #13 have
 integrated. [PR #27](https://github.com/lolmaus/pomeranian/pull/27) integrated
-lib-essential wiring. The [retrospective review](pr-27-review.md) explains why
+lib-essential wiring. [Follow-up PR #29](https://github.com/lolmaus/pomeranian/pull/29)
+records acceptance and the remaining integration checkpoint. The [retrospective review](pr-27-review.md) explains why
 #14 still needed this follow-up. Its local and hosted acceptance is recorded in
 [lib-essential checks](lib-essential-checks.md).
 

@@ -255,8 +255,13 @@ clients/orchestration and logs remain outside the repository. The disposable
 hosted PR was closed without merging after clean recovery. Its linked revisions
 and runs preserve failure evidence after branch cleanup.
 
-The final follow-up PR also runs the unchanged required workflow against its
-proposed merge result. Its PR checks provide current review evidence; the
+[Follow-up PR #29](https://github.com/lolmaus/pomeranian/pull/29) runs the unchanged required workflow against its
+proposed merge result. At implementation commit
+[`31b2aa4`](https://github.com/lolmaus/pomeranian/commit/31b2aa4),
+[push run 35907571380](https://github.com/lolmaus/pomeranian/actions/runs/35907571380)
+and [PR run 35907577984](https://github.com/lolmaus/pomeranian/actions/runs/35907577984)
+both passed. Later evidence-link edits retain the same implementation. These
+checks provide current review evidence; the
 post-merge main checkpoint below is deliberately separate.
 
 Historical #11/#12/#18 and #13 evidence is retained where its behavior and pins
