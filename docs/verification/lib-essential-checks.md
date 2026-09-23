@@ -295,8 +295,7 @@ proposed merge result. At implementation commit
 [push run 35907571380](https://github.com/lolmaus/pomeranian/actions/runs/35907571380)
 and [PR run 35907577984](https://github.com/lolmaus/pomeranian/actions/runs/35907577984)
 both passed. Those runs preceded the author-approved automatic-download amendment. The amended
-revision must pass the same required workflow; its result is available in
-[PR #29 checks](https://github.com/lolmaus/pomeranian/pull/29/checks). These
+revision subsequently passed [PR run 35909010327](https://github.com/lolmaus/pomeranian/actions/runs/35909010327). These
 checks provide current review evidence; the
 post-merge main checkpoint below is deliberately separate.
 
@@ -307,8 +306,17 @@ are revalidated here. Runtime behavior under supported Node LTS versions belongs
 to the first Element_PO behavior slice. Packed JavaScript and public declarations
 belong to packaging before publication. This scaffold proves neither obligation.
 
-The follow-up remains subject to author approval before merge. The final
-post-merge frozen install, complete clean command rerun, and hosted main result
-must be recorded against its integrated revision as described in the
-[foundation index](foundation-index.md); neither #14 nor roadmap item 1 is marked
-done in advance of that checkpoint.
+## Completed post-merge verification
+
+The author merged PR #29 as
+[`e05bbf62490358fc53f723f30a730b552da53d6a`](https://github.com/lolmaus/pomeranian/commit/e05bbf62490358fc53f723f30a730b552da53d6a).
+Main [Workspace checks run 35909337845](https://github.com/lolmaus/pomeranian/actions/runs/35909337845)
+passed on that revision. The complete local command set in the restoration table
+was rerun on the same merged SHA: every command exited 0, maintained-file hashes
+were unchanged, and no emitted JavaScript/maps/build metadata was present.
+
+[The final integration record](https://github.com/lolmaus/pomeranian/issues/14#issuecomment-5801494603)
+supersedes earlier pending-checkpoint statements and closes #14 with all twelve
+criteria satisfied. The [foundation index](foundation-index.md#final-integration-checkpoint)
+records this final checkpoint. Later behavior and packaging compatibility
+obligations remain assigned to their respective roadmap slices.
