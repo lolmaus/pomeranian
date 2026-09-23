@@ -87,20 +87,31 @@ HTML confirmed that all root-relative asset and link URLs used `/pomeranian/`.
 The artifact expires after one day; the workflow logs and this result record
 remain the evidence of that inspection.
 
-The first public deployment is intentionally pending merge approval. Enabling
-Pages does not publish the unmerged branch. After merging PR #35:
+### First public deployment: passed
 
-1. Confirm the main-push **Workspace checks** and **Deploy documentation** jobs
-   succeed in the same run, and that deployment uses that run's artifact.
-2. Confirm the `github-pages` environment reports the expected HTTPS URL.
-3. Open the public URL in a browser, check starter content and its appearance
-   switch, and confirm JavaScript/CSS assets load beneath `/pomeranian/`.
-4. When the next guide is added, check its direct nested URL and relative links
-   on the public site. Nested-page browser behavior was tested locally with
-   disposable content; no demonstration guide was retained solely for hosting.
+[PR #35](https://github.com/lolmaus/pomeranian/pull/35) merged as
+`0980730cbc9fbc173d17fe32c77a19130de4f618`. The resulting
+[main CI run](https://github.com/lolmaus/pomeranian/actions/runs/35919215621)
+completed **Workspace checks** in 25 seconds and **Deploy documentation** in
+12 seconds. The deployment consumed the artifact from that same run.
 
-These steps are the remaining live-host acceptance, not claims that a production
-deployment has already succeeded. Custom-domain/DNS work, package releases, the
+A real Chromium 145.0.7632.6 session opened
+[the public site](https://lolmaus.github.io/pomeranian/) and confirmed:
+
+- HTTP 200 with the Pomeranian starter and Project status heading.
+- A working appearance switch, establishing client hydration.
+- The site-title link returns to the expected project-site home URL.
+- All seven observed script, stylesheet, and font responses were HTTP 200 under
+  the `/pomeranian/` path.
+- No browser errors or warnings.
+
+The browser session was closed after verification. Public nested-guide behavior
+will be rechecked when a guide is added; the agreed direct nested URL and relative
+link behavior already passed with disposable content under the same subpath in
+local browser acceptance. No extra guide was retained solely for hosting.
+
+For later deployments, inspect the main-push run and environment URL, then repeat
+the public browser checks above. Custom-domain/DNS work, package releases, the
 React demo, branch previews, and versioned documentation remain out of scope.
 
 ## Sources

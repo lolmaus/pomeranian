@@ -397,10 +397,9 @@ branch only. On another repository, configure those same settings and adjust the
 VitePress base for its project-site URL before the first deployment. A custom
 domain and DNS are separate future work.
 
-The first public deployment occurs after this workflow is merged to `main`.
-Inspect its **Deploy documentation** job and environment URL, then open the site
-and check its assets and navigation. Subsequent successful main pushes update
-the same site. For a failed deployment, fix the reported cause and rerun the
+The site is live. Successful main pushes update the same site. Inspect the
+**Deploy documentation** job and environment URL, then open the site and check
+its assets and navigation. For a failed deployment, fix the reported cause and rerun the
 failed job from its main-branch Actions run while its artifact is retained;
 otherwise rerun all jobs to create a fresh artifact. Main workflows queue so a
 new push does not interrupt an active deployment. See the
