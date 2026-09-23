@@ -1,0 +1,7 @@
+{
+  "extends": "@pomeranian/typescript-config/library",
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": ["src/**/*"]
+}
