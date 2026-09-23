@@ -269,9 +269,12 @@ Authors develop on the exact Node version in `.nvmrc`. Published libraries are
 intended for the latest supported patch of each supported Node LTS major,
 starting with 22. The library preset checks that baseline; `target` alone does
 not establish runtime or built-artifact compatibility, and `noEmit` performs no
-downlevel transformation. Actual Node LTS behavior belongs to the first
-Element_PO slice; packed JavaScript and public declarations are verified by the
-packaging slice before publication. Playwright transforms TypeScript without
+downlevel transformation. The author narrowed the first Element_PO slice's
+behavior verification to the latest supported Node 22 patch and Chromium; see
+the [first-slice decisions](docs/research/first-element-po-requirements.md).
+That evidence covers only the selected environment. Packed JavaScript and public
+declarations remain subject to verification under the agreed consumer environments
+by the packaging slice before publication. Playwright transforms TypeScript without
 typechecking it or using `target` as a compatibility guarantee. Its test preset
 permits DOM names throughout the program, not only inside browser callbacks.
 
