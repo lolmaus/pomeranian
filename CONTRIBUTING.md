@@ -12,7 +12,7 @@ is used only to bootstrap pnpm in the instructions below.
 
 pnpm must be available before installing workspace dependencies. Its exact version
 is declared in root `package.json` under `devEngines.packageManager`, currently
-`11.27.1`; that field is the package-manager version authority. Turbo, Oxfmt,
+`12.5.1`; that field is the package-manager version authority. Turbo, Oxfmt,
 Oxlint, and TypeScript are local workspace dependencies and need no global
 installation.
 
@@ -43,12 +43,12 @@ pnpm --version
 pnpm install --frozen-lockfile
 ```
 
-`pnpm --version` must report `11.27.1`. Keep the two environment overrides above
+`pnpm --version` must report `12.5.1`. Keep the two environment overrides above
 unset and omit `--pm-on-fail` overrides from pnpm invocations. The repository sets
 `pmOnFail: error` and `devEngines.packageManager.onFail: error`; changing these
 settings or supplying overrides changes the version-selection contract.
 
-With these settings, a pnpm 11 version mismatch makes both `pnpm --version` and
+With these settings, a pnpm version mismatch makes both `pnpm --version` and
 `pnpm install --frozen-lockfile` exit with status 1 and report the required and
 current versions. Resolve it by rerunning the bootstrap command; retain strict
 checking even if the diagnostic suggests `warn` or `ignore`. Check which
@@ -114,7 +114,8 @@ acceptance procedure and executed evidence, including excluded-file preservation
 
 ### Package linting and typechecking
 
-`@pomeranian/core` and `@pomeranian/oxlint-config` each provide real `lint`,
+`@pomeranian/core`, `@pomeranian/lib-essential`, and
+`@pomeranian/oxlint-config` each provide real `lint`,
 `lint:fix`, and `typecheck` scripts. Root commands run those scripts through
 Turbo and propagate failures. To check or fix core alone, run:
 
@@ -124,8 +125,9 @@ pnpm --filter @pomeranian/core run lint:fix
 pnpm --filter @pomeranian/core run typecheck
 ```
 
-Use `@pomeranian/oxlint-config` instead to select the shared lint configuration
-package, or run the same scripts from either package directory. Linting checks
+Use `@pomeranian/lib-essential` to select the second library or
+`@pomeranian/oxlint-config` for shared lint configuration. The same scripts work
+from each package directory. Linting checks
 source and local configuration without changing files; warnings also fail the
 command. Fixing applies supported safe fixes, and violations it cannot fix still
 fail. Rerun lint after making any remaining corrections.
@@ -145,7 +147,7 @@ TypeScript checks remain necessary. Each consumer must maintain a discoverable
 reference can silently omit project-dependent lint diagnostics. `--tsconfig` is
 not a substitute for typed-project discovery.
 
-Core applies the Playwright library fragment to TypeScript source under `src/`
+Both libraries apply the Playwright library fragment to TypeScript source under `src/`
 (`.ts`, `.tsx`, `.mts`, and `.cts`). Test consumers
 must restrict the test fragment to their test paths. `expect-expect` recognizes
 `expect` by default; a consumer may explicitly name genuine assertion helpers in
@@ -182,15 +184,16 @@ and explicit commands for all their leaves.
 | `browser`                              | Repository browser applications: ES2023, DOM, bundler resolution, no implicit Node ambient types.                                               |
 | `browser-react`                        | Browser policy plus automatic React JSX and React declarations.                                                                                 |
 
-Core's `tsconfig.library.json` owns `src/**/*`; `tsconfig.node.json` owns root
+Each library's `tsconfig.library.json` owns `src/**/*`; `tsconfig.node.json` owns root
 `.mts` tooling. The lint configuration package's Node leaf owns its `.mts`
 modules. New files in these scopes are included automatically. No leaf enables
-`composite`. Empty package `tsconfig.json` files and the root solution contain
-only discovery references. Scripts explicitly check each leaf with
+`composite`. Each package has an empty `tsconfig.json` containing
+only discovery references. There is no root TypeScript solution; opening a file
+uses its nearest package discovery entrypoint. Scripts explicitly check each leaf with
 `tsc --noEmit --project <leaf>`; checking an empty solution alone does not check
 its children. Do not substitute a build invocation that creates build metadata.
 
-Core installs canonical `@types/node` at the exact Node 22 declaration pin and
+Each library installs canonical `@types/node` at the exact Node 22 declaration pin and
 `@types-node24/node` as an alias of the exact Node 24 pin. Its library leaf uses
 `typeRoots: ["./node_modules/@types"]`, and its tooling leaf uses
 `typeRoots: ["./node_modules/@types-node24"]`. Both select the standard `node`
@@ -241,11 +244,9 @@ placeholder. The Oxlint configuration package contains typed `.mts` source, so
 both linting and typechecking include it. The `.mts` extension identifies these
 tooling modules as ESM without deciding either library's distribution format.
 
-Core's `src/scaffold.ts` contains only `export {};`: it supplies an initial
-source module with no product declarations. Both
-libraries retain empty public exports. `@pomeranian/lib-essential` remains
-source-free and gains its check workflow in
-[lib-essential checks #14](https://github.com/lolmaus/pomeranian/issues/14).
+Each library's `src/scaffold.ts` contains only `export {};`: it supplies the
+initial compiler input allowed by the foundation specification, without product
+declarations. Both libraries retain empty public exports.
 
 The no-output flag also protects against emission when shared configuration
 resolution fails. These checks neither build product JavaScript nor select a
@@ -257,7 +258,7 @@ Turbo caches successful lint and typecheck results and their logs; neither task
 has generated outputs. Its default package inputs account for maintained source,
 local configuration, and manifests. Root [turbo.json](turbo.json) additionally
 hashes the shared configuration packages' top-level `.json` and applicable
-`.mts` files, plus root `tsconfig.json`, `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
+`.mts` files, plus `.nvmrc`, `.gitignore`, `pnpm-workspace.yaml`, and the complete
 `pnpm-lock.yaml`. Changes to those global inputs invalidate cached checks across
 the workspace, including dependency changes recorded in the lockfile.
 
@@ -291,11 +292,10 @@ Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
 the cache does not replace installation or relax lockfile checks.
 
 The job runs `pnpm run format`, `pnpm run lint`, and `pnpm run typecheck`, using
-the same commands and scope as local verification without applying fixes. Core
+the same commands and scope as local verification without applying fixes. Both libraries
 and the typed Oxlint configuration package participate in linting and
 typechecking. Installation, formatting, lint, or typecheck failure fails the
-same required job. #14 adds lib-essential to these aggregates when its checks
-become available.
+same required job.
 
 Merging into `main` requires a successful **Workspace checks** result from
 GitHub Actions, and the branch must be up to date with `main`. This applies to
@@ -328,7 +328,30 @@ refresh the lockfile using `pnpm install`. Confirm discovery with
 Use explicit source modules without `index.ts` barrel files, and export every
 type defined by project code. Consume shared configurations by package identity
 and exported entry point. Packages with source need applicable lint and typecheck
-commands.
+commands. For another library with the same environments:
+
+1. Declare `@pomeranian/oxlint-config` and `@pomeranian/typescript-config` using
+   `workspace:*`, plus the exact Oxlint, typed engine, and matching Node declaration
+   dependencies shown in either existing library manifest.
+2. Import `@pomeranian/oxlint-config/base` in local `oxlint.config.mts`. Apply
+   `playwright-library` to library/helper inputs. Apply `playwright-test` only to
+   actual tests; use the React profile only for React inputs. Do not add test or
+   browser infrastructure solely to configure an empty library.
+3. Extend `@pomeranian/typescript-config/library` from `tsconfig.library.json`
+   owning `src/**/*`, and `/node` from `tsconfig.node.json` owning root `*.mts`.
+   Keep Node 22 and Node 24 type roots separate as described above. Consumer
+   paths belong here; reusable compiler policy belongs in the shared presets.
+4. Create `tsconfig.json` with `files: []` and references to every leaf. Keep
+   leaves non-composite. Check editor project selection with the workspace compiler.
+5. Add `lint` and `lint:fix` matching the existing libraries, with zero warnings
+   and safe fixes. Make `typecheck` explicitly run `tsc --noEmit --project` for
+   each leaf. New files within the ownership globs enter checks automatically.
+6. Keep explicit public exports and source modules, with exported type definitions
+   and no barrels. An empty scaffold may use only `export {};` as compiler input.
+7. Refresh the lockfile, run frozen installation, package checks/fixes, and the
+   root aggregates. Confirm Turbo discovers and executes the new tasks. Follow
+   the [lib-essential acceptance procedure](docs/verification/lib-essential-checks.md)
+   to prove independent failures, ownership, cache invalidation, and recovery.
 
 ## Tests and documentation
 

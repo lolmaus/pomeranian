@@ -6,10 +6,10 @@ direction is Playwright Test; product behavior is being developed in the order
 approved by the project author.
 
 The workspace provides reproducible installation, repository formatting, and
-shared linting and TypeScript checks for `@pomeranian/core` and its tooling.
+shared linting and TypeScript checks for `@pomeranian/core`,
+`@pomeranian/lib-essential`, and their tooling.
 GitHub Actions requires formatting, linting, and typechecking before merging.
-Core contains only an empty source module; `@pomeranian/lib-essential` remains
-source-free until its check workflow is added. Neither library has product
+Each library contains only an empty source module. Neither library has product
 behavior or public product entry points yet.
 
 - [Contributing](CONTRIBUTING.md): prerequisites, installation, and available commands.
@@ -26,6 +26,8 @@ behavior or public product entry points yet.
 - [Core-check verification](docs/verification/core-checks-extension.md): typed and
   framework linting, five TypeScript environments, editor discovery, safe fixes,
   cache invalidation, and hosted failure checks.
+- [Lib-essential verification](docs/verification/lib-essential-checks.md): independent
+  consumer checks and the [foundation evidence index](docs/verification/foundation-index.md).
 - [Continuous integration](CONTRIBUTING.md#continuous-integration): workflow
   triggers, dependency caching, required merge checks, and action updates.
 - [CI verification](docs/verification/ci.md): repeatable hosted acceptance
