@@ -2,7 +2,7 @@
 
 This record covers [specification #38](https://github.com/lolmaus/pomeranian/issues/38)
 and [implementation #39](https://github.com/lolmaus/pomeranian/issues/39), approved
-on 2026-09-24. The earlier [API prototype](../research/first-element-po-api.md)
+on 2026-09-24 and delivered for review in [PR #40](https://github.com/lolmaus/pomeranian/pull/40). The earlier [API prototype](../research/first-element-po-api.md)
 provided design evidence; this slice verifies the production implementation
 against a separate React application.
 
