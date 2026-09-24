@@ -86,6 +86,67 @@ Run these commands from the repository root:
 | `pnpm run lint`                    | Lint every applicable package through Turbo.                    |
 | `pnpm run lint:fix`                | Apply supported safe lint fixes in every applicable package.    |
 | `pnpm run typecheck`               | Typecheck every applicable package without emitting files.      |
+| `pnpm run demo:dev`                | Start the private React fixture's development server.           |
+| `pnpm run demo:build`              | Build the React fixture for production preview.                 |
+| `pnpm run demo:preview`            | Serve the last React fixture build.                             |
+| `pnpm run test:unit`               | Run colocated Node unit tests without cached results.           |
+| `pnpm run test:e2e`                | Build the fixture and run Chromium behavior/report checks.      |
+| `pnpm run test`                    | Run both unit and E2E checks; use Node 22 as described below.   |
+
+### Page-object tests and React fixture
+
+The first behavior suite uses the latest supported Node 22 patch and Chromium.
+Keep the pinned authoring Node version selected for installation, formatting,
+linting, typechecking, and documentation. With fnm, run tests under Node 22 without
+changing that shell's selected authoring runtime:
+
+```sh
+fnm install 22
+fnm exec --using=22 pnpm --filter @pomeranian/tests-e2e exec playwright install chromium
+fnm exec --using=22 pnpm run test
+```
+
+On Linux, Playwright may also need system libraries; its supported setup command
+is `pnpm --filter @pomeranian/tests-e2e exec playwright install --with-deps chromium`.
+Run it with the permissions required by the operating system. CI uses the matching preinstalled Playwright container image. Browser versions follow the exact Playwright
+pin; rerun browser installation after an upgrade. No Firefox or WebKit is required
+for this slice.
+
+`test:unit` runs package unit scripts through Turbo with caching disabled, so the
+selected runtime executes the tests each time. `test:e2e` runs the independent
+Playwright package and its report checks. It builds the React fixture and starts
+its production preview on loopback port 43191, then stops the server after the
+suite. Keep that port available; an existing server is not reused. Run a focused
+browser check with `pnpm --filter @pomeranian/tests-e2e exec playwright test --grep <name>`.
+Run the full root aggregate before submitting behavior changes.
+
+The private fixture catalog lives in `apps/demo-app-react`, organized by package,
+page object, and scenario. Browser specs live beside page-object implementations
+as `packages/*/src/**/*.spec.ts`. `apps/tests-e2e` owns the central runner,
+catalog/routing infrastructure tests, and report verification. For manual fixture
+work, use `pnpm run demo:dev`. Preview requires `demo:build` first. Fixture
+application code uses React and `data-test` HTML hooks; Playwright and Pomeranian
+usage belongs to browser specs and runner tooling. The fixture has no public
+deployment or documentation-site link. Generated builds, browser results, and
+reports are ignored.
+
+Each scenario has an isolated URL and a lazy component, registered in its
+object manifest. TanStack Router handles client-side navigation; scenario identity
+controls remounting. Scope styles and clean up timers/listeners on unmount. The
+demo exports dependency-free typed fixture addresses through explicit metadata
+subpaths, consumed as a test-only workspace dependency by libraries. See the
+[fixture authoring guide](apps/demo-app-react/README.md) for the directory layout
+and steps to add an object or scenario. Equally shared integration scenarios are
+deferred until a real workflow needs them.
+
+The library, fixture, and E2E packages all participate in workspace linting and
+typechecking. React source uses the shared React profile, while app tooling uses
+the Node profile. Playwright test rules apply only to actual Playwright test inputs;
+the two genuine text assertion helpers are recognized without treating `click`
+as an assertion. Colocated Node unit tests use library checking rather than
+Playwright test-structure rules. Consumer typechecks import the advertised package
+subpath and verify the public interface without executing deliberately invalid
+calls.
 
 ### Documentation workspace
 
@@ -245,7 +306,10 @@ and explicit commands for all their leaves.
 | `browser`                              | Repository browser applications: ES2023, DOM, bundler resolution, no implicit Node ambient types.                                               |
 | `browser-react`                        | Browser policy plus automatic React JSX and React declarations.                                                                                 |
 
-Each library's `tsconfig.library.json` owns `src/**/*`; `tsconfig.node.json` owns root
+Each library's `tsconfig.library.json` owns production source and Node unit tests
+under `src/**/*`, excluding colocated `*.spec.ts` browser tests. Lib-essential
+checks those specs through `tsconfig.playwright.json`, included in editor discovery
+and its typecheck command. `tsconfig.node.json` owns root
 `.mts` tooling. The lint configuration package's Node leaf owns its `.mts`
 modules. New files in these scopes are included automatically. No leaf enables
 `composite`. Each package has an empty `tsconfig.json` containing
@@ -269,9 +333,12 @@ Authors develop on the exact Node version in `.nvmrc`. Published libraries are
 intended for the latest supported patch of each supported Node LTS major,
 starting with 22. The library preset checks that baseline; `target` alone does
 not establish runtime or built-artifact compatibility, and `noEmit` performs no
-downlevel transformation. Actual Node LTS behavior belongs to the first
-Element_PO slice; packed JavaScript and public declarations are verified by the
-packaging slice before publication. Playwright transforms TypeScript without
+downlevel transformation. The author narrowed the first Element_PO slice's
+behavior verification to the latest supported Node 22 patch and Chromium; see
+the [first-slice decisions](docs/research/first-element-po-requirements.md).
+That evidence covers only the selected environment. Packed JavaScript and public
+declarations remain subject to verification under the agreed consumer environments
+by the packaging slice before publication. Playwright transforms TypeScript without
 typechecking it or using `target` as a compatibility guarantee. Its test preset
 permits DOM names throughout the program, not only inside browser callbacks.
 
@@ -305,9 +372,15 @@ placeholder. The Oxlint configuration package contains typed `.mts` source, so
 both linting and typechecking include it. The `.mts` extension identifies these
 tooling modules as ESM without deciding either library's distribution format.
 
-Each library's `src/scaffold.ts` contains only `export {};`: it supplies the
-initial compiler input allowed by the foundation specification, without product
-declarations. Both libraries retain empty public exports.
+Core's `src/scaffold.ts` still supplies the empty compiler input from the foundation
+specification. Lib-essential now exposes `Element_PO` through its explicit
+`element-po` subpath, backed by an `.mts` source module for private workspace
+consumption. Its `type: module` package setting also lets colocated browser specs
+load ESM dependencies through Playwright. These source settings do not decide a
+published JavaScript distribution format. Its local library environment includes
+DOM declarations required by Playwright's public types; the shared library preset
+is unchanged. Its consumer typecheck leaf is included in editor discovery and the
+package typecheck command.
 
 The no-output flag also protects against emission when shared configuration
 resolution fails. These checks neither build product JavaScript nor select a
@@ -345,21 +418,32 @@ Main push runs are serialized without canceling an in-progress run, allowing
 its Pages deployment to finish.
 Tag pushes do not trigger this workflow.
 
-The required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
-read-only repository permissions. It selects Node from `.nvmrc` and pnpm from
+The required job, **Workspace checks**, runs in the official Playwright Noble
+container on GitHub-hosted Ubuntu Linux, with read-only repository permissions.
+The image is pinned by version and digest in `.github/workflows/ci.yml` and
+includes browsers and their system dependencies. Keep its version and digest
+aligned with the workspace's exact Playwright dependency when upgrading.
+It selects Node from `.nvmrc` and pnpm from
 root `package.json`'s `devEngines.packageManager`, preserving the same version
 requirements used locally. Each job bootstraps the pinned pnpm executable and
 sets up dependencies once. An action-managed pnpm store cache reuses package
-downloads, with keys sensitive to dependency metadata and the runner platform.
+downloads, including the Playwright npm package, with keys sensitive to dependency
+metadata and the runner platform.
 Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
 the cache does not replace installation or relax lockfile checks.
 
 The job runs `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
-`pnpm run docs:build`, using
-the same commands and scope as local verification without applying fixes. Both libraries, the docs application,
-and the typed Oxlint configuration package participate in linting and
-typechecking. Installation, formatting, lint, typecheck, or docs-build failure fails the
-same required job.
+`pnpm run docs:build`, using the same commands and scope as local verification
+without applying fixes. Both libraries, the docs and React applications, the E2E
+suite, and the typed Oxlint configuration package participate in linting and
+typechecking. It then selects the latest Node 22 patch and runs `pnpm run test`
+using the image's preinstalled Chromium. No browser or system-dependency install
+step runs in CI. The E2E command also builds the
+React fixture. Installation, formatting, lint, typecheck, docs-build, fixture-build,
+unit-test, browser-test, or report-check failure fails the same required job.
+Documentation artifact upload follows the tests; deployment still requires that
+job's success. Author tooling uses the pinned runtime, while behavior verification
+uses Node 22 and Chromium only.
 
 Merging into `main` requires a successful **Workspace checks** result from
 GitHub Actions, and the branch must be up to date with `main`. This applies to
@@ -409,8 +493,9 @@ behavior and the first-publication checklist.
 ## Workspace layout and adding packages
 
 pnpm discovers `packages/*` and `apps/*`. The current library identities live at
-`packages/core` and `packages/lib-essential`; the private documentation application lives at `apps/docs`. Other applications
-arrive with their roadmap items.
+`packages/core` and `packages/lib-essential`; private applications live at
+`apps/docs`, `apps/demo-app-react`, and `apps/tests-e2e`. Other applications arrive
+with their roadmap items.
 
 Create a manifest with a unique package name in the appropriate directory. Use
 `private: true` for internal infrastructure or an unreleased scaffold. Declare `exports` explicitly;
@@ -432,7 +517,9 @@ commands. For another library with the same environments:
    actual tests; use the React profile only for React inputs. Do not add test or
    browser infrastructure solely to configure an empty library.
 3. Extend `@pomeranian/typescript-config/library` from `tsconfig.library.json`
-   owning `src/**/*`, and `/node` from `tsconfig.node.json` owning root `*.mts`.
+   owning production source and Node unit tests under `src/**/*`, and `/node`
+   from `tsconfig.node.json` owning root `*.mts`. Exclude browser `*.spec.ts`
+   inputs from the library leaf and check them with a separate `/playwright` leaf.
    Keep Node 22 and Node 24 type roots separate as described above. Consumer
    paths belong here; reusable compiler policy belongs in the shared presets.
 4. Create `tsconfig.json` with `files: []` and references to every leaf. Keep
@@ -452,4 +539,5 @@ commands. For another library with the same environments:
 Include meaningful tests and documentation with behavior changes in the same PR.
 Use TDD; prefer colocated `node:test` and `node:assert` unit tests where suitable.
 Each offered page object needs a React demo example and Playwright E2E coverage.
-The first behavior slice will establish the demo and E2E infrastructure.
+The first behavior slice establishes that fixture and suite; add subsequent
+behavior to the existing public test seams alongside its documentation.

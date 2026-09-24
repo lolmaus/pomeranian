@@ -8,15 +8,19 @@ approved by the project author.
 The workspace provides reproducible installation, repository formatting, and
 shared linting and TypeScript checks for `@pomeranian/core`,
 `@pomeranian/lib-essential`, and their tooling.
-GitHub Actions requires formatting, linting, typechecking, and a documentation
-build before merging. The private VitePress application provides local
+GitHub Actions requires formatting, linting, typechecking, a documentation build,
+and the Node 22/Chromium behavior suite before merging. The private VitePress application provides local
 development, build, and preview commands for the authored documentation.
 Successful main-branch CI deploys the site to GitHub Pages.
-Each library contains only an empty source module. Neither library has product
-behavior or public product entry points yet.
+`@pomeranian/lib-essential/element-po` provides `Element_PO` for direct Playwright
+Test use: create it before navigation, click its target, and check text with
+`shouldHaveText` or `shouldNotHaveText`. See the [Element_PO guide](docs/site/guide/element-po.md)
+for the complete counter example, names, options, and raw Playwright access.
+The libraries remain private workspace packages; no npm release is available.
+Core retains its empty scaffold while the first behavior lives in lib-essential.
 
 - [Contributing](CONTRIBUTING.md): prerequisites, installation, and available commands.
-- [Documentation](docs/site/index.md): current starter content; see the
+- [Documentation](docs/site/index.md): behavior guides; see the
   [authoring workflow](CONTRIBUTING.md#documentation-workspace) for local preview.
 - [Feature roadmap](ROADMAP.md): approved order, current progress, and work links.
 - [Domain context](CONTEXT.md): project language and glossary.

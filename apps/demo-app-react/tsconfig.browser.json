@@ -1,0 +1,7 @@
+{
+  "extends": "@pomeranian/typescript-config/browser-react",
+  "compilerOptions": {
+    "types": ["react", "vite/client"]
+  },
+  "include": ["src/**/*", "test-type/**/*"]
+}

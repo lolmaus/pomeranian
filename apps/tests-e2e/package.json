@@ -1,27 +1,22 @@
 {
-  "name": "@pomeranian/lib-essential",
+  "name": "@pomeranian/tests-e2e",
   "private": true,
   "type": "module",
-  "exports": {
-    "./element-po": "./src/element-po.mts"
-  },
+  "exports": {},
   "scripts": {
+    "test": "playwright test && node --test reporting.test.mts",
     "lint": "oxlint --config oxlint.config.mts . --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts . --max-warnings 0 --fix",
-    "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.types.json && tsc --noEmit --project tsconfig.playwright.json",
-    "test:unit": "node --test src/*.test.mts"
-  },
-  "peerDependencies": {
-    "@playwright/test": "1.63.0"
+    "typecheck": "tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.node.json"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "@pomeranian/oxlint-config": "workspace:*",
     "@pomeranian/typescript-config": "workspace:*",
-    "oxlint": "1.85.0",
-    "oxlint-tsgolint": "7.0.2002",
     "@types/node": "22.20.4",
     "@types-node24/node": "npm:@types/node@24.13.6",
+    "oxlint": "1.85.0",
+    "oxlint-tsgolint": "7.0.2002",
     "@pomeranian/demo-app-react": "workspace:*"
   }
 }
