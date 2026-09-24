@@ -151,3 +151,8 @@ verified against Microsoft Container Registry before pinning. Image downloads
 remain dependent on the runner's available Docker layers; this change removes
 per-job browser installation, without claiming persistent Docker caching on
 GitHub-hosted runners.
+
+The first container run passed all unit, browser, and report checks, then exposed
+Git's checkout ownership check in the final maintained-files check. The job now
+registers only its mounted workspace as a safe Git directory after checkout,
+preserving the final diff check and avoiding a wildcard trust setting.
