@@ -108,8 +108,7 @@ fnm exec --using=22 pnpm run test
 
 On Linux, Playwright may also need system libraries; its supported setup command
 is `pnpm --filter @pomeranian/tests-e2e exec playwright install --with-deps chromium`.
-Run it with the permissions required by the operating system. CI installs those
-libraries on its disposable runner. Browser versions follow the exact Playwright
+Run it with the permissions required by the operating system. CI uses the matching preinstalled Playwright container image. Browser versions follow the exact Playwright
 pin; rerun browser installation after an upgrade. No Firefox or WebKit is required
 for this slice.
 
@@ -121,12 +120,24 @@ suite. Keep that port available; an existing server is not reused. Run a focused
 browser check with `pnpm --filter @pomeranian/tests-e2e exec playwright test --grep <name>`.
 Run the full root aggregate before submitting behavior changes.
 
-The private fixture lives in `apps/demo-app-react`; tests live in `apps/tests-e2e`.
-For manual fixture work, use `pnpm run demo:dev`. Preview requires `demo:build`
-first. Fixture application code uses React and `data-test` HTML hooks; Playwright
-and Pomeranian usage belongs to the separate suite. The fixture has no public
+The private fixture catalog lives in `apps/demo-app-react`, organized by package,
+page object, and scenario. Browser specs live beside page-object implementations
+as `packages/*/src/**/*.spec.ts`. `apps/tests-e2e` owns the central runner,
+catalog/routing infrastructure tests, and report verification. For manual fixture
+work, use `pnpm run demo:dev`. Preview requires `demo:build` first. Fixture
+application code uses React and `data-test` HTML hooks; Playwright and Pomeranian
+usage belongs to browser specs and runner tooling. The fixture has no public
 deployment or documentation-site link. Generated builds, browser results, and
 reports are ignored.
+
+Each scenario has an isolated URL and a lazy component, registered in its
+object manifest. TanStack Router handles client-side navigation; scenario identity
+controls remounting. Scope styles and clean up timers/listeners on unmount. The
+demo exports dependency-free typed fixture addresses through explicit metadata
+subpaths, consumed as a test-only workspace dependency by libraries. See the
+[fixture authoring guide](apps/demo-app-react/README.md) for the directory layout
+and steps to add an object or scenario. Equally shared integration scenarios are
+deferred until a real workflow needs them.
 
 The library, fixture, and E2E packages all participate in workspace linting and
 typechecking. React source uses the shared React profile, while app tooling uses
@@ -295,7 +306,10 @@ and explicit commands for all their leaves.
 | `browser`                              | Repository browser applications: ES2023, DOM, bundler resolution, no implicit Node ambient types.                                               |
 | `browser-react`                        | Browser policy plus automatic React JSX and React declarations.                                                                                 |
 
-Each library's `tsconfig.library.json` owns `src/**/*`; `tsconfig.node.json` owns root
+Each library's `tsconfig.library.json` owns production source and Node unit tests
+under `src/**/*`, excluding colocated `*.spec.ts` browser tests. Lib-essential
+checks those specs through `tsconfig.playwright.json`, included in editor discovery
+and its typecheck command. `tsconfig.node.json` owns root
 `.mts` tooling. The lint configuration package's Node leaf owns its `.mts`
 modules. New files in these scopes are included automatically. No leaf enables
 `composite`. Each package has an empty `tsconfig.json` containing
@@ -361,7 +375,8 @@ tooling modules as ESM without deciding either library's distribution format.
 Core's `src/scaffold.ts` still supplies the empty compiler input from the foundation
 specification. Lib-essential now exposes `Element_PO` through its explicit
 `element-po` subpath, backed by an `.mts` source module for private workspace
-consumption. This selects the source module's runtime syntax without deciding a
+consumption. Its `type: module` package setting also lets colocated browser specs
+load ESM dependencies through Playwright. These source settings do not decide a
 published JavaScript distribution format. Its local library environment includes
 DOM declarations required by Playwright's public types; the shared library preset
 is unchanged. Its consumer typecheck leaf is included in editor discovery and the
@@ -502,7 +517,9 @@ commands. For another library with the same environments:
    actual tests; use the React profile only for React inputs. Do not add test or
    browser infrastructure solely to configure an empty library.
 3. Extend `@pomeranian/typescript-config/library` from `tsconfig.library.json`
-   owning `src/**/*`, and `/node` from `tsconfig.node.json` owning root `*.mts`.
+   owning production source and Node unit tests under `src/**/*`, and `/node`
+   from `tsconfig.node.json` owning root `*.mts`. Exclude browser `*.spec.ts`
+   inputs from the library leaf and check them with a separate `/playwright` leaf.
    Keep Node 22 and Node 24 type roots separate as described above. Consumer
    paths belong here; reusable compiler policy belongs in the shared presets.
 4. Create `tsconfig.json` with `files: []` and references to every leaf. Keep

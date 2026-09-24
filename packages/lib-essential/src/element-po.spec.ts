@@ -1,3 +1,4 @@
+import { elementFixtureUrls } from "@pomeranian/demo-app-react/fixture-addresses/lib-essential/element-po";
 import { expect, test } from "@playwright/test";
 import { Element_PO } from "@pomeranian/lib-essential/element-po";
 
@@ -14,7 +15,7 @@ test("a page object created before navigation operates the React counter", async
   });
   const Counter = Element_PO.create(page, '[data-test="counter"]', { name: "Counter" });
 
-  await page.goto("/");
+  await page.goto(elementFixtureUrls.counter);
   await Counter.shouldHaveText("Count: 0");
   await Counter.click();
   await Counter.shouldHaveText("Count: 1");
@@ -25,11 +26,10 @@ test("click forwards trial and waits for a disabled counter to become actionable
   page,
 }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]');
-  await page.goto("/");
+  await page.goto(elementFixtureUrls["delayed-counter"]);
   expect(await Counter.click({ trial: true })).toBeUndefined();
   await Counter.shouldHaveText("Count: 0");
 
-  await page.getByLabel("Delay updates").check();
   await Counter.click();
   await expect(Counter.locator).toBeDisabled();
   await Counter.click({ timeout: 1500 });
@@ -38,8 +38,7 @@ test("click forwards trial and waits for a disabled counter to become actionable
 
 test("both text assertions retry while React finishes a delayed update", async ({ page }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]');
-  await page.goto("/");
-  await page.getByLabel("Delay updates").check({ timeout: 500 });
+  await page.goto(elementFixtureUrls["delayed-counter"]);
 
   await Counter.click();
   await Counter.shouldHaveText("Count: 1", { timeout: 1500 });
@@ -50,7 +49,7 @@ test("both text assertions retry while React finishes a delayed update", async (
 
 test("the same object resolves a replacement button", async ({ page }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]');
-  await page.goto("/");
+  await page.goto(elementFixtureUrls["replaceable-counter"]);
   await Counter.click();
   await Counter.shouldHaveText("Count: 1");
   await Counter.locator.evaluate((element) =>

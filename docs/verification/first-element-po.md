@@ -6,6 +6,9 @@ on 2026-09-24 and delivered for review in [PR #40](https://github.com/lolmaus/po
 provided design evidence; this slice verifies the production implementation
 against a separate React application.
 
+The subsequent [fixture-structure acceptance](demo-fixture-structure.md) records
+the confirmed catalog and test-colocation extension, including current suite counts.
+
 ## Scope and environments
 
 The private workspace exports `Element_PO` from

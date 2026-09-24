@@ -2,11 +2,17 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { stripVTControlCharacters } from "node:util";
-import type { JSONReport } from "@playwright/test/reporter";
+import type { JSONReport, JSONReportSuite, JSONReportSpec } from "@playwright/test/reporter";
 
 const report: JSONReport = JSON.parse(
   await readFile(new URL("./test-results/report.json", import.meta.url), "utf8"),
 );
+
+function collectSpecs(suites: JSONReportSuite[]): JSONReportSpec[] {
+  return suites.flatMap((suite) => [...suite.specs, ...collectSpecs(suite.suites ?? [])]);
+}
+
+const specs = collectSpecs(report.suites);
 
 for (const { title, name, matcher, timeout } of [
   {
@@ -23,9 +29,7 @@ for (const { title, name, matcher, timeout } of [
   },
 ]) {
   await test(`${title}: named click and native failure detail reach the actual report`, () => {
-    const spec = report.suites
-      .flatMap((suite) => suite.specs)
-      .find((entry) => entry.title === title);
+    const spec = specs.find((entry) => entry.title === title);
     assert.ok(spec, `The browser suite must execute ${title}`);
     const browserTest = spec.tests[0];
     assert.equal(browserTest?.expectedStatus, "failed");

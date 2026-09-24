@@ -44,3 +44,7 @@ element selection, usually to narrow a collection.
 
 **Ad-hoc tree**:
 A page object and its descendants used without a Root.
+
+**Fixture scenario**:
+A named example of application behavior used to exercise a page object's contract
+or a composition of equally important page objects.

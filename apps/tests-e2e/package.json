@@ -11,12 +11,12 @@
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
-    "@pomeranian/lib-essential": "workspace:*",
     "@pomeranian/oxlint-config": "workspace:*",
     "@pomeranian/typescript-config": "workspace:*",
     "@types/node": "22.20.4",
     "@types-node24/node": "npm:@types/node@24.13.6",
     "oxlint": "1.85.0",
-    "oxlint-tsgolint": "7.0.2002"
+    "oxlint-tsgolint": "7.0.2002",
+    "@pomeranian/demo-app-react": "workspace:*"
   }
 }

@@ -1,13 +1,14 @@
 {
   "name": "@pomeranian/lib-essential",
   "private": true,
+  "type": "module",
   "exports": {
     "./element-po": "./src/element-po.mts"
   },
   "scripts": {
     "lint": "oxlint --config oxlint.config.mts . --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts . --max-warnings 0 --fix",
-    "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.types.json",
+    "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.types.json && tsc --noEmit --project tsconfig.playwright.json",
     "test:unit": "node --test src/*.test.mts"
   },
   "peerDependencies": {
@@ -20,6 +21,7 @@
     "oxlint": "1.85.0",
     "oxlint-tsgolint": "7.0.2002",
     "@types/node": "22.20.4",
-    "@types-node24/node": "npm:@types/node@24.13.6"
+    "@types-node24/node": "npm:@types/node@24.13.6",
+    "@pomeranian/demo-app-react": "workspace:*"
   }
 }

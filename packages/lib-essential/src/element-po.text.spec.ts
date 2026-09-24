@@ -1,3 +1,4 @@
+import { elementFixtureUrls } from "@pomeranian/demo-app-react/fixture-addresses/lib-essential/element-po";
 import { expect, test } from "@playwright/test";
 import { Element_PO } from "@pomeranian/lib-essential/element-po";
 
@@ -6,7 +7,7 @@ test("text assertions accept strings, regular expressions, ordered arrays and di
 }) => {
   const Samples = Element_PO.create(page, '[data-test="text-sample"]');
   const First = Element_PO.create(page, '[data-test="text-sample"]:first-child');
-  await page.goto("/");
+  await page.goto(elementFixtureUrls["text-collection"]);
 
   await Samples.shouldHaveText(["Alpha detail", /^Beta$/]);
   await First.shouldHaveText("Alpha detail");
@@ -24,7 +25,7 @@ test("scalar text and click operations retain native strictness on multiple matc
   page,
 }) => {
   const Samples = Element_PO.create(page, '[data-test="text-sample"]');
-  await page.goto("/");
+  await page.goto(elementFixtureUrls["text-collection"]);
 
   await expect(Samples.shouldHaveText("Alpha detail")).rejects.toThrow(
     /strict mode violation:[\s\S]*resolved to 2 elements/,
@@ -39,7 +40,7 @@ test("scalar text and click operations retain native strictness on multiple matc
 
 test("zero matches retain the native scalar and array distinction", async ({ page }) => {
   const Missing = Element_PO.create(page, '[data-test="absent"]');
-  await page.goto("/");
+  await page.goto(elementFixtureUrls["text-collection"]);
 
   await Missing.shouldHaveText([]);
   await Missing.shouldNotHaveText(["absent"]);
