@@ -1,8 +1,10 @@
 # First ad-hoc Element_PO requirements
 
-Status: the selected API has passed the isolated prototype. The choices below were
-selected by the author on 2026-09-23; the final scope, specification, test seams,
-and implementation-ticket breakdown await review.
+Status: the author approved the final scope, specification, public test seams,
+and single implementation-ticket breakdown on 2026-09-24. Implementation follows
+[specification #38](https://github.com/lolmaus/pomeranian/issues/38) in
+[ticket #39](https://github.com/lolmaus/pomeranian/issues/39). The API choices below
+were selected on 2026-09-23 and passed the isolated prototype.
 
 Validation work: [first Element_PO factory and assertions #37](https://github.com/lolmaus/pomeranian/issues/37).
 
@@ -65,29 +67,30 @@ and [old prototype ticket](https://github.com/lolmaus/pomeranian/issues/4#issuec
 were abandoned when release-first planning was replaced. Their unanswered
 recommendations are not accepted requirements.
 
-## Current design questions
+## Approved scope details
 
-The remaining review covers the initial selector-only target scope, construction
-validation, package placement, public test seams, and the complete specification
-and ticket breakdown. These are stated explicitly in the drafts; they do not
-reopen the API spellings or behavior matrix selected above.
+The first target input is a selector string. Missing, non-string, empty, and
+whitespace-only targets fail synchronously with TypeError. A supplied name value
+must be a nonblank string; an omitted or undefined optional name uses the fallback.
+Valid text is preserved, and selector parsing remains Playwright's responsibility.
+The class belongs in lib-essential, with no new shared core abstraction required.
 
-## Proposed verification
+## Agreed verification
 
-The public page-object interface is the main test surface. The proposed browser
+The public page-object interface is the main test surface. The browser
 checks exercise the React counter through `create`, `click`, `shouldHaveText`, and
 `shouldNotHaveText`, including creation before navigation, later DOM replacement,
 assertion retries, and strict-action failures for multiple matches. Additional
 cases cover the agreed scalar/array input forms, negation behavior, and options.
 
-Focused colocated unit tests would cover Pomeranian-owned behavior such as
+Focused colocated unit tests cover Pomeranian-owned behavior such as
 construction validation and naming, where meaningful without a browser. Type
 checks would exercise the public calls, operation return types, and read-only
 properties. No test needs to inspect private fields or reproduce Playwright's
 implementation.
 
-The documentation example and E2E example would use the same agreed counter
-workflow. Report inspection would verify that both explicit names and the
+The documentation example and E2E example use the same agreed counter
+workflow. Report inspection verifies that both explicit names and the
 target-text fallback appear in action steps and assertion failures.
 
 The supported Node LTS majors on the research date are 22 and 24; 26 is still
@@ -113,16 +116,15 @@ argument. This is a documented limit for later reusable-class design, not a prom
 of arbitrary custom-constructor support. The prototype did not validate the draft
 invalid-input policy, nested objects, Root, derivation, or published artifacts.
 
-## Proposed implementation slice
+## Approved implementation slice
 
-One implementation ticket would deliver the complete counter workflow: the
+One implementation ticket delivers the complete counter workflow: the
 concrete `Element_PO`, React fixture, unit/type/E2E coverage, runtime verification,
 workspace and CI test commands, and behavior documentation. The workspace and
-documentation prerequisites are already complete. Specification and ticket
-approval still precede implementation.
+documentation prerequisites are already complete. Specification, test-seam, and
+ticket approval were recorded before implementation began.
 
-The proposed package is `lib-essential`, consistent with the project vision's
-classification of `Element_PO` as an essential object. The exact exported subpath
-is not yet fixed. The current example needs no shared abstraction in `core`, which
-can retain its scaffold until shared behavior is required. This is a design
-proposal, not an earlier package-boundary decision.
+The package is `lib-essential`, consistent with the project vision's classification
+of `Element_PO` as an essential object. Its exported subpath is `element-po`.
+The current example needs no shared abstraction in `core`, which retains its
+scaffold until shared behavior is required.

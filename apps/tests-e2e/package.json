@@ -1,0 +1,22 @@
+{
+  "name": "@pomeranian/tests-e2e",
+  "private": true,
+  "type": "module",
+  "exports": {},
+  "scripts": {
+    "test": "playwright test && node --test reporting.test.mts",
+    "lint": "oxlint --config oxlint.config.mts . --max-warnings 0",
+    "lint:fix": "oxlint --config oxlint.config.mts . --max-warnings 0 --fix",
+    "typecheck": "tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.node.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@pomeranian/lib-essential": "workspace:*",
+    "@pomeranian/oxlint-config": "workspace:*",
+    "@pomeranian/typescript-config": "workspace:*",
+    "@types/node": "22.20.4",
+    "@types-node24/node": "npm:@types/node@24.13.6",
+    "oxlint": "1.85.0",
+    "oxlint-tsgolint": "7.0.2002"
+  }
+}
