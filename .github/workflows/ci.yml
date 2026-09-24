@@ -18,6 +18,10 @@ jobs:
   checks:
     name: Workspace checks
     runs-on: ubuntu-latest
+    container:
+      # Keep the version and digest aligned with the workspace Playwright pin.
+      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      options: --init --ipc=host
     timeout-minutes: 15
     steps:
       - name: Check out the revision
@@ -62,9 +66,6 @@ jobs:
           node-version: "22"
           check-latest: true
           package-manager-cache: false
-
-      - name: Install Chromium and its system dependencies
-        run: pnpm --filter @pomeranian/tests-e2e exec playwright install --with-deps chromium
 
       - name: Test the public behavior on Node 22 and Chromium
         run: |

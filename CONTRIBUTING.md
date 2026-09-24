@@ -403,12 +403,17 @@ Main push runs are serialized without canceling an in-progress run, allowing
 its Pages deployment to finish.
 Tag pushes do not trigger this workflow.
 
-The required job, **Workspace checks**, runs on GitHub-hosted Ubuntu Linux with
-read-only repository permissions. It selects Node from `.nvmrc` and pnpm from
+The required job, **Workspace checks**, runs in the official Playwright Noble
+container on GitHub-hosted Ubuntu Linux, with read-only repository permissions.
+The image is pinned by version and digest in `.github/workflows/ci.yml` and
+includes browsers and their system dependencies. Keep its version and digest
+aligned with the workspace's exact Playwright dependency when upgrading.
+It selects Node from `.nvmrc` and pnpm from
 root `package.json`'s `devEngines.packageManager`, preserving the same version
 requirements used locally. Each job bootstraps the pinned pnpm executable and
 sets up dependencies once. An action-managed pnpm store cache reuses package
-downloads, with keys sensitive to dependency metadata and the runner platform.
+downloads, including the Playwright npm package, with keys sensitive to dependency
+metadata and the runner platform.
 Every run still executes `pnpm install --frozen-lockfile`, including cache hits;
 the cache does not replace installation or relax lockfile checks.
 
@@ -416,8 +421,9 @@ The job runs `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
 `pnpm run docs:build`, using the same commands and scope as local verification
 without applying fixes. Both libraries, the docs and React applications, the E2E
 suite, and the typed Oxlint configuration package participate in linting and
-typechecking. It then selects the latest Node 22 patch, installs Chromium and its
-system dependencies, and runs `pnpm run test`. The E2E command also builds the
+typechecking. It then selects the latest Node 22 patch and runs `pnpm run test`
+using the image's preinstalled Chromium. No browser or system-dependency install
+step runs in CI. The E2E command also builds the
 React fixture. Installation, formatting, lint, typecheck, docs-build, fixture-build,
 unit-test, browser-test, or report-check failure fails the same required job.
 Documentation artifact upload follows the tests; deployment still requires that

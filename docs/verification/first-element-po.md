@@ -131,12 +131,23 @@ outstanding issue.
 ## Required CI
 
 The existing required **Workspace checks** job retains frozen installation,
-formatting, lint, typechecking, and the documentation build. It then selects the
-latest Node 22 patch, installs Chromium with its Linux dependencies, and executes
-the root test aggregate. Tests run before the Pages artifact upload. A failing
+formatting, lint, typechecking, and the documentation build. It runs in the official
+Playwright `v1.63.0-noble` container, pinned by its registry digest and matched to
+the exact npm dependency. Browsers and their Linux dependencies are preinstalled;
+the Playwright npm package uses the existing pnpm store cache. The job selects the
+latest Node 22 patch and executes the root test aggregate without an installation
+step for browsers or system packages. Tests run before the Pages artifact upload. A failing
 unit, browser, or report check fails that job; the main-only documentation
 deployment depends on its success.
 
 Unit tests are uncached in Turbo. The browser suite runs directly, with retries
 disabled, so a successful cached static check cannot substitute for behavior
 execution. Branch and pull-request runs do not deploy the React fixture or docs.
+
+The author requested reusable browser provisioning on 2026-09-24. The selected
+[official image](https://playwright.dev/docs/docker) provides browsers and system
+libraries but does not include the project's npm dependency. Its manifest was
+verified against Microsoft Container Registry before pinning. Image downloads
+remain dependent on the runner's available Docker layers; this change removes
+per-job browser installation, without claiming persistent Docker caching on
+GitHub-hosted runners.
