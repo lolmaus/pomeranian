@@ -14,11 +14,17 @@ Start with [the Element_PO guide](guide/element-po.md) to create a page object
 before navigation and verify a counter. Groups and nested page objects remain
 part of the project's planned direction.
 
+The [PageObjectNode guide](guide/page-object-node.md) describes the shared page,
+name, and action-step foundation inherited by `Element_PO`.
+
 ## Vocabulary
 
-A **page object** represents a component or element. A **page object group**
-organizes page objects and other groups without requiring an element target of
-its own. A **target** describes the elements represented by a page object.
+A **page object** represents an application component or interaction subject.
+An **element page object** represents DOM elements and can have zero, one, or
+multiple matches. A **page object group** organizes page objects and other groups
+without requiring an element target of its own. Both are **page object nodes**.
+A **target** describes the subjects represented by a page object; an **element
+target** describes DOM elements.
 
 Developers use Pomeranian to write application tests. Authors maintain Pomeranian
 and its documentation.

@@ -307,8 +307,8 @@ and explicit commands for all their leaves.
 | `browser-react`                        | Browser policy plus automatic React JSX and React declarations.                                                                                 |
 
 Each library's `tsconfig.library.json` owns production source and Node unit tests
-under `src/**/*`, excluding colocated `*.spec.ts` browser tests. Lib-essential
-checks those specs through `tsconfig.playwright.json`, included in editor discovery
+under `src/**/*`, excluding colocated `*.spec.ts` browser tests. Both libraries
+check those specs through `tsconfig.playwright.json`, included in editor discovery
 and its typecheck command. `tsconfig.node.json` owns root
 `.mts` tooling. The lint configuration package's Node leaf owns its `.mts`
 modules. New files in these scopes are included automatically. No leaf enables
@@ -372,14 +372,16 @@ placeholder. The Oxlint configuration package contains typed `.mts` source, so
 both linting and typechecking include it. The `.mts` extension identifies these
 tooling modules as ESM without deciding either library's distribution format.
 
-Core's `src/scaffold.ts` still supplies the empty compiler input from the foundation
-specification. Lib-essential now exposes `Element_PO` through its explicit
-`element-po` subpath, backed by an `.mts` source module for private workspace
-consumption. Its `type: module` package setting also lets colocated browser specs
-load ESM dependencies through Playwright. These source settings do not decide a
-published JavaScript distribution format. Its local library environment includes
-DOM declarations required by Playwright's public types; the shared library preset
-is unchanged. Its consumer typecheck leaf is included in editor discovery and the
+Core exposes `PageObjectNode` through its explicit `page-object-node` subpath,
+replacing the empty scaffold. Lib-essential exposes `Element_PO` through its
+`element-po` subpath and declares core as a production workspace dependency.
+Both entries use `.mts` source modules for private workspace consumption. Their
+`type: module` package settings also let colocated browser specs load ESM
+dependencies through Playwright. These source settings do not decide a published
+JavaScript distribution format. Both local library environments include DOM
+declarations required by Playwright's public types; the shared library preset is
+unchanged. Lib-essential's consumer typecheck leaf includes the inherited node
+contract through the public exports and participates in editor discovery and the
 package typecheck command.
 
 The no-output flag also protects against emission when shared configuration

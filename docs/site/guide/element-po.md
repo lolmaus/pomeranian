@@ -45,7 +45,8 @@ active Playwright Test test.
 Use `Element_PO.create(page, target, options?)`, where `page` is a Playwright
 `Page`, `target` is a selector string, and `options` accepts an optional `name`.
 
-The name identifies the object in action steps and assertion failure diagnostics.
+The public read-only `name` property identifies the object in action steps and
+assertion failure diagnostics.
 If `name` is omitted or `undefined`, the selector text supplies the name. Valid
 names and selectors are preserved as supplied, including surrounding whitespace.
 Exact report wording is not part of the interface.
@@ -58,6 +59,11 @@ responsibility.
 
 Targets currently accept selector strings. Locator inputs, target factories,
 reusable subclass APIs, and nested page objects are not available yet.
+
+`Element_PO` extends [PageObjectNode](page-object-node.md), inheriting page access,
+resolved naming, and action-step reporting from the shared foundation. Its locator,
+selector-based creation, and element actions/assertions remain specific to
+`Element_PO`.
 
 ## Click an element
 

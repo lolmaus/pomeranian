@@ -60,6 +60,7 @@ await test("omitted options, omitted names, and undefined names allow creation",
       options,
     ]);
     assert.equal(Counter.page, page);
+    assert.equal(Counter.name, '[data-test="counter"]');
   }
 });
 
@@ -70,4 +71,18 @@ await test("a valid target retains its original text in the public locator", () 
     ' [data-test="counter"] ',
   ]);
   assert.equal(Counter.locator.toString(), ' [data-test="counter"] ');
+  assert.equal(Counter.name, ' [data-test="counter"] ');
+});
+
+await test("the public name preserves an explicit name and cannot be reassigned", () => {
+  const page = { locator: () => ({}) };
+  const Counter: Element_PO = Reflect.apply(Element_PO.create.bind(Element_PO), undefined, [
+    page,
+    '[data-test="counter"]',
+    { name: " Counter " },
+  ]);
+
+  assert.equal(Counter.name, " Counter ");
+  assert.equal(Reflect.set(Counter, "name", "Replacement"), false);
+  assert.equal(Counter.name, " Counter ");
 });

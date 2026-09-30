@@ -17,7 +17,10 @@ Test use: create it before navigation, click its target, and check text with
 `shouldHaveText` or `shouldNotHaveText`. See the [Element_PO guide](docs/site/guide/element-po.md)
 for the complete counter example, names, options, and raw Playwright access.
 The libraries remain private workspace packages; no npm release is available.
-Core retains its empty scaffold while the first behavior lives in lib-essential.
+Core provides the shared `PageObjectNode` foundation for page access, public
+read-only names, and action steps. `Element_PO` in lib-essential adds locator
+access and element operations. See the
+[foundation guide](docs/site/guide/page-object-node.md).
 
 - [Contributing](CONTRIBUTING.md): prerequisites, installation, and available commands.
 - [Documentation](docs/site/index.md): behavior guides; see the

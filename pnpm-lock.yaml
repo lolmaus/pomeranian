@@ -281,6 +281,9 @@ importers:
 
   packages/core:
     devDependencies:
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
       '@pomeranian/oxlint-config':
         specifier: workspace:*
         version: link:../oxlint-config
@@ -301,6 +304,10 @@ importers:
         version: 7.0.2002
 
   packages/lib-essential:
+    dependencies:
+      '@pomeranian/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@playwright/test':
         specifier: 1.63.0

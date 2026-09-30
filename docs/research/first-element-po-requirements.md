@@ -73,7 +73,8 @@ The first target input is a selector string. Missing, non-string, empty, and
 whitespace-only targets fail synchronously with TypeError. A supplied name value
 must be a nonblank string; an omitted or undefined optional name uses the fallback.
 Valid text is preserved, and selector parsing remains Playwright's responsibility.
-The class belongs in lib-essential, with no new shared core abstraction required.
+The class belongs in lib-essential. The original slice required no shared core
+abstraction; the author-approved hierarchy extension below revises that scope.
 
 ## Agreed verification
 
@@ -126,5 +127,41 @@ ticket approval were recorded before implementation began.
 
 The package is `lib-essential`, consistent with the project vision's classification
 of `Element_PO` as an essential object. Its exported subpath is `element-po`.
-The current example needs no shared abstraction in `core`, which retains its
-scaffold until shared behavior is required.
+The original example needed no shared abstraction in `core`. The author-approved
+extension below introduces the shared foundation there.
+
+## Author-approved hierarchy extension
+
+On 2026-09-30, the author extended [PR #40](https://github.com/lolmaus/pomeranian/pull/40)
+to extract `PageObjectNode` as the shared base of `Element_PO`. The shared
+responsibilities are page access, resolved-name storage and validation, and
+naming/reporting support. Selector validation, selector-based fallback naming,
+locator creation/access, and element actions/assertions remain in `Element_PO`.
+
+No separate `PageObjectGroup` or `PageObject` class is introduced: neither has
+an independent implementation responsibility in this slice. Developer-defined
+groups can use the shared base; a group construction API, nesting, Root, and
+reusable `Element_PO` factories remain later roadmap work. The extension does
+not deliver those later features.
+
+The [hierarchy decision](../adr/0001-page-object-node-foundation.md) records why
+non-DOM page objects remain possible without an empty intermediate class.
+The author confirmed the remaining API decisions in the same interview:
+
+- Export `PageObjectNode` from `@pomeranian/core/page-object-node`.
+- Make it abstract, with a protected constructor accepting `(page, name)` and
+  no shared factory. Concrete classes own construction.
+- Expose public read-only `.page` and `.name` getters. The base requires a
+  nonblank name and preserves valid text as supplied; `Element_PO` selects its
+  existing selector fallback before calling the base constructor.
+- Provide a protected `step(action, body)` helper that prefixes the action with
+  the resolved name. `Element_PO.click()` uses this helper; text assertions
+  remain element-specific and use the inherited name in their diagnostics.
+- Keep `Element_PO.create(page, target, options?)` and its matching, options,
+  timeout, and failure behavior as the acceptance baseline.
+
+Verification extends the already approved public page-object, consumer-type,
+and actual-report seams. The extension is implemented in PR #40 and passes the
+local Node 22/Chromium and workspace checks; see its
+[acceptance evidence](../verification/page-object-node.md). Integration remains
+pending author approval.

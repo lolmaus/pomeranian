@@ -7,15 +7,19 @@ provided design evidence; this slice verifies the production implementation
 against a separate React application.
 
 The subsequent [fixture-structure acceptance](demo-fixture-structure.md) records
-the confirmed catalog and test-colocation extension, including current suite counts.
+the confirmed catalog and test-colocation extension. The
+[PageObjectNode acceptance](page-object-node.md) records the later shared-base
+extension, public name access, and current suite counts.
 
 ## Scope and environments
 
 The private workspace exports `Element_PO` from
 `@pomeranian/lib-essential/element-po`. It supports synchronous selector-based
 creation, optional names, read-only Playwright access, `click`, `shouldHaveText`,
-and `shouldNotHaveText`. Core remains a scaffold. Subclass APIs, other operations,
-package publication, and deployment of the React fixture remain outside this slice.
+and `shouldNotHaveText`. The original slice left core as a scaffold; the later
+PageObjectNode extension replaces it. Reusable `Element_PO` subclass APIs, other
+operations, package publication, and deployment of the React fixture remain
+outside this slice.
 
 Behavior verification uses Node **22.23.3**, Playwright Test **1.63.0**, and
 Chromium **153.0.8010.12** (Playwright revision **1243**). This is the author's

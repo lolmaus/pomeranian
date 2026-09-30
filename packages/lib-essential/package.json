@@ -11,6 +11,9 @@
     "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.types.json && tsc --noEmit --project tsconfig.playwright.json",
     "test:unit": "node --test src/*.test.mts"
   },
+  "dependencies": {
+    "@pomeranian/core": "workspace:*"
+  },
   "peerDependencies": {
     "@playwright/test": "1.63.0"
   },

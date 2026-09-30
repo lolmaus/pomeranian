@@ -14,6 +14,16 @@ function collectSpecs(suites: JSONReportSuite[]): JSONReportSpec[] {
 
 const specs = collectSpecs(report.suites);
 
+await test("a node action reports its original name and operation", () => {
+  const spec = specs.find((entry) => entry.title === "node actions preserve callback results");
+  assert.ok(spec, "The suite must execute the shared-node operation");
+  const result = spec.tests[0]?.results[0];
+  assert.equal(result?.status, "passed");
+  const action = result.steps?.find((step) => step.title === " Probe .read");
+  assert.ok(action, "The node step must preserve the name and identify the operation");
+  assert.equal(action.error, undefined);
+});
+
 for (const { title, name, matcher, timeout } of [
   {
     title: "intentional named text mismatch for report verification",
