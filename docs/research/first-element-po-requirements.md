@@ -162,6 +162,6 @@ The author confirmed the remaining API decisions in the same interview:
 
 Verification extends the already approved public page-object, consumer-type,
 and actual-report seams. The extension is implemented in PR #40 and passes the
-local Node 22/Chromium and workspace checks; see its
+local Node 22/Chromium and workspace checks, with successful hosted CI; see its
 [acceptance evidence](../verification/page-object-node.md). Integration remains
 pending author approval.

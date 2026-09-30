@@ -104,3 +104,13 @@ conversation; the driving implementation session separately read both issues.
 
 Review totals: Standards **0 findings**; Spec **0 findings**. Neither axis has an
 outstanding issue.
+
+## Required CI
+
+Both hosted runs passed on implementation revision `efb5d46`:
+[branch push](https://github.com/lolmaus/pomeranian/actions/runs/36764426762) and
+[pull request](https://github.com/lolmaus/pomeranian/actions/runs/36764431839).
+The required Workspace checks cover the updated dependency graph, static checks,
+documentation build, and Node 22/Chromium aggregate. The workflow's main-only
+documentation deployment remains unchanged. PR #40 is open for author-approved
+integration.
