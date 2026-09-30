@@ -6,6 +6,12 @@
     },
     {
       "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.types.json"
+    },
+    {
+      "path": "./tsconfig.playwright.json"
     }
   ]
 }

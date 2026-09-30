@@ -9,7 +9,13 @@
     "typecheck": "turbo run typecheck",
     "docs:dev": "pnpm --filter @pomeranian/docs run dev",
     "docs:build": "pnpm --filter @pomeranian/docs run build",
-    "docs:preview": "pnpm --filter @pomeranian/docs run preview"
+    "docs:preview": "pnpm --filter @pomeranian/docs run preview",
+    "demo:dev": "pnpm --filter @pomeranian/demo-app-react run dev",
+    "demo:build": "pnpm --filter @pomeranian/demo-app-react run build",
+    "demo:preview": "pnpm --filter @pomeranian/demo-app-react run preview",
+    "test:unit": "turbo run test:unit",
+    "test:e2e": "pnpm --filter @pomeranian/tests-e2e run test",
+    "test": "pnpm run test:unit && pnpm run test:e2e"
   },
   "devEngines": {
     "packageManager": {

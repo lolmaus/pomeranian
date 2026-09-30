@@ -19,6 +19,9 @@
     },
     "typecheck": {
       "outputs": []
+    },
+    "test:unit": {
+      "cache": false
     }
   }
 }

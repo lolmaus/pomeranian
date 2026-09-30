@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "./tsconfig.playwright.json" }, { "path": "./tsconfig.node.json" }]
+}
