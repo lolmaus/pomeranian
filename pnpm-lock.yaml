@@ -272,12 +272,30 @@ importers:
       '@types/node':
         specifier: 22.20.4
         version: 22.20.4
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: 19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: 6.1.1
+        version: 6.1.1(vite@8.3.0(@types/node@22.20.4))
       oxlint:
         specifier: 1.85.0
         version: 1.85.0(oxlint-tsgolint@7.0.2002)
       oxlint-tsgolint:
         specifier: 7.0.2002
         version: 7.0.2002
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      react-dom:
+        specifier: 19.3.0
+        version: 19.3.0(react@19.3.0)
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@22.20.4)
 
   packages/core:
     devDependencies:
@@ -290,6 +308,9 @@ importers:
       '@pomeranian/oxlint-config':
         specifier: workspace:*
         version: link:../oxlint-config
+      '@pomeranian/tests-e2e':
+        specifier: workspace:*
+        version: link:../../apps/tests-e2e
       '@pomeranian/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -299,12 +320,18 @@ importers:
       '@types/node':
         specifier: 22.20.4
         version: 22.20.4
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
       oxlint:
         specifier: 1.85.0
         version: 1.85.0(oxlint-tsgolint@7.0.2002)
       oxlint-tsgolint:
         specifier: 7.0.2002
         version: 7.0.2002
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
 
   packages/lib-essential:
     dependencies:
@@ -321,6 +348,9 @@ importers:
       '@pomeranian/oxlint-config':
         specifier: workspace:*
         version: link:../oxlint-config
+      '@pomeranian/tests-e2e':
+        specifier: workspace:*
+        version: link:../../apps/tests-e2e
       '@pomeranian/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -330,12 +360,18 @@ importers:
       '@types/node':
         specifier: 22.20.4
         version: 22.20.4
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
       oxlint:
         specifier: 1.85.0
         version: 1.85.0(oxlint-tsgolint@7.0.2002)
       oxlint-tsgolint:
         specifier: 7.0.2002
         version: 7.0.2002
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
 
   packages/oxlint-config:
     dependencies:
@@ -3042,6 +3078,11 @@ snapshots:
 
   '@ungap/structured-clone@1.4.0': {}
 
+  '@vitejs/plugin-react@6.1.1(vite@8.3.0(@types/node@22.20.4))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.3.0(@types/node@22.20.4)
+
   '@vitejs/plugin-react@6.1.1(vite@8.3.0(@types/node@24.13.6))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
@@ -3861,6 +3902,17 @@ snapshots:
       '@types/node': 24.13.6
       fsevents: 2.3.3
       lightningcss: 1.33.0
+
+  vite@8.3.0(@types/node@22.20.4):
+    dependencies:
+      lightningcss: 1.33.0
+      picomatch: 4.0.7
+      postcss: 8.5.28
+      rolldown: 1.2.9
+      tinyglobby: 0.2.17
+    optionalDependencies:
+      '@types/node': 22.20.4
+      fsevents: 2.3.3
 
   vite@8.3.0(@types/node@24.13.6):
     dependencies:

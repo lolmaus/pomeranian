@@ -203,3 +203,12 @@ factory supports classes inheriting the base constructor; it does not promise
 arbitrary custom constructors or remove the retained TypeScript compatibility
 limitation. Existing native options, matching, reports, timeouts, and failure
 semantics remain the regression baseline.
+
+## Author-approved parallel story specs
+
+On 2026-10-04 the author approved a minimal Vite story harness with a React
+adapter and equivalent colocated specs beside the existing suite. The
+[extension requirements](story-harness-requirements.md) own this additional
+scope and its mounting/page-object/report seams. Existing fixture and hierarchy
+acceptance remains the baseline; the demo and its tests stay in place.
+[Story-harness acceptance](../verification/story-harness.md) records the new checks.

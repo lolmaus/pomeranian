@@ -1,0 +1,7 @@
+{
+  "extends": "@pomeranian/typescript-config/browser-react",
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": ["src/**/*.stories.tsx"]
+}

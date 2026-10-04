@@ -307,7 +307,9 @@ and explicit commands for all their leaves.
 | `browser-react`                        | Browser policy plus automatic React JSX and React declarations.                                                                                 |
 
 Each library's `tsconfig.library.json` owns production source and Node unit tests
-under `src/**/*`, excluding colocated `*.spec.ts` browser tests. Both libraries
+under `src/**/*`, excluding colocated `*.spec.ts` browser tests and
+`*.stories.tsx` browser fixtures. The fixtures use a separate `/browser-react`
+leaf and React lint profile; they depend on explicit test-only harness exports. Both libraries
 check those specs through `tsconfig.playwright.json`, included in editor discovery
 and its typecheck command. `tsconfig.node.json` owns root
 `.mts` tooling. The lint configuration package's Node leaf owns its `.mts`
@@ -441,7 +443,7 @@ suite, and the typed Oxlint configuration package participate in linting and
 typechecking. It then selects the latest Node 22 patch and runs `pnpm run test`
 using the image's preinstalled Chromium. No browser or system-dependency install
 step runs in CI. The E2E command also builds the
-React fixture. Installation, formatting, lint, typecheck, docs-build, fixture-build,
+React fixture and runs the independent Vite story suite. Installation, formatting, lint, typecheck, docs-build, fixture-build,
 unit-test, browser-test, or report-check failure fails the same required job.
 Documentation artifact upload follows the tests; deployment still requires that
 job's success. Author tooling uses the pinned runtime, while behavior verification
@@ -547,3 +549,12 @@ integration through subclasses without duplicating the full inherited suite.
 Each offered page object needs a React demo example and Playwright E2E coverage.
 The first behavior slice establishes that fixture and suite; add subsequent
 behavior to the existing public test seams alongside its documentation.
+
+The author-approved PR #40 extension adds parallel `*.stories.spec.ts` files for
+PageObject and Element_PO while retaining their existing demo-backed specs.
+Package-local `*.stories.tsx` fixtures own their markup and interactions; the
+React adapter hides framework startup. `pnpm run test:e2e:demo` and
+`pnpm run test:e2e:stories` run either suite with its report checks; the existing
+aggregate runs both. See [story authoring and runner usage](apps/tests-e2e/README.md)
+and [approved scope](docs/research/story-harness-requirements.md). Framework
+adapters beyond React and removal of the demo remain later work.

@@ -15,7 +15,9 @@
     "demo:preview": "pnpm --filter @pomeranian/demo-app-react run preview",
     "test:unit": "turbo run test:unit",
     "test:e2e": "pnpm --filter @pomeranian/tests-e2e run test",
-    "test": "pnpm run test:unit && pnpm run test:e2e"
+    "test": "pnpm run test:unit && pnpm run test:e2e",
+    "test:e2e:demo": "pnpm --filter @pomeranian/tests-e2e run test:demo",
+    "test:e2e:stories": "pnpm --filter @pomeranian/tests-e2e run test:stories"
   },
   "devEngines": {
     "packageManager": {

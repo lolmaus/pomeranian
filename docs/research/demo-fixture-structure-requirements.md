@@ -144,3 +144,11 @@ The report verification currently reads only top-level Playwright suites. Moving
 tests into nested suites requires retaining reliable lookup of the intended
 report specimens. Current delayed counter updates also need consideration if
 scenario navigation unmounts components without reloading the document.
+
+## Parallel story alternative
+
+On 2026-10-04 the author approved [parallel story-based specs](story-harness-requirements.md)
+in PR #40. Their markup and interaction live beside the library specs and run
+through a test-owned Vite harness. The existing demo organization, catalog,
+metadata exports, specs, and report checks remain available pending a later
+removal request. New story specimens do not import demo components or addresses.
