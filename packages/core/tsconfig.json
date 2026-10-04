@@ -6,6 +6,15 @@
     },
     {
       "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.playwright.json"
+    },
+    {
+      "path": "./tsconfig.types.json"
+    },
+    {
+      "path": "./tsconfig.browser.json"
     }
   ]
 }

@@ -1,0 +1,34 @@
+{
+  "name": "@pomeranian/tests-e2e",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./story": "./harness/story.ts",
+    "./react": "./harness/react-story.tsx"
+  },
+  "scripts": {
+    "test": "pnpm run test:demo && pnpm run test:stories",
+    "lint": "oxlint --config oxlint.config.mts tests *.mts playwright*.ts --max-warnings 0 && oxlint --config oxlint.react.config.mts harness src --max-warnings 0",
+    "lint:fix": "oxlint --config oxlint.config.mts tests *.mts playwright*.ts --max-warnings 0 --fix && oxlint --config oxlint.react.config.mts harness src --max-warnings 0 --fix",
+    "typecheck": "tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.browser.json",
+    "test:demo": "playwright test && node --test reporting.test.mts",
+    "test:stories": "playwright test --config playwright.stories.config.ts && node --test reporting.stories.test.mts",
+    "stories:dev": "vite --config vite.config.mts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@pomeranian/oxlint-config": "workspace:*",
+    "@pomeranian/typescript-config": "workspace:*",
+    "@types/node": "22.20.4",
+    "@types-node24/node": "npm:@types/node@24.13.6",
+    "oxlint": "1.85.0",
+    "oxlint-tsgolint": "7.0.2002",
+    "@pomeranian/demo-app-react": "workspace:*",
+    "vite": "8.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0"
+  }
+}

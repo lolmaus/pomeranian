@@ -1,0 +1,21 @@
+.fixture {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  color: #173b35;
+  max-width: 540px;
+  margin: 64px auto;
+  padding: 32px;
+  border: 1px solid #d8ded2;
+  border-radius: 20px;
+}
+.samples {
+  display: flex;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.samples > li {
+  padding: 20px;
+  background: #e5ebdf;
+  border-radius: 10px;
+  font-weight: 600;
+}

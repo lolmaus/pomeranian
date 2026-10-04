@@ -25,15 +25,26 @@ that require no element target of its own. Short form: group.
 _Avoid_: Page, which refers to Playwright's page.
 
 **Page object**:
-A named representation of a component or element. One page object can correspond
-to zero, one, or multiple matching elements.
+A named representation of an application component or interaction subject,
+which need not have a DOM element of its own.
+
+**Element page object**:
+A page object whose target describes DOM elements, including HTML and SVG
+elements. It can correspond to zero, one, or multiple matching elements.
+
+**Page object node**:
+A page object or page object group in a declared or ad-hoc application tree.
+Short form: node.
 
 **Root**:
 The developer-defined entry point into an application's page-object tree. An
 outermost page object is not automatically a Root.
 
 **Target**:
-The description of which elements a page object represents.
+The description of which application subjects a page object represents.
+
+**Element target**:
+A target describing which DOM elements an element page object represents.
 
 **Declared tree**:
 The stable hierarchy of groups and page objects that describes an application.
@@ -44,3 +55,7 @@ element selection, usually to narrow a collection.
 
 **Ad-hoc tree**:
 A page object and its descendants used without a Root.
+
+**Fixture scenario**:
+A named example of application behavior used to exercise a page object's contract
+or a composition of equally important page objects.
