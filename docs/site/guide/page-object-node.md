@@ -4,8 +4,9 @@
 objects and targetless groups. It is an abstract class exported from
 `@pomeranian/core/page-object-node` in the private, unreleased workspace.
 
-The current concrete object, [Element_PO](element-po.md), extends this base. It
-owns selector-based creation, locator access, and element operations.
+The locator-backed [PageObject](page-object.md) extends this base with factory
+creation and locator access. [Element_PO](element-po.md) extends `PageObject`
+with element actions and assertions.
 
 ## Construction and properties
 
@@ -15,7 +16,7 @@ provides no static factory and cannot be constructed directly.
 
 A name must be a nonblank string. Invalid names throw a synchronous `TypeError`;
 valid names retain their original text, including surrounding whitespace. The
-base has no selector from which to infer a default. `Element_PO` supplies its
+base has no selector from which to infer a default. `PageObject` supplies its
 selector fallback when an explicit name is omitted or `undefined`.
 
 The public read-only `page` and `name` properties expose the supplied page and
@@ -45,7 +46,8 @@ contract. A future object could represent an individual diagram node drawn
 inside a canvas without inheriting element text assertions. SVG nodes and the
 canvas surface itself are DOM elements and fit the element-object model.
 
-Separate `PageObjectGroup` and `PageObject` classes are deferred until they have
-distinct responsibilities. Group construction APIs, nested declarations, Root,
-and reusable `Element_PO` factories remain later work. Canvas subjects illustrate
-an extension possibility; canvas support is not currently provided.
+`PageObject` supplies the locator-backed foundation in core. A separate
+`PageObjectGroup` class remains deferred until it has distinct responsibilities.
+Group construction APIs, nested declarations, Root, and custom target or
+constructor conventions remain later work. Canvas subjects illustrate an
+extension possibility; canvas support is not currently provided.

@@ -372,17 +372,17 @@ placeholder. The Oxlint configuration package contains typed `.mts` source, so
 both linting and typechecking include it. The `.mts` extension identifies these
 tooling modules as ESM without deciding either library's distribution format.
 
-Core exposes `PageObjectNode` through its explicit `page-object-node` subpath,
-replacing the empty scaffold. Lib-essential exposes `Element_PO` through its
+Core exposes `PageObjectNode` through `page-object-node` and the locator-backed
+`PageObject` through `page-object`, replacing the empty scaffold.
+Lib-essential exposes `Element_PO` through its
 `element-po` subpath and declares core as a production workspace dependency.
-Both entries use `.mts` source modules for private workspace consumption. Their
+These entries use `.mts` source modules for private workspace consumption. Their
 `type: module` package settings also let colocated browser specs load ESM
 dependencies through Playwright. These source settings do not decide a published
 JavaScript distribution format. Both local library environments include DOM
 declarations required by Playwright's public types; the shared library preset is
-unchanged. Lib-essential's consumer typecheck leaf includes the inherited node
-contract through the public exports and participates in editor discovery and the
-package typecheck command.
+unchanged. Both libraries' consumer typecheck leaves cover their public exports
+and inherited contracts and participate in editor discovery and package checks.
 
 The no-output flag also protects against emission when shared configuration
 resolution fails. These checks neither build product JavaScript nor select a
@@ -540,6 +540,10 @@ commands. For another library with the same environments:
 
 Include meaningful tests and documentation with behavior changes in the same PR.
 Use TDD; prefer colocated `node:test` and `node:assert` unit tests where suitable.
+Keep one `<class>.test.mts` unit-test file and one `<class>.spec.ts` browser-spec
+file per class. Group related cases within those files rather than creating files
+per property or method. Test shared behavior at its owning class and cover its
+integration through subclasses without duplicating the full inherited suite.
 Each offered page object needs a React demo example and Playwright E2E coverage.
 The first behavior slice establishes that fixture and suite; add subsequent
 behavior to the existing public test seams alongside its documentation.

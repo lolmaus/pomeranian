@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { elementFixtureUrls } from "@pomeranian/demo-app-react/fixture-addresses/lib-essential/element-po";
+import { pageObjectFixtureUrls } from "@pomeranian/demo-app-react/fixture-addresses/core/page-object";
 
 function counterAppearance(element: HTMLElement | SVGElement) {
   const style = getComputedStyle(element);
@@ -31,6 +32,7 @@ test("every registered scenario has a catalog link and a reloadable direct addre
   page,
 }) => {
   for (const [label, url] of [
+    ["Locator counter", pageObjectFixtureUrls.counter],
     ["Counter", elementFixtureUrls.counter],
     ["Delayed counter", elementFixtureUrls["delayed-counter"]],
     ["Replaceable counter", elementFixtureUrls["replaceable-counter"]],

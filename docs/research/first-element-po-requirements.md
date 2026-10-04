@@ -132,6 +132,10 @@ extension below introduces the shared foundation there.
 
 ## Author-approved hierarchy extension
 
+The following records the initial 2026-09-30 decision. The
+[2026-10-04 revision](#core-pageobject-and-class-level-test-files) supersedes the
+deferral of `PageObject` and placement of locator/factory logic in `Element_PO`.
+
 On 2026-09-30, the author extended [PR #40](https://github.com/lolmaus/pomeranian/pull/40)
 to extract `PageObjectNode` as the shared base of `Element_PO`. The shared
 responsibilities are page access, resolved-name storage and validation, and
@@ -165,3 +169,37 @@ and actual-report seams. The extension is implemented in PR #40 and passes the
 local Node 22/Chromium and workspace checks, with successful hosted CI; see its
 [acceptance evidence](../verification/page-object-node.md). Integration remains
 pending author approval.
+
+## Core PageObject and class-level test files
+
+On 2026-10-04 the author revised PR #40 to move locator access, static creation,
+and related construction behavior into core's `PageObject` base class. The
+hierarchy is now `PageObjectNode → PageObject → Element_PO`.
+
+- `PageObjectNode` retains page/name access, required resolved-name validation,
+  and protected step reporting, with no element target or factory.
+- Export `PageObject` and `PageObjectOptions` from `@pomeranian/core/page-object`.
+  It owns selector validation, selector fallback naming, lazy locator creation,
+  and read-only locator access. Its protected constructor accepts the page,
+  selector, and optional creation options.
+- `PageObject.create(page, target, options?)` constructs the concrete class on
+  which it is called and preserves that class's inferred type. `Element_PO`
+  inherits this implementation and defines only click and the two text assertions.
+  Retain `Element_POOptions` as an alias of `PageObjectOptions` for existing imports.
+- `PageObject` can also be created directly; provide a focused core-owned React
+  counter scenario using the existing shared counter component and metadata
+  registration, with colocated browser coverage.
+- Keep one unit-test file and one browser-spec file per class. Consolidate
+  Element_PO text/reporting specimens into `element-po.spec.ts`; shared
+  construction and context coverage belongs to the owning core classes, with
+  subclass integration checks in Element_PO's files. Consumer type checks and
+  central report-verification tooling retain their existing roles.
+
+`PageObject` has a DOM locator contract. Future non-DOM subjects can extend
+`PageObjectNode` directly; the hierarchy decision records this boundary.
+Group construction, nested declarations, Root, flexible/class-default targets,
+custom-constructor conventions, and derivation remain later work. The inherited
+factory supports classes inheriting the base constructor; it does not promise
+arbitrary custom constructors or remove the retained TypeScript compatibility
+limitation. Existing native options, matching, reports, timeouts, and failure
+semantics remain the regression baseline.

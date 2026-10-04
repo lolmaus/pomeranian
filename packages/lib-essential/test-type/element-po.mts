@@ -1,5 +1,5 @@
 import { Element_PO, type Element_POOptions } from "@pomeranian/lib-essential/element-po";
-import { PageObjectNode } from "@pomeranian/core/page-object-node";
+import { PageObject } from "@pomeranian/core/page-object";
 import type { expect, Locator, Page } from "@playwright/test";
 
 export async function checkPublicContract(
@@ -15,8 +15,8 @@ export async function checkPublicContract(
 
   const underlyingPage: Page = Counter.page;
   const underlyingLocator: Locator = Counter.locator;
-  const Node: PageObjectNode = Counter;
-  const name: string = Node.name;
+  const Subject: PageObject = Counter;
+  const name: string = Subject.name;
   void underlyingPage;
   void underlyingLocator;
   void name;
@@ -58,14 +58,8 @@ export async function checkPublicContract(
   Counter.locator = locator;
   // @ts-expect-error The resolved name is read-only.
   Counter.name = "Replacement";
-  // @ts-expect-error The shared base has no element locator.
-  void Node.locator;
-  // @ts-expect-error Shared steps are available to subclass methods, not callers.
-  await Node.step("read", () => 42);
-  // @ts-expect-error The shared base cannot be directly constructed.
-  new PageObjectNode(page, "Counter");
-  // @ts-expect-error Concrete classes own creation; there is no shared factory.
-  PageObjectNode.create(page, "Counter");
+  // @ts-expect-error Inherited element construction remains protected.
+  new Element_PO(page, "button");
   // @ts-expect-error Click options retain Playwright's button union.
   await Counter.click({ button: "invalid" });
   // @ts-expect-error Native text expectations do not accept numbers.
@@ -79,11 +73,4 @@ export async function checkPublicContract(
   // @ts-expect-error Awaited operations return void, not a fluent page object.
   const fluentResult: Element_PO = await Counter.click();
   void fluentResult;
-}
-
-class NamedNode extends PageObjectNode {}
-
-export function checkProtectedConstruction(page: Page): void {
-  // @ts-expect-error Inherited base construction remains protected.
-  new NamedNode(page, "Counter");
 }

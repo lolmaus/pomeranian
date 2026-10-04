@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./fixture-addresses/core/page-object": "./src/fixtures/core/page-object/addresses.mts",
     "./fixture-addresses/lib-essential/element-po": "./src/fixtures/lib-essential/element-po/addresses.mts"
   },
   "scripts": {

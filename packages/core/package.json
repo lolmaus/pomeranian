@@ -3,17 +3,20 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./page-object-node": "./src/page-object-node.mts"
+    "./page-object-node": "./src/page-object-node.mts",
+    "./page-object": "./src/page-object.mts"
   },
   "scripts": {
     "lint": "oxlint --config oxlint.config.mts . --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts . --max-warnings 0 --fix",
-    "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.playwright.json"
+    "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.types.json",
+    "test:unit": "node --test src/*.test.mts"
   },
   "peerDependencies": {
     "@playwright/test": "1.63.0"
   },
   "devDependencies": {
+    "@pomeranian/demo-app-react": "workspace:*",
     "@playwright/test": "1.63.0",
     "@pomeranian/oxlint-config": "workspace:*",
     "@pomeranian/typescript-config": "workspace:*",

@@ -18,8 +18,9 @@ Test use: create it before navigation, click its target, and check text with
 for the complete counter example, names, options, and raw Playwright access.
 The libraries remain private workspace packages; no npm release is available.
 Core provides the shared `PageObjectNode` foundation for page access, public
-read-only names, and action steps. `Element_PO` in lib-essential adds locator
-access and element operations. See the
+read-only names, and action steps. Core's `PageObject` adds selector-based
+construction and locator access; `Element_PO` in lib-essential adds element
+operations. See the [PageObject guide](docs/site/guide/page-object.md) and
 [foundation guide](docs/site/guide/page-object-node.md).
 
 - [Contributing](CONTRIBUTING.md): prerequisites, installation, and available commands.

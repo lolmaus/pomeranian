@@ -58,12 +58,14 @@ matches no elements. Selector syntax validation remains Playwright's
 responsibility.
 
 Targets currently accept selector strings. Locator inputs, target factories,
-reusable subclass APIs, and nested page objects are not available yet.
+class-default targets, custom-constructor conventions, and nested page objects
+are not available yet.
 
-`Element_PO` extends [PageObjectNode](page-object-node.md), inheriting page access,
-resolved naming, and action-step reporting from the shared foundation. Its locator,
-selector-based creation, and element actions/assertions remain specific to
-`Element_PO`.
+`Element_PO` extends core's [PageObject](page-object.md), inheriting its factory,
+selector validation, fallback naming, and locator access. `PageObject` extends
+[PageObjectNode](page-object-node.md), which supplies page access, resolved naming,
+and action-step reporting. `Element_PO` defines the element actions/assertions.
+The inherited factory creates the concrete class on which it is called.
 
 ## Click an element
 

@@ -32,6 +32,12 @@ src/
   fixtures/
     manifest-types.ts                 typed registration contract
     packages.ts                       package registration
+    core/
+      manifest.ts                     core object registration
+      page-object/
+        addresses.mts                 dependency-free IDs and URLs
+        manifest.ts                   complete scenario registration
+        counter.tsx                   locator-backed counter example
     lib-essential/
       manifest.ts                     objects offered by this package
       element-po/
@@ -62,7 +68,7 @@ in advance.
    correct address for it. Keep component imports behind lazy loaders.
 4. Register a new object in its package manifest, and a new package in
    `fixtures/packages.ts`. Existing-object additions need no central catalog edit.
-5. Add browser specs beside the page-object implementation, named `*.spec.ts`.
+5. Add cases to the owning class's single colocated `<class>.spec.ts` file.
    Declare this app as a `workspace:*` dev dependency of the owning library and
    import its metadata export, for example:
 
@@ -83,6 +89,10 @@ The address modules export only literal metadata and types. They must not import
 React, the router, component manifests, or fixtures. This prevents tests from
 loading the renderer when they only need an address. No separate contract package
 is required.
+
+`PageObject` and `Element_PO` own separate counter addresses while reusing the
+small React counter component. Shared implementation coverage stays with the
+class that owns it; subclass specs verify its integration with element operations.
 
 ## State and style isolation
 

@@ -14,8 +14,9 @@ Start with [the Element_PO guide](guide/element-po.md) to create a page object
 before navigation and verify a counter. Groups and nested page objects remain
 part of the project's planned direction.
 
-The [PageObjectNode guide](guide/page-object-node.md) describes the shared page,
-name, and action-step foundation inherited by `Element_PO`.
+The [PageObject guide](guide/page-object.md) describes core locator construction
+and the inherited factory. The [PageObjectNode guide](guide/page-object-node.md)
+describes the shared page, name, and action-step foundation.
 
 ## Vocabulary
 

@@ -7,6 +7,10 @@ and [hierarchy decision](../adr/0001-page-object-node-foundation.md) record its
 scope and rationale. The implementation extends branch revision `79e71cb`;
 integration remains pending author approval.
 
+This initial record describes the 2026-09-30 implementation. The
+[2026-10-04 revision](#core-pageobject-revision-2026-10-04) below records the
+current three-class hierarchy and consolidated test ownership.
+
 ## Delivered behavior
 
 Core exports abstract `PageObjectNode` from
@@ -114,3 +118,61 @@ The required Workspace checks cover the updated dependency graph, static checks,
 documentation build, and Node 22/Chromium aggregate. The workflow's main-only
 documentation deployment remains unchanged. PR #40 is open for author-approved
 integration.
+
+## Core PageObject revision — 2026-10-04
+
+The author requested `PageObjectNode → PageObject → Element_PO`, with factory,
+locator construction/access, selector validation, and fallback naming in core's
+`PageObject`. Its factory uses the concrete calling class and preserves its
+inferred type. `Element_PO` contains only its three element operations and a
+compatibility alias for `PageObjectOptions`; it inherits construction and
+locator access. Base and inherited constructors are protected. Custom-constructor
+and flexible-target conventions remain later work; the retained TypeScript
+constructor-compatibility limitation still applies.
+
+The test files now follow class ownership:
+
+| Class            | Unit tests                  | Browser specs              | Main responsibility verified                                       |
+| ---------------- | --------------------------- | -------------------------- | ------------------------------------------------------------------ |
+| `PageObjectNode` | `page-object-node.test.mts` | `page-object-node.spec.ts` | Page/name access and validation; shared named steps                |
+| `PageObject`     | `page-object.test.mts`      | `page-object.spec.ts`      | Selector/factory behavior, lazy read-only locator, direct core use |
+| `Element_PO`     | `element-po.test.mts`       | `element-po.spec.ts`       | Inherited concrete creation and native element actions/assertions  |
+
+The separate text and reporting specimen files are removed; all nine Element_PO
+browser cases remain in its single spec file. The central actual-report checker
+remains runner infrastructure. Each class also has a single consumer-type input
+under its package's `test-type/` directory, checked through discoverable leaves.
+Contributor and demo authoring guidance record the class-level convention.
+
+The new core counter scenario has its own metadata-only export and isolated
+`/fixtures/core/page-object/counter` address. It reuses the existing React counter
+component. Catalog tests now check all five registered addresses, including
+direct loading and reloading of the core scenario. No product or Playwright
+logic enters the React app.
+
+The first core public-factory check failed with
+`ERR_PACKAGE_PATH_NOT_EXPORTED` before the module/export existed, then passed
+after extraction. Existing invalid target/name checks were moved to the owning
+class rather than duplicated in subclasses. New node-only checks exercise a
+targetless subclass, and Element_PO's unit check confirms inherited creation
+still returns the concrete element class with its operations. Consumer types
+verify concrete subclass inference, protected construction, read-only access,
+and compatible existing options imports.
+
+On Node **24.21.0** and pnpm **12.5.1**, frozen installation, repository
+formatting, all six workspace lint/typecheck tasks, and the documentation build
+passed. The updated lockfile only adds core's test-only demo metadata dependency.
+The official Node 22 index still identified **22.23.3** on 2026-10-04.
+
+The focused direct-core Chromium check and the complete root `pnpm run test`
+passed on Node **22.23.3**, Playwright **1.63.0**, and matching Chromium
+**153.0.8010.12**. The aggregate executes **9 unit cases** (8 core, 1 essential),
+**16 browser cases**, and **3 actual-report checks**. The existing intentional
+text failures retain their exact native reasons, names, and timeouts.
+
+Independent review of this revision against `acf93ac` found **0 Standards
+findings** and **0 Spec findings**. The former checked shared ownership, explicit
+exports, class-level test organization, and fixture reuse; the latter checked
+the October 4 amendment, concrete inherited creation, invalid-name handling,
+and preservation of the element specimens. Hosted run results are linked from
+[PR #40](https://github.com/lolmaus/pomeranian/pull/40).
