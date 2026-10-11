@@ -8,8 +8,8 @@ app infrastructure specs live under `tests/`.
 
 CI behavior verification uses the latest supported **Node 22** patch and
 Chromium from pinned **Playwright 1.63.0**. Node 22 is the compatibility
-verification baseline; local specs do not assert a Node major version. Author
-tooling uses the repository's `.nvmrc`. Both Element_PO counter specimens record
+verification baseline. Runner configuration selects the browser; local specs
+assert page-object behavior and record the active environment. Author tooling uses the repository's `.nvmrc`. Both Element_PO counter specimens record
 the actual Node and Chromium versions in their JSON reports.
 
 After the root frozen installation, install the matching Chromium browser from

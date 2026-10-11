@@ -95,8 +95,9 @@ with and without system dependencies are available from the repository root and
 the E2E package; [setup verification](docs/verification/story-harness.md#playwright-installation-scripts-2026-10-11).
 Integration still awaits author approval.
 
-PR #40 runtime follow-up on 2026-10-11: behavior specs record the active Node
-version without requiring Node 22. CI keeps the Node 22 verification baseline;
+PR #40 environment follow-up on 2026-10-11: behavior specs record the active Node
+and browser versions while runner configuration owns browser selection. CI keeps
+the Node 22 verification baseline;
 [local-runtime verification](docs/verification/story-harness.md#runtime-assertion-correction-2026-10-11).
 
 ## Agreed order

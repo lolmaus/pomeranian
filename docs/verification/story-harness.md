@@ -181,3 +181,19 @@ with zero unexpected results. Verification uses the normal browser cache and
 installed system dependencies, without `PLAYWRIGHT_BROWSERS_PATH` or
 `LD_LIBRARY_PATH` overrides. Lib-essential lint and typechecks pass on author
 Node 24.21.0. No product API or CI runtime selection changes.
+
+## Browser-selection assertion correction (2026-10-11)
+
+The remaining `expect(browserName).toBe("chromium")` checks similarly repeated
+runner policy inside page-object behavior tests. Both runner configurations
+already select Chromium. These assertions are removed from both counter
+specimens, and their runtime annotations now interpolate `browserName` instead
+of hardcoding the browser label. The specs retain all counter interactions and
+text assertions. Documentation assigns environment selection to the runner and
+behavior assertions to the specimens.
+
+`pnpm run test:e2e` passes **32 browser cases and 5 report checks** under Node
+26.9.0 using the normal browser installation. Both reports contain the actual
+`Node v26.9.0; chromium 153.0.8010.12` annotation and zero unexpected results.
+Lib-essential lint and typechecks pass on author Node 24.21.0. Runner configs,
+CI selection, and product APIs are unchanged.

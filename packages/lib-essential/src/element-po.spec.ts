@@ -7,10 +7,9 @@ test("a page object created before navigation operates the React counter", async
   browser,
   browserName,
 }, testInfo) => {
-  expect(browserName).toBe("chromium");
   testInfo.annotations.push({
     type: "runtime",
-    description: `Node ${process.version}; Chromium ${browser.version()}`,
+    description: `Node ${process.version}; ${browserName} ${browser.version()}`,
   });
   const Counter = Element_PO.create(page, '[data-test="counter"]', { name: "Counter" });
 
