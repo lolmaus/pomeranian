@@ -2,15 +2,14 @@ import { elementFixtureUrls } from "@pomeranian/demo-app-react/fixture-addresses
 import { expect, test } from "@playwright/test";
 import { Element_PO } from "@pomeranian/lib-essential/element-po";
 
-test("a page object created before navigation operates the React counter", async ({
-  page,
-  browser,
-  browserName,
-}, testInfo) => {
+test.beforeEach(async ({ browser, browserName }, testInfo) => {
   testInfo.annotations.push({
     type: "runtime",
     description: `Node ${process.version}; ${browserName} ${browser.version()}`,
   });
+});
+
+test("a page object created before navigation operates the React counter", async ({ page }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]', { name: "Counter" });
 
   await page.goto(elementFixtureUrls.counter);

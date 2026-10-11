@@ -197,3 +197,31 @@ behavior assertions to the specimens.
 `Node v26.9.0; chromium 153.0.8010.12` annotation and zero unexpected results.
 Lib-essential lint and typechecks pass on author Node 24.21.0. Runner configs,
 CI selection, and product APIs are unchanged.
+
+## Runtime annotation hooks (2026-10-11)
+
+The author identified that runtime metadata attached to the first counter test
+would disappear if that test were removed or omitted from a focused run.
+Both Element_PO specs now record metadata through a file-level `test.beforeEach`
+hook. Each test receives its own annotation, including the nested intentional
+failure specimens. Counter tests contain only their page-object checks.
+
+The existing non-first "zero matches" story case was run in isolation:
+
+```sh
+pnpm --filter @pomeranian/tests-e2e exec playwright test \
+  --config playwright.stories.config.ts element-po.stories.spec.ts \
+  --grep 'zero matches' --workers 1
+```
+
+Before the change, its browser behavior passed but its actual JSON report had no
+runtime annotation. After the change, the same focused case passes and its report
+contains exactly one runtime annotation. A temporary report probe checks this
+without coupling verification to hook placement or test order.
+
+`pnpm run test:e2e` passes **32 browser cases and 5 report checks** under Node
+26.9.0 using the normal Chromium installation. The report probe confirms that
+all **9 Element_PO cases in each suite** have exactly one runtime annotation,
+including the nested expected failures. Lib-essential lint and typechecks pass
+on author Node 24.21.0. Formatting passes. The pending `AGENTS.md` edit is
+preserved and excluded from this change.

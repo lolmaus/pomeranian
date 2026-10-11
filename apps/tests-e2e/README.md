@@ -9,8 +9,10 @@ app infrastructure specs live under `tests/`.
 CI behavior verification uses the latest supported **Node 22** patch and
 Chromium from pinned **Playwright 1.63.0**. Node 22 is the compatibility
 verification baseline. Runner configuration selects the browser; local specs
-assert page-object behavior and record the active environment. Author tooling uses the repository's `.nvmrc`. Both Element_PO counter specimens record
-the actual Node and Chromium versions in their JSON reports.
+assert page-object behavior and record the active environment. Author tooling uses
+the repository's `.nvmrc`. File-level `test.beforeEach` hooks in both Element_PO
+specs record the actual Node and browser versions for every test in their JSON
+reports, including tests inside nested `describe` blocks.
 
 After the root frozen installation, install the matching Chromium browser from
 the repository root:
