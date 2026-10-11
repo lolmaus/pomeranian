@@ -7,7 +7,6 @@ test("a page object created before navigation operates the React counter", async
   browser,
   browserName,
 }, testInfo) => {
-  expect(process.versions.node.split(".")[0]).toBe("22");
   expect(browserName).toBe("chromium");
   testInfo.annotations.push({
     type: "runtime",

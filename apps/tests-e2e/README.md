@@ -6,10 +6,11 @@ renders package-local fixtures through a minimal Vite harness. Both retain
 actual-report verification. Page-object specs live beside their implementations;
 app infrastructure specs live under `tests/`.
 
-Behavior verification uses the latest supported **Node 22** patch and Chromium
-from pinned **Playwright 1.63.0**. Author tooling uses the repository's `.nvmrc`.
-Select Node 22 before running behavior checks. Both Element_PO counter specimens
-record the actual Node and Chromium versions in their JSON reports.
+CI behavior verification uses the latest supported **Node 22** patch and
+Chromium from pinned **Playwright 1.63.0**. Node 22 is the compatibility
+verification baseline; local specs do not assert a Node major version. Author
+tooling uses the repository's `.nvmrc`. Both Element_PO counter specimens record
+the actual Node and Chromium versions in their JSON reports.
 
 After the root frozen installation, install the matching Chromium browser from
 the repository root:

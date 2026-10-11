@@ -150,3 +150,34 @@ No browsers or system packages are installed by this verification.
 Formatting is checked after the edits. The pending `AGENTS.md` edit retains its
 original checksum and is excluded from the implementation commit. The change
 adds no dependencies or browser-test behavior.
+
+## Runtime assertion correction (2026-10-11)
+
+A local story run under Node 26 failed before exercising the page object because
+the first Element_PO specimen asserted `process.versions.node` had major 22.
+That assertion was also present in the retained demo specimen. It incorrectly
+made the chosen verification environment part of a page object's behavior.
+Both assertions are removed. Runtime annotations remain, and CI continues to
+select Node 22; its compatibility baseline is separate from local test execution.
+The E2E README and contributor instructions now explain this distinction.
+
+The existing counter specimen supplies the regression feedback loop:
+
+```sh
+pnpm --filter @pomeranian/tests-e2e exec playwright test \
+  --config playwright.stories.config.ts element-po.stories.spec.ts \
+  --grep 'created before' --workers 1
+```
+
+Before the change, this command reproduces `Expected: "22"; Received: "26"`.
+After removal, the same counter interaction passes under Node 26.9.0. No
+instrumentation or bisection is necessary because the failing assertion directly
+identifies the cause; the existing browser test exercises the actual failure.
+
+`pnpm run test` subsequently passes **9 unit cases, 16 demo Chromium cases,
+16 story Chromium cases, and 5 report checks** under Node 26.9.0. Both reports
+retain runtime annotations identifying Node 26.9.0 and Chromium 153.0.8010.12,
+with zero unexpected results. Verification uses the normal browser cache and
+installed system dependencies, without `PLAYWRIGHT_BROWSERS_PATH` or
+`LD_LIBRARY_PATH` overrides. Lib-essential lint and typechecks pass on author
+Node 24.21.0. No product API or CI runtime selection changes.

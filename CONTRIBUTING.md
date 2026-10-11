@@ -97,10 +97,12 @@ Run these commands from the repository root:
 
 ### Page-object tests and React fixture
 
-The first behavior suite uses the latest supported Node 22 patch and Chromium.
-Keep the pinned authoring Node version selected for installation, formatting,
-linting, typechecking, and documentation. With fnm, run tests under Node 22 without
-changing that shell's selected authoring runtime:
+CI verifies the first behavior suite on the latest supported Node 22 patch and
+Chromium. Local specs record the active runtime without asserting a Node major
+version. Keep the pinned authoring Node version selected for installation,
+formatting, linting, typechecking, and documentation. With fnm, reproduce the
+Node 22 verification baseline without changing that shell's selected authoring
+runtime:
 
 ```sh
 fnm install 22
