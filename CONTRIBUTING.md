@@ -500,6 +500,15 @@ real supported module. Declare internal dependencies with `workspace:*` and
 refresh the lockfile using `pnpm install`. Confirm discovery with
 `pnpm list --recursive --depth -1`, then rerun the frozen install.
 
+Group each page object's implementation, tests, and stories in a matching
+subfolder under `src/`, retaining their descriptive filenames. For example,
+`packages/core/src/page-object/` contains `page-object.mts`,
+`page-object.test.mts`, `page-object.stories.spec.ts`, and `page-object.stories.tsx`.
+Keep consumer typecheck inputs under `test-type/` in their existing environment.
+Point explicit package exports at the nested implementation while preserving
+the import subpath. Unit scripts use a quoted `src/**/*.test.mts` pattern so
+Node discovers nested cases; lint, TypeScript, and Playwright inputs are recursive.
+
 Use explicit source modules without `index.ts` barrel files, and export every
 type defined by project code. Consume shared configurations by package identity
 and exported entry point. Packages with source need applicable lint and typecheck

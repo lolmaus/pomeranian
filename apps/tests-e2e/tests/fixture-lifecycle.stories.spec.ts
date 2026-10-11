@@ -12,7 +12,7 @@ test("opening a story through a client-side transition isolates its content", as
     return value;
   });
 
-  await page.evaluate(() => window.mount({ story: "lib-essential/element-po/Counter" }));
+  await page.evaluate(() => window.mount({ story: "lib-essential/element-po/element-po/Counter" }));
 
   await expect(page.locator("html")).toHaveAttribute("data-document-marker", marker);
   await expect(page.locator("#root")).toHaveText("Count: 0");
@@ -26,31 +26,31 @@ test("every migrated fixture scenario mounts again after reloading the harness",
 }) => {
   for (const request of [
     {
-      story: "core/page-object/Counter",
+      story: "core/page-object/page-object/Counter",
       props: {},
       selector: '[data-test="counter"]',
       text: "Count: 0",
     },
     {
-      story: "lib-essential/element-po/Counter",
+      story: "lib-essential/element-po/element-po/Counter",
       props: {},
       selector: '[data-test="counter"]',
       text: "Count: 0",
     },
     {
-      story: "lib-essential/element-po/Counter",
+      story: "lib-essential/element-po/element-po/Counter",
       props: { delayUpdates: true },
       selector: '[data-test="counter"]',
       text: "Count: 0",
     },
     {
-      story: "lib-essential/element-po/Counter",
+      story: "lib-essential/element-po/element-po/Counter",
       props: { replaceable: true },
       selector: '[data-test="counter"]',
       text: "Count: 0",
     },
     {
-      story: "lib-essential/element-po/TextCollection",
+      story: "lib-essential/element-po/element-po/TextCollection",
       props: {},
       selector: '[data-test="text-sample"]',
       text: ["Alpha detail", "Beta"],
@@ -70,7 +70,7 @@ test("switching away and back remounts fixtures without leaking neighboring styl
   page,
   mount,
 }) => {
-  await mount("lib-essential/element-po/Counter");
+  await mount("lib-essential/element-po/element-po/Counter");
   const counter = page.locator('[data-test="counter"]');
   const appearance = () =>
     counter.evaluate((element) => {
@@ -89,9 +89,11 @@ test("switching away and back remounts fixtures without leaking neighboring styl
   await page.evaluate(() => window.mount({ story: "tests-e2e/harness/StyledNeighbor" }));
   await expect(counter).toHaveCount(0);
   await expect(page.getByRole("button")).toHaveCSS("padding", "40px");
-  await page.evaluate(() => window.mount({ story: "lib-essential/element-po/TextCollection" }));
+  await page.evaluate(() =>
+    window.mount({ story: "lib-essential/element-po/element-po/TextCollection" }),
+  );
   await expect(page.getByRole("listitem")).toHaveCount(2);
-  await page.evaluate(() => window.mount({ story: "lib-essential/element-po/Counter" }));
+  await page.evaluate(() => window.mount({ story: "lib-essential/element-po/element-po/Counter" }));
 
   await expect(counter).toHaveText("Count: 0");
   await expect(page.getByRole("listitem")).toHaveCount(0);
@@ -103,13 +105,18 @@ test("leaving a pending delayed story and returning starts a fresh fixture", asy
   mount,
 }) => {
   await page.clock.install();
-  await mount("lib-essential/element-po/Counter", { delayUpdates: true });
+  await mount("lib-essential/element-po/element-po/Counter", { delayUpdates: true });
   const counter = page.locator('[data-test="counter"]');
   await counter.click();
   await expect(counter).toBeDisabled();
-  await page.evaluate(() => window.mount({ story: "lib-essential/element-po/TextCollection" }));
   await page.evaluate(() =>
-    window.mount({ story: "lib-essential/element-po/Counter", props: { delayUpdates: true } }),
+    window.mount({ story: "lib-essential/element-po/element-po/TextCollection" }),
+  );
+  await page.evaluate(() =>
+    window.mount({
+      story: "lib-essential/element-po/element-po/Counter",
+      props: { delayUpdates: true },
+    }),
   );
   await expect(counter).toBeEnabled();
   await page.clock.fastForward(500);
@@ -121,7 +128,7 @@ test("unknown story addresses fail explicitly without opening another fixture", 
   mount,
 }) => {
   for (const story of [
-    "lib-essential/element-po/Missing",
+    "lib-essential/element-po/element-po/Missing",
     "missing/element-po/Counter",
     "missing",
   ]) {

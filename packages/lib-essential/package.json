@@ -3,13 +3,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./element-po": "./src/element-po.mts"
+    "./element-po": "./src/element-po/element-po.mts"
   },
   "scripts": {
     "lint": "oxlint --config oxlint.config.mts . --ignore-pattern '**/*.stories.tsx' --max-warnings 0 && oxlint --config oxlint.react.config.mts src --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts . --ignore-pattern '**/*.stories.tsx' --max-warnings 0 --fix && oxlint --config oxlint.react.config.mts src --max-warnings 0 --fix",
     "typecheck": "tsc --noEmit --project tsconfig.library.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.types.json && tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.browser.json",
-    "test:unit": "node --test src/*.test.mts"
+    "test:unit": "node --test \"src/**/*.test.mts\""
   },
   "dependencies": {
     "@pomeranian/core": "workspace:*"

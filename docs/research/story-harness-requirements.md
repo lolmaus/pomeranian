@@ -81,3 +81,18 @@ The original mounting/page-object/report TDD seams remain agreed. Record the
 legacy-to-story coverage mapping, run frozen installation and all workspace
 checks, review, and commit on PR #40's existing branch. Integration still needs
 the author's approval of that PR.
+
+## Page-object source folders (2026-10-11)
+
+The author requested grouping page-object files under
+`packages/core/src/page-object/`, `packages/core/src/page-object-node/`, and
+`packages/lib-essential/src/element-po/`. Keep each implementation, unit/browser
+spec, and rendered story in its owning folder with its existing filename.
+Consumer typecheck specimens keep their separate `test-type/` ownership.
+
+Package import subpaths remain stable; export targets point to the nested source.
+The story-ID contract remains `<package>/<path-under-src>/<export>`, so moved
+stories use `core/page-object/page-object/Counter` and
+`lib-essential/element-po/element-po/Counter` (or `TextCollection`). Update callers
+and authoring examples to these discovered paths. Preserve every test case and
+use recursive unit discovery; existing recursive browser/lint/type inputs apply.

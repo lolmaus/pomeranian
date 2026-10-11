@@ -7,7 +7,7 @@ test("a core page object created before mounting resolves the live counter", asy
 }) => {
   const Counter = PageObject.create(page, '[data-test="counter"]', { name: "Core counter" });
 
-  await mount("core/page-object/Counter");
+  await mount("core/page-object/page-object/Counter");
   expect(Counter.page).toBe(page);
   expect(Counter.name).toBe("Core counter");
   await expect(Counter.locator).toHaveText("Count: 0");

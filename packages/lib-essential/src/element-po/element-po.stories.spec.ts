@@ -14,7 +14,7 @@ test("a page object created before mounting operates the React counter", async (
 }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]', { name: "Counter" });
 
-  await mount("lib-essential/element-po/Counter");
+  await mount("lib-essential/element-po/element-po/Counter");
   await Counter.shouldHaveText("Count: 0");
   await Counter.click();
   await Counter.shouldHaveText("Count: 1");
@@ -26,7 +26,7 @@ test("click forwards trial and waits for a disabled counter to become actionable
   mount,
 }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]');
-  await mount("lib-essential/element-po/Counter", { delayUpdates: true });
+  await mount("lib-essential/element-po/element-po/Counter", { delayUpdates: true });
   expect(await Counter.click({ trial: true })).toBeUndefined();
   await Counter.shouldHaveText("Count: 0");
 
@@ -41,7 +41,7 @@ test("both text assertions retry while React finishes a delayed update", async (
   mount,
 }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]');
-  await mount("lib-essential/element-po/Counter", { delayUpdates: true });
+  await mount("lib-essential/element-po/element-po/Counter", { delayUpdates: true });
 
   await Counter.click();
   await Counter.shouldHaveText("Count: 1", { timeout: 1500 });
@@ -52,7 +52,7 @@ test("both text assertions retry while React finishes a delayed update", async (
 
 test("the same object resolves a replacement button", async ({ page, mount }) => {
   const Counter = Element_PO.create(page, '[data-test="counter"]');
-  await mount("lib-essential/element-po/Counter", { replaceable: true });
+  await mount("lib-essential/element-po/element-po/Counter", { replaceable: true });
   await Counter.click();
   await Counter.shouldHaveText("Count: 1");
   await Counter.locator.evaluate((element) =>
@@ -73,7 +73,7 @@ test("text assertions accept strings, regular expressions, ordered arrays and di
 }) => {
   const Samples = Element_PO.create(page, '[data-test="text-sample"]');
   const First = Element_PO.create(page, '[data-test="text-sample"]:first-child');
-  await mount("lib-essential/element-po/TextCollection");
+  await mount("lib-essential/element-po/element-po/TextCollection");
 
   await Samples.shouldHaveText(["Alpha detail", /^Beta$/]);
   await First.shouldHaveText("Alpha detail");
@@ -92,7 +92,7 @@ test("scalar text and click operations retain native strictness on multiple matc
   mount,
 }) => {
   const Samples = Element_PO.create(page, '[data-test="text-sample"]');
-  await mount("lib-essential/element-po/TextCollection");
+  await mount("lib-essential/element-po/element-po/TextCollection");
 
   await expect(Samples.shouldHaveText("Alpha detail")).rejects.toThrow(
     /strict mode violation:[\s\S]*resolved to 2 elements/,
@@ -107,7 +107,7 @@ test("scalar text and click operations retain native strictness on multiple matc
 
 test("zero matches retain the native scalar and array distinction", async ({ page, mount }) => {
   const Missing = Element_PO.create(page, '[data-test="absent"]');
-  await mount("lib-essential/element-po/TextCollection");
+  await mount("lib-essential/element-po/element-po/TextCollection");
 
   await Missing.shouldHaveText([]);
   await Missing.shouldNotHaveText(["absent"]);
@@ -135,7 +135,7 @@ test.describe("Element_PO reporting", () => {
   }) => {
     test.fail(true, "reporting.test.mts verifies the exact native mismatch and configured timeout");
     const Counter = Element_PO.create(page, '[data-test="counter"]', { name: " Counter report " });
-    await mount("lib-essential/element-po/Counter");
+    await mount("lib-essential/element-po/element-po/Counter");
     await Counter.click({ trial: true });
     await Counter.shouldHaveText("Never");
   });
@@ -149,7 +149,7 @@ test.describe("Element_PO reporting", () => {
       "reporting.test.mts verifies the exact native negated mismatch and per-call timeout",
     );
     const Counter = Element_PO.create(page, '[data-test="counter"]');
-    await mount("lib-essential/element-po/Counter");
+    await mount("lib-essential/element-po/element-po/Counter");
     await Counter.click({ trial: true });
     await Counter.shouldNotHaveText("Count: 0", { timeout: 60 });
   });

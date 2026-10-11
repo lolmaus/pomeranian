@@ -44,11 +44,12 @@ credentials are needed.
 
 ## Authoring a story
 
-Place a `*.stories.tsx` file beside the page object's spec. Export stories using
+Group each page object's implementation, tests, and `*.stories.tsx` fixtures
+in its own folder under `src/`. Place stories beside the browser spec. Export stories using
 the test-only React adapter; the markup and interactive behavior belong here:
 
 ```tsx
-// packages/core/src/page-object.stories.tsx
+// packages/core/src/page-object/page-object.stories.tsx
 import { reactStory } from "@pomeranian/tests-e2e/react";
 import { useState } from "react";
 
@@ -64,7 +65,7 @@ export const Counter = reactStory(function Counter() {
 
 Vite discovers `packages/*/src/**/*.stories.tsx` automatically. Each named
 story export has ID `<package>/<path-under-src>/<export>`, with the filename
-suffix removed: `core/page-object/Counter`, or
+suffix removed: `core/page-object/page-object/Counter`, or
 `lib-example/widgets/menu/Searchable` for a nested `widgets/menu.stories.tsx`.
 Infrastructure fixtures under this package's `src/` use the `tests-e2e/` prefix.
 There is no scenario manifest or fixture-address module.
@@ -77,7 +78,7 @@ import { expect, test } from "@playwright/test";
 
 test("counter interaction", async ({ page, mount }) => {
   const Counter = PageObject.create(page, '[data-test="counter"]');
-  await mount("core/page-object/Counter");
+  await mount("core/page-object/page-object/Counter");
   await Counter.locator.click();
   await expect(Counter.locator).toHaveText("Count: 1");
 });

@@ -3,6 +3,8 @@
 The initial parallel-suite records below describe earlier PR #40 verification.
 The [legacy-removal record](#legacy-removal-2026-10-11) describes the current
 single-suite migration and its complete coverage reconciliation.
+The [source-folder follow-up](#page-object-folders-2026-10-11) records the current
+module layout and discovery paths.
 
 This extends [PR #40](https://github.com/lolmaus/pomeranian/pull/40) on its existing
 `plan/first-element-po` branch, starting from `255a7bd`. The author approved the
@@ -298,3 +300,40 @@ executed coverage and native report details.
 
 The pending `AGENTS.md` edit is preserved and excluded from the commit.
 Integration still requires the author's approval of PR #40.
+
+## Page-object folders (2026-10-11)
+
+At the author's request, starting from `9663f67`, source families are grouped in
+`packages/core/src/page-object/`, `packages/core/src/page-object-node/`, and
+`packages/lib-essential/src/element-po/`. Each folder retains the existing
+implementation, unit/browser spec, and any story filenames. Consumer typecheck
+specimens keep their separate environment under `test-type/`.
+
+Public package subpaths remain unchanged; their explicit exports point to the
+nested implementations. Unit scripts pass a quoted `src/**/*.test.mts` glob to
+Node. Existing recursive lint, TypeScript, Playwright, and Vite inputs already
+own the nested files. No barrel, compatibility wrapper, or discovery rule is
+added. The existing story-ID rule includes the new folder, so examples and
+callers use `core/page-object/page-object/Counter` and
+`lib-essential/element-po/element-po/{Counter,TextCollection}`.
+
+The existing core counter specimen first fails at the future nested ID with
+`Unknown story: core/page-object/page-object/Counter`. After moving its fixture,
+the same focused test passes through native mounting. This verifies nested
+discovery at the already agreed seam without adding a test of file structure.
+
+Executed checks:
+
+- Frozen offline installation passes with the existing lockfile.
+- Workspace lint, typechecks, and documentation build pass on author Node 24.21.0.
+- `pnpm run test` passes on Node 22.23.3 / Chromium 153.0.8010.12:
+  **9 unit cases, 22 browser cases, and 3 genuine-report checks**.
+- Before/after JSON reports contain the same 22 titles and expected statuses,
+  with zero skipped, unexpected, or flaky results. Moved implementations, unit
+  tests, stories, and the node browser specimen are byte-identical; rendered
+  specs only update story IDs and their formatting.
+- Formatting and current-path reference checks pass.
+
+Independent Standards and Spec reviews both report **0 findings**.
+The pending `AGENTS.md` edit is preserved and excluded from this follow-up.
+PR #40 still awaits author-approved integration.

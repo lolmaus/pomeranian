@@ -29,8 +29,8 @@ test("unknown files and exports reject with their story IDs", async ({ mount }) 
   await expect(mount("core/missing/Counter")).rejects.toThrow(
     "Unknown story: core/missing/Counter",
   );
-  await expect(mount("core/page-object/Missing")).rejects.toThrow(
-    "Unknown story: core/page-object/Missing",
+  await expect(mount("core/page-object/page-object/Missing")).rejects.toThrow(
+    "Unknown story: core/page-object/page-object/Missing",
   );
 });
 
@@ -57,7 +57,7 @@ test("changing stories on the same page cleans up the previous instance", async 
 }) => {
   await mount("tests-e2e/harness/Session", { label: "Active" });
   await page.evaluate(async () => {
-    await window.mount({ story: "core/page-object/Counter" });
+    await window.mount({ story: "core/page-object/page-object/Counter" });
   });
   await expect(page.locator("body")).not.toHaveAttribute("data-story-active");
   await expect(page.getByRole("button")).toHaveText("Count: 0");
