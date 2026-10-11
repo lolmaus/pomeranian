@@ -11,11 +11,19 @@ from pinned **Playwright 1.63.0**. Author tooling uses the repository's `.nvmrc`
 Select Node 22 before running behavior checks. Both Element_PO counter specimens
 record the actual Node and Chromium versions in their JSON reports.
 
-After the root frozen installation, install the matching browser once:
+After the root frozen installation, install the matching Chromium browser from
+the repository root:
 
 ```sh
-pnpm --filter @pomeranian/tests-e2e exec playwright install --with-deps chromium
+pnpm run playwright:install
+# Include system dependencies when setting up a machine:
+pnpm run playwright:install:with-deps
 ```
+
+The same script names work inside this package. Both use the pinned Playwright
+version and its normal browser cache; the `with-deps` command may request elevated
+permissions for operating-system packages. Rerun installation after a Playwright
+upgrade.
 
 Run either suite, or both, from the repository root:
 

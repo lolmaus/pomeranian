@@ -13,7 +13,9 @@
     "typecheck": "tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.browser.json",
     "test:demo": "playwright test && node --test reporting.test.mts",
     "test:stories": "playwright test --config playwright.stories.config.ts && node --test reporting.stories.test.mts",
-    "stories:dev": "vite --config vite.config.mts"
+    "stories:dev": "vite --config vite.config.mts",
+    "playwright:install": "playwright install chromium",
+    "playwright:install:with-deps": "playwright install --with-deps chromium"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

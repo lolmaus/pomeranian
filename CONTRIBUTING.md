@@ -73,25 +73,27 @@ together.
 
 Run these commands from the repository root:
 
-| Command                            | Purpose                                                         |
-| ---------------------------------- | --------------------------------------------------------------- |
-| `node --version`                   | Confirm the selected runtime.                                   |
-| `pnpm --version`                   | Confirm the package manager selected by the bootstrap route.    |
-| `pnpm install --frozen-lockfile`   | Install the committed dependency graph.                         |
-| `pnpm list --recursive --depth -1` | Discover workspace package identities.                          |
-| `pnpm exec turbo --version`        | Run the repository-local task runner.                           |
-| `pnpm exec turbo ls`               | Confirm Turbo discovers the library and configuration packages. |
-| `pnpm run format`                  | Check repository formatting without editing files.              |
-| `pnpm run format:fix`              | Apply repository formatting fixes.                              |
-| `pnpm run lint`                    | Lint every applicable package through Turbo.                    |
-| `pnpm run lint:fix`                | Apply supported safe lint fixes in every applicable package.    |
-| `pnpm run typecheck`               | Typecheck every applicable package without emitting files.      |
-| `pnpm run demo:dev`                | Start the private React fixture's development server.           |
-| `pnpm run demo:build`              | Build the React fixture for production preview.                 |
-| `pnpm run demo:preview`            | Serve the last React fixture build.                             |
-| `pnpm run test:unit`               | Run colocated Node unit tests without cached results.           |
-| `pnpm run test:e2e`                | Build the fixture and run Chromium behavior/report checks.      |
-| `pnpm run test`                    | Run both unit and E2E checks; use Node 22 as described below.   |
+| Command                                 | Purpose                                                          |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| `node --version`                        | Confirm the selected runtime.                                    |
+| `pnpm --version`                        | Confirm the package manager selected by the bootstrap route.     |
+| `pnpm install --frozen-lockfile`        | Install the committed dependency graph.                          |
+| `pnpm list --recursive --depth -1`      | Discover workspace package identities.                           |
+| `pnpm exec turbo --version`             | Run the repository-local task runner.                            |
+| `pnpm exec turbo ls`                    | Confirm Turbo discovers the library and configuration packages.  |
+| `pnpm run format`                       | Check repository formatting without editing files.               |
+| `pnpm run format:fix`                   | Apply repository formatting fixes.                               |
+| `pnpm run lint`                         | Lint every applicable package through Turbo.                     |
+| `pnpm run lint:fix`                     | Apply supported safe lint fixes in every applicable package.     |
+| `pnpm run typecheck`                    | Typecheck every applicable package without emitting files.       |
+| `pnpm run demo:dev`                     | Start the private React fixture's development server.            |
+| `pnpm run demo:build`                   | Build the React fixture for production preview.                  |
+| `pnpm run demo:preview`                 | Serve the last React fixture build.                              |
+| `pnpm run playwright:install`           | Install the pinned Chromium browser without system dependencies. |
+| `pnpm run playwright:install:with-deps` | Install the pinned Chromium browser and its system dependencies. |
+| `pnpm run test:unit`                    | Run colocated Node unit tests without cached results.            |
+| `pnpm run test:e2e`                     | Build the fixture and run Chromium behavior/report checks.       |
+| `pnpm run test`                         | Run both unit and E2E checks; use Node 22 as described below.    |
 
 ### Page-object tests and React fixture
 
@@ -102,12 +104,12 @@ changing that shell's selected authoring runtime:
 
 ```sh
 fnm install 22
-fnm exec --using=22 pnpm --filter @pomeranian/tests-e2e exec playwright install chromium
+pnpm run playwright:install
 fnm exec --using=22 pnpm run test
 ```
 
 On Linux, Playwright may also need system libraries; its supported setup command
-is `pnpm --filter @pomeranian/tests-e2e exec playwright install --with-deps chromium`.
+is `pnpm run playwright:install:with-deps`.
 Run it with the permissions required by the operating system. CI uses the matching preinstalled Playwright container image. Browser versions follow the exact Playwright
 pin; rerun browser installation after an upgrade. No Firefox or WebKit is required
 for this slice.

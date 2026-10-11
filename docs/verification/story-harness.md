@@ -126,3 +126,27 @@ original fixtures/specimens and confirmed both stored reports' native failure
 reasons, names, steps, timeouts, runtime annotations, and expected results.
 
 Integration remains subject to the author's approval of PR #40.
+
+## Playwright installation scripts (2026-10-11)
+
+The author requested explicit setup commands following the missing-browser error
+on Bubba. The root `playwright:install` and `playwright:install:with-deps` scripts
+forward to the same names in `@pomeranian/tests-e2e`. The package executes the
+pinned CLI's `playwright install chromium` and
+`playwright install --with-deps chromium`, respectively. They use Playwright's
+normal browser-cache selection rather than the earlier `/tmp` verification setup.
+Contributor and E2E setup documentation now use these commands.
+
+Before implementation, `pnpm run playwright:install --dry-run` reported
+`ERR_PNPM_NO_SCRIPT`. Afterwards, all four root/package command combinations
+reach Playwright 1.63.0 with `--dry-run`. Both browser-only commands return zero
+and identify Chromium/headless-shell revision 1243 and their normal
+`/home/developer/.cache/ms-playwright` locations. Both `with-deps` commands report
+76 missing system dependencies and return one: the pinned CLI's Linux dry run
+simulates dependency installation and reports an incomplete system setup.
+Browser download locations are still printed, confirming argument forwarding.
+No browsers or system packages are installed by this verification.
+
+Formatting is checked after the edits. The pending `AGENTS.md` edit retains its
+original checksum and is excluded from the implementation commit. The change
+adds no dependencies or browser-test behavior.
