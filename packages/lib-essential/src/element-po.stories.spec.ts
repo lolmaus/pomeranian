@@ -133,10 +133,7 @@ test.describe("Element_PO reporting", () => {
     page,
     mount,
   }) => {
-    test.fail(
-      true,
-      "reporting.stories.test.mts verifies the exact native mismatch and configured timeout",
-    );
+    test.fail(true, "reporting.test.mts verifies the exact native mismatch and configured timeout");
     const Counter = Element_PO.create(page, '[data-test="counter"]', { name: " Counter report " });
     await mount("lib-essential/element-po/Counter");
     await Counter.click({ trial: true });
@@ -149,7 +146,7 @@ test.describe("Element_PO reporting", () => {
   }) => {
     test.fail(
       true,
-      "reporting.stories.test.mts verifies the exact native negated mismatch and per-call timeout",
+      "reporting.test.mts verifies the exact native negated mismatch and per-call timeout",
     );
     const Counter = Element_PO.create(page, '[data-test="counter"]');
     await mount("lib-essential/element-po/Counter");

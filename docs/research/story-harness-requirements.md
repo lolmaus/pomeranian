@@ -1,4 +1,7 @@
-# Parallel story-based browser specs
+# Story-based browser specs
+
+The initial parallel-suite scope below is retained as decision history. The
+author-approved completion on 2026-10-11 supersedes its demo-retention requirement.
 
 The author approved this extension of [PR #40](https://github.com/lolmaus/pomeranian/pull/40)
 on 2026-10-04. It adds a minimal custom Vite harness alongside the existing React
@@ -49,3 +52,32 @@ for that PR.
 
 See [usage](../../apps/tests-e2e/README.md) and
 [acceptance evidence](../verification/story-harness.md).
+
+## Author-approved completion (2026-10-11)
+
+The author requested removal of the legacy test app and runner, renaming the
+story runner to the default `playwright.config.ts`, and preservation of every
+test case in the story-based suite.
+
+- Remove `apps/demo-app-react`, its dependencies and metadata exports, obsolete
+  fixture-address type checks, legacy specs, demo commands, and unused lockfile
+  dependencies. Preserve all production consumer type contracts, including the
+  factory/subclass checks mixed into core's former fixture-address specimen.
+- The default runner discovers all package-local and infrastructure `*.spec.ts`
+  files. Keep the fixture-free PageObjectNode specimen and its genuine-report
+  named-step check. Retain the core counter, all nine Element_PO cases, six
+  harness cases, both intentional-failure report checks, and all unit tests.
+- Migrate the five catalog cases to story lifecycle cases: client-side switching
+  without document replacement or neighboring UI, mounting all five original
+  scenarios after reload, remount/state/style isolation, leaving pending updates,
+  and explicit unknown-address errors. Catalog links, scenario URLs, and browser
+  back/forward routing belong to the removed app; test their isolation/remounting
+  intent through the gallery lifecycle instead of recreating a fixture router.
+- The aggregate runs the single Chromium/Vite suite on loopback port 43192 and
+  all report checks. Preserve `test:e2e:stories` as an alias and both browser
+  installation commands. Existing story contracts, adapters, and scope remain.
+
+The original mounting/page-object/report TDD seams remain agreed. Record the
+legacy-to-story coverage mapping, run frozen installation and all workspace
+checks, review, and commit on PR #40's existing branch. Integration still needs
+the author's approval of that PR.

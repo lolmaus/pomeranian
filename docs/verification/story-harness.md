@@ -1,4 +1,8 @@
-# Parallel story-harness acceptance
+# Story-harness acceptance
+
+The initial parallel-suite records below describe earlier PR #40 verification.
+The [legacy-removal record](#legacy-removal-2026-10-11) describes the current
+single-suite migration and its complete coverage reconciliation.
 
 This extends [PR #40](https://github.com/lolmaus/pomeranian/pull/40) on its existing
 `plan/first-element-po` branch, starting from `255a7bd`. The author approved the
@@ -225,3 +229,72 @@ all **9 Element_PO cases in each suite** have exactly one runtime annotation,
 including the nested expected failures. Lib-essential lint and typechecks pass
 on author Node 24.21.0. Formatting passes. The pending `AGENTS.md` edit is
 preserved and excluded from this change.
+
+## Legacy removal (2026-10-11)
+
+The author requested deletion of the legacy app and runner, a default story
+configuration, and preservation of every test case. This change starts from
+`908cd1a` on PR #40's existing branch. `apps/demo-app-react`, its workspace
+dependencies, fixture-address exports/checks, old rendered specs, catalog test
+file, demo commands, and obsolete lockfile dependencies are removed.
+`playwright.config.ts` now contains the Vite story configuration and discovers
+all package-local/infrastructure `*.spec.ts` files. `reporting.test.mts` consumes
+the story report and preserves the node check plus both native failure checks.
+The existing `test:e2e:stories` command remains an alias of the single suite.
+
+### Coverage reconciliation
+
+The original demo runner executed 16 cases. Ten rendered cases duplicated the
+parallel story suite; they remain in their existing module-local story specs.
+The fixture-free node specimen remains unchanged and is now selected by the
+default story runner. All five catalog cases have lifecycle equivalents in
+`tests/fixture-lifecycle.stories.spec.ts`:
+
+| Legacy coverage                                                                                                                                          | Surviving story coverage                                                                                                         |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Core counter: lazy matching and interaction                                                                                                              | `page-object.stories.spec.ts`, unchanged                                                                                         |
+| Nine Element_PO cases: counter, delayed actionability, retrying assertions, replacement, text options, strictness, zero matches, and two native failures | `element-po.stories.spec.ts`; only report-verifier references changed                                                            |
+| Node callback result and exact named operation step                                                                                                      | `page-object-node.spec.ts` and `reporting.test.mts`                                                                              |
+| Catalog opening a fixture through a client-side transition                                                                                               | Switching through `window.mount` preserves the document marker, removes neighboring UI/effects, and renders the isolated counter |
+| Every scenario has a reloadable address                                                                                                                  | All five original fixture scenarios mount, survive a harness reload followed by mounting, and render their expected content      |
+| Back/forward remounting and neighboring style isolation                                                                                                  | Switching away and back resets counter state, removes neighboring DOM/styles, and preserves computed counter appearance          |
+| Leaving pending delayed updates                                                                                                                          | Switching away and back restores an enabled zero-count fixture after advancing the browser clock                                 |
+| Unknown fixture addresses                                                                                                                                | Three missing story-address forms reject explicitly and leave no accidental fixture content                                      |
+
+Catalog links and browser-history routing were behavior of the deleted catalog.
+Their isolation/remounting intent now runs through the gallery lifecycle; no
+catalog or router is recreated. The styled neighbor's CSS lives in its rendered
+story and is removed with that component. This proves component-owned style
+cleanup, not automatic unloading of arbitrary Vite CSS imports.
+
+Six pre-existing harness cases also remain unchanged. Reconciliation against
+the actual JSON report maps **all 16 legacy cases plus 6 harness cases to 22
+executed cases**, with zero unexpected, skipped, or flaky results. All nine
+Element_PO results retain one runtime annotation. All nine unit cases remain.
+The complete factory/subclass consumer type contract in core's
+`test-type/page-object.mts` is unchanged; only demo-address assertions are removed.
+
+### Executed verification
+
+The migrated style-isolation case first fails through the public mounting seam
+with `Unknown story: tests-e2e/harness/StyledNeighbor`. Adding the adjacent
+infrastructure story makes it pass; all five migrated lifecycle cases then pass
+in a focused run through the default configuration.
+
+- `pnpm install --offline --frozen-lockfile`: passes; no demo or TanStack
+  dependency remains in manifests or the lockfile.
+- `pnpm run lint` and `pnpm run typecheck`: pass across the workspace on author
+  Node 24.21.0, including new browser specs and the retained consumer contracts.
+- `pnpm run docs:build`: passes on author Node 24.21.0.
+- `pnpm run test`: passes on Node 22.23.3 and Chromium 153.0.8010.12, with
+  **9 unit cases, 22 browser cases, and 3 genuine-report checks**. Verification
+  uses the normal browser installation and no browser/library path overrides.
+- Formatting and maintained-file reference checks pass. Legacy runner/app
+  references remain only in explicitly historical decision/evidence records.
+
+Independent Standards review reports **0 documented violations and 0 heuristic
+findings**. Independent Spec review reports **0 findings** and confirms the
+executed coverage and native report details.
+
+The pending `AGENTS.md` edit is preserved and excluded from the commit.
+Integration still requires the author's approval of PR #40.

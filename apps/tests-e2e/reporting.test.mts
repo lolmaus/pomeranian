@@ -6,7 +6,7 @@ import type { JSONReport } from "@playwright/test/reporter";
 import { collectSpecs } from "./report-specs.mts";
 
 const report: JSONReport = JSON.parse(
-  await readFile(new URL("./test-results/demo/report.json", import.meta.url), "utf8"),
+  await readFile(new URL("./test-results/stories/report.json", import.meta.url), "utf8"),
 );
 
 const specs = collectSpecs(report.suites);
@@ -23,13 +23,13 @@ await test("a node action reports its original name and operation", () => {
 
 for (const { title, name, matcher, timeout } of [
   {
-    title: "intentional named text mismatch for report verification",
+    title: "story: intentional named text mismatch for report verification",
     name: " Counter report ",
     matcher: "expect(locator).toHaveText(expected) failed",
     timeout: "500ms",
   },
   {
-    title: "intentional fallback negation mismatch for report verification",
+    title: "story: intentional fallback negation mismatch for report verification",
     name: '[data-test="counter"]',
     matcher: "expect(locator).not.toHaveText(expected) failed",
     timeout: "60ms",

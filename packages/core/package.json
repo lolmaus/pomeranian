@@ -16,7 +16,6 @@
     "@playwright/test": "1.63.0"
   },
   "devDependencies": {
-    "@pomeranian/demo-app-react": "workspace:*",
     "@playwright/test": "1.63.0",
     "@pomeranian/oxlint-config": "workspace:*",
     "@pomeranian/typescript-config": "workspace:*",

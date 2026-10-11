@@ -1,17 +1,18 @@
 # Browser behavior checks
 
-This private package owns two independent Playwright suites. The existing suite
-builds the React demo and checks its fixture catalog; the parallel story suite
-renders package-local fixtures through a minimal Vite harness. Both retain
-actual-report verification. Page-object specs live beside their implementations;
-app infrastructure specs live under `tests/`.
+This private package owns the story-based Playwright suite and a minimal Vite
+harness. Package-local fixtures define the markup and interactions tested by
+page objects. Specs live beside their implementations; lifecycle infrastructure
+specs live under `tests/`. The legacy demo app and runner have been removed.
+The suite retains every page-object behavior and report check, with former
+catalog lifecycle cases expressed through mounting, switching, and remounting.
 
 CI behavior verification uses the latest supported **Node 22** patch and
 Chromium from pinned **Playwright 1.63.0**. Node 22 is the compatibility
 verification baseline. Runner configuration selects the browser; local specs
 assert page-object behavior and record the active environment. Author tooling uses
-the repository's `.nvmrc`. File-level `test.beforeEach` hooks in both Element_PO
-specs record the actual Node and browser versions for every test in their JSON
+the repository's `.nvmrc`. A file-level `test.beforeEach` hook in the Element_PO
+spec record the actual Node and browser versions for every test in their JSON
 reports, including tests inside nested `describe` blocks.
 
 After the root frozen installation, install the matching Chromium browser from
@@ -28,19 +29,18 @@ version and its normal browser cache; the `with-deps` command may request elevat
 permissions for operating-system packages. Rerun installation after a Playwright
 upgrade.
 
-Run either suite, or both, from the repository root:
+Run the suite from the repository root:
 
 ```sh
-pnpm run test:e2e:demo
-pnpm run test:e2e:stories
 pnpm run test:e2e
+# Compatibility alias for the same suite:
+pnpm run test:e2e:stories
 ```
 
-`pnpm run test` also runs unit tests. The demo runner builds and previews the
-existing application on `http://127.0.0.1:43191`. The story runner starts Vite on
-`http://127.0.0.1:43192/harness/`. Each command starts and stops its own server;
-the ports must be free, and existing servers are never reused. Neither fixture
-needs deployment or credentials.
+`pnpm run test` also runs unit tests. The default `playwright.config.ts` starts
+Vite on `http://127.0.0.1:43192/harness/` and stops it after the suite. Keep the
+port free; existing servers are never reused. No fixture build, deployment, or
+credentials are needed.
 
 ## Authoring a story
 
@@ -111,33 +111,30 @@ stories from production checking. The helper exports are internal test tooling.
 Inside this package:
 
 ```sh
-pnpm exec playwright test element-po.spec.ts
-pnpm exec playwright test fixture-catalog.spec.ts
-pnpm exec playwright test --config playwright.stories.config.ts element-po.stories.spec.ts
-pnpm exec playwright test --config playwright.stories.config.ts harness.stories.spec.ts
+pnpm exec playwright test element-po.stories.spec.ts
+pnpm exec playwright test page-object-node.spec.ts
+pnpm exec playwright test fixture-lifecycle.stories.spec.ts
+pnpm exec playwright test harness.stories.spec.ts
 pnpm run stories:dev
 ```
 
-The original config excludes `*.stories.spec.ts`; the story config selects only
-those specs. Each full suite command additionally checks its genuine JSON
-report. Two intentional `test.fail` specimens per suite appear with crosses in
-the list reporter. Report verification requires their precise native mismatch,
-name, named action step, and selected timeout. Other matching edge cases catch
-errors and verify their native reasons directly.
+The default config discovers package-local and infrastructure `*.spec.ts` files,
+including the fixture-free PageObjectNode specimen. Full suite commands also
+check the genuine JSON report: the node's named step and both intentional native
+assertion failures. The two `test.fail` specimens appear with crosses in the
+list reporter; verification requires their precise native mismatch, name,
+named action step, and selected timeout. Other matching edge cases catch errors
+and verify their native reasons directly.
 
-| Suite   | JSON report                        | Browser artifacts                 |
-| ------- | ---------------------------------- | --------------------------------- |
-| Demo    | `test-results/demo/report.json`    | `test-results/demo/artifacts/`    |
-| Stories | `test-results/stories/report.json` | `test-results/stories/artifacts/` |
-
-Failed tests retain traces; open one with `pnpm exec playwright show-trace <path>`.
-All browser results are ignored generated files. Running either suite preserves
-the other's report and artifact directory.
+The JSON report is `test-results/stories/report.json`; browser artifacts are
+under `test-results/stories/artifacts/`. Failed tests retain traces; open one
+with `pnpm exec playwright show-trace <path>`. Results are ignored generated
+files. Focused runs overwrite the report with their subset; run the complete
+suite before executing the report verifier.
 
 Playwright specs/configs use the shared Playwright TypeScript environment with
 Node 22 declarations. Root `.mts` tooling uses separately scoped Node 24 types
 and DOM declarations needed by Playwright's exported report types. Only browser
 specs receive test-structure lint rules; `shouldHaveText` and `shouldNotHaveText`
 are assertions, while `click` is not. Browser harness inputs use the separate
-React profile. The existing demo, fixtures, and tests remain available until a
-later removal request; see the [approved scope](../../docs/research/story-harness-requirements.md).
+React profile. See the [approved migration scope](../../docs/research/story-harness-requirements.md#author-approved-completion-2026-10-11).

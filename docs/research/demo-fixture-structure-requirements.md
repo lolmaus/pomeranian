@@ -152,3 +152,9 @@ in PR #40. Their markup and interaction live beside the library specs and run
 through a test-owned Vite harness. The existing demo organization, catalog,
 metadata exports, specs, and report checks remain available pending a later
 removal request. New story specimens do not import demo components or addresses.
+
+On 2026-10-11 the author requested that removal. The
+[story migration completion](story-harness-requirements.md#author-approved-completion-2026-10-11)
+supersedes this document's catalog/router/metadata layout. Its fixture-isolation
+and lifecycle cases migrate to the surviving story suite; this document records
+the historical demo decision.

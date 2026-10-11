@@ -212,3 +212,8 @@ adapter and equivalent colocated specs beside the existing suite. The
 scope and its mounting/page-object/report seams. Existing fixture and hierarchy
 acceptance remains the baseline; the demo and its tests stay in place.
 [Story-harness acceptance](../verification/story-harness.md) records the new checks.
+
+On 2026-10-11 the author approved [migration completion](story-harness-requirements.md#author-approved-completion-2026-10-11):
+the story suite replaces the legacy demo and runner while preserving all behavior,
+reporting, and fixture-lifecycle cases. This supersedes the earlier demo-retention
+requirements; other page-object acceptance obligations remain unchanged.

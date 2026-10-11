@@ -86,16 +86,13 @@ Run these commands from the repository root:
 | `pnpm run lint`                         | Lint every applicable package through Turbo.                     |
 | `pnpm run lint:fix`                     | Apply supported safe lint fixes in every applicable package.     |
 | `pnpm run typecheck`                    | Typecheck every applicable package without emitting files.       |
-| `pnpm run demo:dev`                     | Start the private React fixture's development server.            |
-| `pnpm run demo:build`                   | Build the React fixture for production preview.                  |
-| `pnpm run demo:preview`                 | Serve the last React fixture build.                              |
 | `pnpm run playwright:install`           | Install the pinned Chromium browser without system dependencies. |
 | `pnpm run playwright:install:with-deps` | Install the pinned Chromium browser and its system dependencies. |
 | `pnpm run test:unit`                    | Run colocated Node unit tests without cached results.            |
-| `pnpm run test:e2e`                     | Build the fixture and run Chromium behavior/report checks.       |
+| `pnpm run test:e2e`                     | Run story-based Chromium behavior/report checks.                 |
 | `pnpm run test`                         | Run both unit and E2E checks; use Node 22 as described below.    |
 
-### Page-object tests and React fixture
+### Page-object tests and stories
 
 CI verifies the first behavior suite on the latest supported Node 22 patch and
 Chromium. Runner configuration owns browser selection. Local specs record the
@@ -117,40 +114,31 @@ pin; rerun browser installation after an upgrade. No Firefox or WebKit is requir
 for this slice.
 
 `test:unit` runs package unit scripts through Turbo with caching disabled, so the
-selected runtime executes the tests each time. `test:e2e` runs the independent
-Playwright package and its report checks. It builds the React fixture and starts
-its production preview on loopback port 43191, then stops the server after the
-suite. Keep that port available; an existing server is not reused. Run a focused
-browser check with `pnpm --filter @pomeranian/tests-e2e exec playwright test --grep <name>`.
+selected runtime executes the tests each time. `test:e2e` runs the Playwright
+suite and its report checks. The default `playwright.config.ts` starts the Vite
+story harness on `http://127.0.0.1:43192/harness/` and stops it after the suite.
+Keep that port available; an existing server is not reused. Run a focused check
+with `pnpm --filter @pomeranian/tests-e2e exec playwright test --grep <name>`.
 Run the full root aggregate before submitting behavior changes.
 
-The private fixture catalog lives in `apps/demo-app-react`, organized by package,
-page object, and scenario. Browser specs live beside page-object implementations
-as `packages/*/src/**/*.spec.ts`. `apps/tests-e2e` owns the central runner,
-catalog/routing infrastructure tests, and report verification. For manual fixture
-work, use `pnpm run demo:dev`. Preview requires `demo:build` first. Fixture
-application code uses React and `data-test` HTML hooks; Playwright and Pomeranian
-usage belongs to browser specs and runner tooling. The fixture has no public
-deployment or documentation-site link. Generated builds, browser results, and
-reports are ignored.
+Package-local `*.stories.tsx` files define fixture markup and interaction beside
+`*.stories.spec.ts` browser specs. The PageObjectNode specimen uses no rendered
+fixture and remains in `page-object-node.spec.ts`. `apps/tests-e2e` owns the Vite
+harness, default runner, lifecycle infrastructure tests, and genuine-report
+verification. Use `pnpm --filter @pomeranian/tests-e2e run stories:dev` for manual
+harness work. Stories are addressed by `<package>/<path-under-src>/<export>`;
+there is no fixture catalog, scenario manifest, or fixture-address module.
+Scope styles and clean up timers/listeners on unmount. React is the first adapter;
+other framework adapters remain later work. See the
+[story authoring guide](apps/tests-e2e/README.md) for mounting and updating stories.
 
-Each scenario has an isolated URL and a lazy component, registered in its
-object manifest. TanStack Router handles client-side navigation; scenario identity
-controls remounting. Scope styles and clean up timers/listeners on unmount. The
-demo exports dependency-free typed fixture addresses through explicit metadata
-subpaths, consumed as a test-only workspace dependency by libraries. See the
-[fixture authoring guide](apps/demo-app-react/README.md) for the directory layout
-and steps to add an object or scenario. Equally shared integration scenarios are
-deferred until a real workflow needs them.
-
-The library, fixture, and E2E packages all participate in workspace linting and
-typechecking. React source uses the shared React profile, while app tooling uses
-the Node profile. Playwright test rules apply only to actual Playwright test inputs;
-the two genuine text assertion helpers are recognized without treating `click`
-as an assertion. Colocated Node unit tests use library checking rather than
-Playwright test-structure rules. Consumer typechecks import the advertised package
-subpath and verify the public interface without executing deliberately invalid
-calls.
+The library and E2E packages participate in workspace linting and typechecking.
+Stories use browser/React profiles and are excluded from production library
+checking. Playwright test rules apply only to actual test inputs; the two genuine
+text assertion helpers are recognized without treating `click` as an assertion.
+Colocated Node unit tests use library checking. Consumer typechecks import the
+advertised package subpath and verify the public interface without executing
+deliberately invalid calls. Generated browser results and reports are ignored.
 
 ### Documentation workspace
 
@@ -180,7 +168,7 @@ VitePress theme when the content warrants it. No custom components are required.
 The VitePress configuration lives in `apps/docs/.vitepress/`. Only `docs/site/`
 is website content: research, verification evidence, ADRs, and agent guidance
 outside it are not published. Do not copy these project records into the content
-tree. The React demo is a separate E2E fixture, with no documentation links or
+tree. The story harness is a separate E2E fixture, with no documentation links or
 public deployment.
 
 Build output is `apps/docs/dist/`; optimizer cache is `apps/docs/.cache/`.
@@ -442,13 +430,13 @@ the cache does not replace installation or relax lockfile checks.
 
 The job runs `pnpm run format`, `pnpm run lint`, `pnpm run typecheck`, and
 `pnpm run docs:build`, using the same commands and scope as local verification
-without applying fixes. Both libraries, the docs and React applications, the E2E
-suite, and the typed Oxlint configuration package participate in linting and
+without applying fixes. Both libraries, the docs application, the E2E suite and
+its story harness, and the typed Oxlint configuration package participate in linting and
 typechecking. It then selects the latest Node 22 patch and runs `pnpm run test`
 using the image's preinstalled Chromium. No browser or system-dependency install
-step runs in CI. The E2E command also builds the
-React fixture and runs the independent Vite story suite. Installation, formatting, lint, typecheck, docs-build, fixture-build,
-unit-test, browser-test, or report-check failure fails the same required job.
+step runs in CI. The E2E command starts the Vite story harness and verifies its
+browser report. Installation, formatting, lint, typecheck, docs-build, unit-test,
+browser-test, or report-check failure fails the same required job.
 Documentation artifact upload follows the tests; deployment still requires that
 job's success. Author tooling uses the pinned runtime, while behavior verification
 uses Node 22 and Chromium only.
@@ -502,7 +490,7 @@ behavior and the first-publication checklist.
 
 pnpm discovers `packages/*` and `apps/*`. The current library identities live at
 `packages/core` and `packages/lib-essential`; private applications live at
-`apps/docs`, `apps/demo-app-react`, and `apps/tests-e2e`. Other applications arrive
+`apps/docs` and `apps/tests-e2e`. Other applications arrive
 with their roadmap items.
 
 Create a manifest with a unique package name in the appropriate directory. Use
@@ -546,19 +534,19 @@ commands. For another library with the same environments:
 
 Include meaningful tests and documentation with behavior changes in the same PR.
 Use TDD; prefer colocated `node:test` and `node:assert` unit tests where suitable.
-Keep one `<class>.test.mts` unit-test file and one `<class>.spec.ts` browser-spec
-file per class. Group related cases within those files rather than creating files
+Keep one `<class>.test.mts` unit-test file and one browser-spec file per class
+(`*.stories.spec.ts` for rendered story coverage, `*.spec.ts` otherwise). Group
+related cases within those files rather than creating files
 per property or method. Test shared behavior at its owning class and cover its
 integration through subclasses without duplicating the full inherited suite.
-Each offered page object needs a React demo example and Playwright E2E coverage.
-The first behavior slice establishes that fixture and suite; add subsequent
+Each offered page object needs a local story fixture where rendering is required
+and Playwright E2E coverage. Add subsequent
 behavior to the existing public test seams alongside its documentation.
 
-The author-approved PR #40 extension adds parallel `*.stories.spec.ts` files for
-PageObject and Element_PO while retaining their existing demo-backed specs.
-Package-local `*.stories.tsx` fixtures own their markup and interactions; the
-React adapter hides framework startup. `pnpm run test:e2e:demo` and
-`pnpm run test:e2e:stories` run either suite with its report checks; the existing
-aggregate runs both. See [story authoring and runner usage](apps/tests-e2e/README.md)
-and [approved scope](docs/research/story-harness-requirements.md). Framework
-adapters beyond React and removal of the demo remain later work.
+The author-approved PR #40 migration uses `*.stories.spec.ts` for rendered
+PageObject and Element_PO coverage. Package-local `*.stories.tsx` fixtures own
+their markup and interactions; the React adapter hides framework startup.
+`pnpm run test:e2e` and its `test:e2e:stories` alias execute the single story suite
+and all report checks. See [story authoring and runner usage](apps/tests-e2e/README.md)
+and [approved scope](docs/research/story-harness-requirements.md#author-approved-completion-2026-10-11).
+Framework adapters beyond React remain later work.

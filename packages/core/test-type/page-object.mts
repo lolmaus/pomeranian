@@ -1,20 +1,5 @@
 import { PageObject, type PageObjectOptions } from "@pomeranian/core/page-object";
 import type { Locator, Page } from "@playwright/test";
-import {
-  pageObjectFixtureUrls,
-  type PageObjectFixtureId,
-} from "@pomeranian/demo-app-react/fixture-addresses/core/page-object";
-
-const counter: "/fixtures/core/page-object/counter" = pageObjectFixtureUrls.counter;
-const scenario: PageObjectFixtureId = "counter";
-void counter;
-void scenario;
-// @ts-expect-error Fixture scenario identity is a closed set.
-const unknown: PageObjectFixtureId = "unknown";
-void unknown;
-// @ts-expect-error Missing addresses cannot silently create valid URLs.
-void pageObjectFixtureUrls.unknown;
-
 class SpecializedObject extends PageObject {
   ownOperation(): Promise<number> {
     return this.step("count", () => this.locator.count());

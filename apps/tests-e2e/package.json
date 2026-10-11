@@ -7,12 +7,11 @@
     "./react": "./harness/react-story.tsx"
   },
   "scripts": {
-    "test": "pnpm run test:demo && pnpm run test:stories",
+    "test": "playwright test && node --test reporting.test.mts",
     "lint": "oxlint --config oxlint.config.mts tests *.mts playwright*.ts --max-warnings 0 && oxlint --config oxlint.react.config.mts harness src --max-warnings 0",
     "lint:fix": "oxlint --config oxlint.config.mts tests *.mts playwright*.ts --max-warnings 0 --fix && oxlint --config oxlint.react.config.mts harness src --max-warnings 0 --fix",
     "typecheck": "tsc --noEmit --project tsconfig.playwright.json && tsc --noEmit --project tsconfig.node.json && tsc --noEmit --project tsconfig.browser.json",
-    "test:demo": "playwright test && node --test reporting.test.mts",
-    "test:stories": "playwright test --config playwright.stories.config.ts && node --test reporting.stories.test.mts",
+    "test:stories": "pnpm run test",
     "stories:dev": "vite --config vite.config.mts",
     "playwright:install": "playwright install chromium",
     "playwright:install:with-deps": "playwright install --with-deps chromium"
@@ -25,7 +24,6 @@
     "@types-node24/node": "npm:@types/node@24.13.6",
     "oxlint": "1.85.0",
     "oxlint-tsgolint": "7.0.2002",
-    "@pomeranian/demo-app-react": "workspace:*",
     "vite": "8.3.0",
     "@vitejs/plugin-react": "6.1.1",
     "react": "19.3.0",

@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { reactStory } from "@pomeranian/tests-e2e/react";
 
+export const StyledNeighbor = reactStory(() => (
+  <section>
+    <style>{`#root button { color: rgb(120, 20, 90); background: rgb(230, 180, 220); font: italic 24px serif; padding: 40px; }`}</style>
+    <button>Neighbor</button>
+  </section>
+));
+
 export type SessionProps = { label: string; fail?: boolean };
 
 export const Session = reactStory(function Session({ label, fail = false }: SessionProps) {
